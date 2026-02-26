@@ -57,6 +57,17 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        svo: {
+          navy: "hsl(var(--svo-navy))",
+          "navy-light": "hsl(var(--svo-navy-light))",
+          charcoal: "hsl(var(--svo-charcoal))",
+          gold: "hsl(var(--svo-gold))",
+          "gold-light": "hsl(var(--svo-gold-light))",
+          blue: "hsl(var(--svo-blue))",
+          "blue-light": "hsl(var(--svo-blue-light))",
+          surface: "hsl(var(--svo-surface))",
+          glass: "hsl(var(--svo-glass))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
