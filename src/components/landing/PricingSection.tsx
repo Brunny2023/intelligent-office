@@ -6,37 +6,41 @@ import { Check } from "lucide-react";
 const plans = [
   {
     name: "Productivity",
-    description: "For small teams getting started",
-    monthly: 12,
-    yearly: 9,
-    features: ["Up to 25 users", "Task management", "Team chat", "Daily check-in", "5 GB storage", "Email support"],
+    tagline: "Workforce Coordination",
+    description: "Attendance, tasks, and communication for teams getting started.",
+    monthly: 15,
+    yearly: 12,
+    features: ["Up to 25 users", "Daily check-in & attendance", "Task & project management", "Team communication", "File sharing (5 GB)", "Email support"],
     cta: "Start Free Trial",
     popular: false,
   },
   {
     name: "Operations",
-    description: "For growing organizations",
-    monthly: 29,
-    yearly: 24,
-    features: ["Up to 100 users", "Everything in Productivity", "KPI dashboards", "Workflow automation", "Approval workflows", "25 GB storage", "Priority support"],
+    tagline: "Operational Control",
+    description: "Full management oversight with KPIs, workflows, and analytics.",
+    monthly: 35,
+    yearly: 29,
+    features: ["Up to 100 users", "Everything in Productivity", "KPI dashboards & goals", "Workflow automation", "Approval chains", "Department analytics", "25 GB storage", "Priority support"],
     cta: "Start Free Trial",
     popular: true,
   },
   {
     name: "Intelligence",
-    description: "For data-driven enterprises",
-    monthly: 59,
+    tagline: "AI-Driven Management",
+    description: "Executive intelligence layer with AI insights and predictive alerts.",
+    monthly: 69,
     yearly: 49,
-    features: ["Up to 500 users", "Everything in Operations", "AI insights & alerts", "Executive dashboards", "Custom reports", "100 GB storage", "Dedicated support"],
+    features: ["Up to 500 users", "Everything in Operations", "AI company briefs", "Anomaly detection", "Predictive risk alerts", "Executive dashboards", "Custom report builder", "100 GB storage"],
     cta: "Start Free Trial",
     popular: false,
   },
   {
     name: "Enterprise",
-    description: "For global organizations",
+    tagline: "White-Label Infrastructure",
+    description: "Full corporate OS with custom branding, SSO, and dedicated support.",
     monthly: null,
     yearly: null,
-    features: ["Unlimited users", "Everything in Intelligence", "White-label branding", "Custom domain", "SSO & SAML", "Unlimited storage", "SLA guarantee", "Dedicated CSM"],
+    features: ["Unlimited users", "Everything in Intelligence", "White-label branding", "Custom domain", "SSO & SAML", "Unlimited storage", "SLA guarantee", "Dedicated CSM", "API access"],
     cta: "Contact Sales",
     popular: false,
   },
@@ -58,10 +62,10 @@ const PricingSection = () => {
         >
           <span className="text-xs font-semibold text-svo-gold uppercase tracking-widest">Pricing</span>
           <h2 className="mt-4 text-3xl md:text-5xl font-bold tracking-tight text-foreground text-balance">
-            Scale as you grow
+            One platform. Four capability levels.
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Start free. Upgrade when you're ready.
+            Each tier unlocks a new operational layer. Start coordinating, scale to intelligence.
           </p>
 
           {/* Toggle */}
@@ -76,7 +80,7 @@ const PricingSection = () => {
               onClick={() => setYearly(true)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${yearly ? "bg-card shadow-sm text-foreground" : "text-muted-foreground"}`}
             >
-              Yearly <span className="text-svo-gold text-xs font-semibold ml-1">Save 20%</span>
+              Yearly <span className="text-svo-gold text-xs font-semibold ml-1">Save 20%+</span>
             </button>
           </div>
         </motion.div>
@@ -100,7 +104,8 @@ const PricingSection = () => {
                 </div>
               )}
               <h3 className="text-lg font-bold text-foreground">{plan.name}</h3>
-              <p className="text-sm text-muted-foreground mt-1">{plan.description}</p>
+              <p className="text-xs font-semibold text-svo-gold uppercase tracking-wide mt-0.5">{plan.tagline}</p>
+              <p className="text-sm text-muted-foreground mt-2">{plan.description}</p>
               <div className="mt-4 mb-6">
                 {plan.monthly ? (
                   <div className="flex items-baseline gap-1">

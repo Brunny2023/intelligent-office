@@ -1,16 +1,12 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { X, Check, ArrowRight } from "lucide-react";
+import { X, AlertTriangle, EyeOff, BarChart3, Radio, ArrowRight } from "lucide-react";
 
-const scattered = [
-  "Email chains", "Slack messages", "Zoom calls", "Google Docs",
-  "Trello boards", "Spreadsheets", "WhatsApp groups", "Notion pages"
-];
-
-const unified = [
-  "Attendance & Presence", "Task Execution", "Team Communication",
-  "KPI Intelligence", "Document Hub", "Executive Dashboard"
+const consequences = [
+  { icon: EyeOff, title: "Zero Executive Visibility", description: "Leadership makes decisions on gut feeling, not data. No real-time view of who's working, what's progressing, or where bottlenecks form." },
+  { icon: AlertTriangle, title: "No Attendance Control", description: "Staff clock-in across timezones with no unified presence system. Managers discover absences hours too late." },
+  { icon: BarChart3, title: "No Unified KPI Tracking", description: "Performance data lives in 5 different tools. Monthly reports take days to compile. KPIs are lagging, not leading." },
+  { icon: Radio, title: "No Organizational Awareness", description: "Departments operate in silos. No live feed. No cross-team visibility. No single source of operational truth." },
 ];
 
 const ProblemSection = () => {
@@ -26,65 +22,51 @@ const ProblemSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground text-balance">
-            Your company is <span className="text-destructive">fragmented</span> across dozens of tools
+          <span className="text-xs font-semibold text-destructive uppercase tracking-widest">The Real Cost of Fragmentation</span>
+          <h2 className="mt-4 text-3xl md:text-5xl font-bold tracking-tight text-foreground text-balance">
+            Multiple tools ={" "}
+            <span className="text-destructive">zero operational intelligence</span>
           </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Every disconnected tool is a leak in your operational intelligence.
+          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+            Your company runs on 8+ disconnected apps. The result isn't flexibility — it's blindness. Here's what fragmentation actually costs you:
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {/* Before */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="glass-card rounded-2xl p-8 border-destructive/20"
-          >
-            <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 rounded-full bg-destructive/10 flex items-center justify-center">
-                <X className="w-4 h-4 text-destructive" />
+        <div className="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto mb-16">
+          {consequences.map((item, i) => (
+            <motion.div
+              key={item.title}
+              initial={{ opacity: 0, y: 30 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.1 * i }}
+              className="glass-card rounded-xl p-6 border-destructive/10"
+            >
+              <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center mb-4">
+                <item.icon className="w-5 h-5 text-destructive" />
               </div>
-              <span className="text-sm font-semibold text-destructive uppercase tracking-wide">Before Soteria</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {scattered.map((item) => (
-                <span key={item} className="px-3 py-1.5 rounded-lg bg-destructive/5 border border-destructive/10 text-sm text-muted-foreground">
-                  {item}
-                </span>
-              ))}
-            </div>
-            <p className="mt-6 text-sm text-muted-foreground">
-              8+ tools. No unified view. No intelligence. No control.
-            </p>
-          </motion.div>
-
-          {/* After */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="glass-card-strong rounded-2xl p-8 border-svo-gold/20 relative"
-          >
-            <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 rounded-full bg-svo-gold/10 flex items-center justify-center">
-                <Check className="w-4 h-4 text-svo-gold" />
-              </div>
-              <span className="text-sm font-semibold text-svo-gold uppercase tracking-wide">With Soteria</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {unified.map((item) => (
-                <span key={item} className="px-3 py-1.5 rounded-lg bg-svo-gold/5 border border-svo-gold/15 text-sm font-medium text-foreground">
-                  {item}
-                </span>
-              ))}
-            </div>
-            <p className="mt-6 text-sm text-foreground/70">
-              One platform. Full visibility. AI-powered decisions.
-            </p>
-          </motion.div>
+              <h3 className="text-base font-bold text-foreground">{item.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{item.description}</p>
+            </motion.div>
+          ))}
         </div>
+
+        {/* Resolution */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="max-w-3xl mx-auto glass-card-strong rounded-2xl p-8 md:p-10 text-center border-svo-gold/20"
+        >
+          <div className="w-12 h-12 rounded-xl bg-svo-gold/10 flex items-center justify-center mx-auto mb-4">
+            <ArrowRight className="w-6 h-6 text-svo-gold" />
+          </div>
+          <h3 className="text-xl md:text-2xl font-bold text-foreground">
+            Soteria is the centralized intelligence layer over your entire workforce.
+          </h3>
+          <p className="mt-3 text-muted-foreground">
+            One login. One system. One source of operational truth — with AI that watches, learns, and alerts.
+          </p>
+        </motion.div>
       </div>
     </section>
   );

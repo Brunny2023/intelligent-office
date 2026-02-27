@@ -1,12 +1,21 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play, Users, BarChart3, MessageSquare, Brain, Clock } from "lucide-react";
+import { ArrowRight, Play, Users, BarChart3, Clock, Brain, CheckCircle, MessageSquare } from "lucide-react";
 
 const floatingCards = [
-  { icon: Users, label: "12 Online", sub: "3 departments active", x: "5%", y: "20%", delay: 0.8 },
-  { icon: BarChart3, label: "94%", sub: "Team efficiency", x: "78%", y: "15%", delay: 1.0 },
-  { icon: Clock, label: "09:01 AM", sub: "Sarah checked in", x: "85%", y: "55%", delay: 1.2 },
-  { icon: Brain, label: "AI Insight", sub: "2 risks detected", x: "2%", y: "65%", delay: 1.4 },
+  { icon: Users, label: "47 Active", sub: "Workforce online now", x: "3%", y: "22%", delay: 0.8 },
+  { icon: BarChart3, label: "92/100", sub: "Company health score", x: "80%", y: "15%", delay: 1.0 },
+  { icon: Clock, label: "09:01 AM", sub: "Sarah reported for duty", x: "83%", y: "55%", delay: 1.2 },
+  { icon: Brain, label: "AI Brief", sub: "3 department risks flagged", x: "1%", y: "65%", delay: 1.4 },
+];
+
+const proofPoints = [
+  "Attendance & Presence",
+  "Task Execution",
+  "Team Communication",
+  "KPI Dashboards",
+  "Executive Intelligence",
+  "AI Decision Support",
 ];
 
 const HeroSection = () => {
@@ -47,7 +56,7 @@ const HeroSection = () => {
           >
             <div className="w-1.5 h-1.5 rounded-full bg-svo-gold animate-pulse" />
             <span className="text-xs font-medium text-svo-gold-light tracking-wide uppercase">
-              AI-Native Corporate OS
+              The AI-Native Corporate Operating System
             </span>
           </motion.div>
 
@@ -57,24 +66,39 @@ const HeroSection = () => {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight text-primary-foreground leading-[1.1] text-balance"
           >
-            Run Your Entire Company{" "}
-            <span className="gradient-text">From Anywhere</span>
+            Replace 8 Tools.{" "}
+            <br className="hidden sm:block" />
+            Run One <span className="gradient-text">Intelligent Company.</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.25 }}
-            className="mt-6 text-lg md:text-xl text-primary-foreground/60 max-w-2xl mx-auto text-balance leading-relaxed"
+            className="mt-6 text-lg md:text-xl text-primary-foreground/60 max-w-2xl mx-auto leading-relaxed"
           >
-            AI-powered Digital Headquarters for Modern Organizations.
-            Unify attendance, execution, communication, and executive intelligence in one platform.
+            Soteria centralizes attendance, task execution, communication, KPI tracking, executive dashboards, and AI intelligence into one system. No more app-switching. No more blind spots.
           </motion.p>
+
+          {/* Proof points */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.35 }}
+            className="mt-8 flex flex-wrap justify-center gap-x-4 gap-y-2"
+          >
+            {proofPoints.map((point) => (
+              <span key={point} className="inline-flex items-center gap-1.5 text-sm text-primary-foreground/50">
+                <CheckCircle className="w-3.5 h-3.5 text-svo-gold" />
+                {point}
+              </span>
+            ))}
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 0.6, delay: 0.45 }}
             className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Button
@@ -99,13 +123,13 @@ const HeroSection = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="mt-16 flex items-center justify-center gap-8 text-primary-foreground/40 text-xs"
+            className="mt-12 flex items-center justify-center gap-8 text-primary-foreground/40 text-xs"
           >
             <span>No credit card required</span>
             <span className="w-1 h-1 rounded-full bg-primary-foreground/20" />
             <span>14-day free trial</span>
             <span className="w-1 h-1 rounded-full bg-primary-foreground/20 hidden sm:block" />
-            <span className="hidden sm:block">Enterprise ready</span>
+            <span className="hidden sm:block">SOC 2 compliant</span>
           </motion.div>
         </div>
 
