@@ -1,6 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
-import { Clock, CheckSquare, MessageSquare, BarChart3, FileText } from "lucide-react";
+import { Clock, CheckSquare, MessageSquare, BarChart3, FileText, Shield } from "lucide-react";
 
 const modules = [
   {
@@ -8,13 +8,11 @@ const modules = [
     icon: Clock,
     label: "Attendance",
     title: "Digital Attendance & Workforce Presence",
-    description: "Daily report-for-duty check-ins, clock-in/out with timestamps, geo-validation, leave management, and real-time presence dashboards. Executives see who's working, from where, at all times.",
-    capabilities: [
-      "One-tap daily check-in with timestamp",
-      "Real-time presence dashboard per department",
-      "Late / absent / on-leave status tracking",
-      "PTO request and approval workflow",
-      "Manager daily attendance summary",
+    description: "Daily check-ins, clock-in/out with timestamps, geo-validation, leave management, and real-time presence dashboards. Know who's working, from where, at all times.",
+    stats: [
+      { label: "Check-in rate", value: "98.2%" },
+      { label: "On time", value: "94%" },
+      { label: "Active now", value: "127" },
     ],
   },
   {
@@ -22,13 +20,11 @@ const modules = [
     icon: CheckSquare,
     label: "Execution",
     title: "Unified Execution Engine",
-    description: "Projects, tasks, subtasks, dependencies, recurring workflows, and AI-powered priority scoring. Every piece of work tracked from assignment to completion with full accountability.",
-    capabilities: [
-      "Project → Task → Subtask hierarchy",
-      "Status lifecycle: To Do → Done",
-      "Recurring tasks and templates",
-      "AI workload balancing and priority scoring",
-      "Personal daily work dashboard",
+    description: "Projects, tasks, subtasks, dependencies, recurring workflows, and AI-powered priority scoring. Every piece of work tracked from assignment to completion.",
+    stats: [
+      { label: "Tasks completed", value: "1,247" },
+      { label: "On track", value: "89%" },
+      { label: "Sprint velocity", value: "↑12%" },
     ],
   },
   {
@@ -36,13 +32,11 @@ const modules = [
     icon: MessageSquare,
     label: "Communication",
     title: "Corporate Communication Hub",
-    description: "Direct messaging, department channels, threaded conversations, @mentions, file sharing, announcements with mandatory read tracking — all searchable, all in one place.",
-    capabilities: [
-      "Direct messages and group channels",
-      "Department-level and company-wide feeds",
-      "Threaded replies with @mentions",
-      "File sharing with version control",
-      "Announcement broadcast with read receipts",
+    description: "Direct messaging, department channels, threaded conversations, @mentions, file sharing, announcements, and read receipts — all searchable.",
+    stats: [
+      { label: "Channels", value: "24" },
+      { label: "Messages today", value: "1.2K" },
+      { label: "Response time", value: "4 min" },
     ],
   },
   {
@@ -50,27 +44,23 @@ const modules = [
     icon: BarChart3,
     label: "Intelligence",
     title: "Executive Intelligence Layer",
-    description: "AI-generated company briefs, KPI dashboards, anomaly detection, productivity trends, and department performance comparisons. Decisions in minutes, not days.",
-    capabilities: [
-      "Company health score and trend analysis",
-      "Department performance comparison",
-      "AI anomaly detection and risk alerts",
-      "Auto-generated executive briefs",
-      "Custom KPI tracking per role",
+    description: "AI-generated company briefs, KPI dashboards, anomaly detection, productivity trends, and department performance comparisons — at a glance.",
+    stats: [
+      { label: "Health score", value: "92/100" },
+      { label: "Risks flagged", value: "3" },
+      { label: "Efficiency", value: "↑8%" },
     ],
   },
   {
     id: "documents",
     icon: FileText,
-    label: "Knowledge",
+    label: "Documents",
     title: "Secure Knowledge Infrastructure",
     description: "Organization-wide file storage, version control, approval workflows, SOP library, and AI-powered document search across your entire knowledge base.",
-    capabilities: [
-      "Centralized document repository",
-      "Version history and approval workflows",
-      "Role-based access per folder",
-      "AI-powered search across all files",
-      "SOP and policy library",
+    stats: [
+      { label: "Documents", value: "3,891" },
+      { label: "SOPs", value: "156" },
+      { label: "Storage", value: "24 GB" },
     ],
   },
 ];
@@ -82,7 +72,7 @@ const FeaturesShowcase = () => {
   const current = modules[active];
 
   return (
-    <section ref={ref} className="py-24 md:py-32 bg-muted/30 relative overflow-hidden">
+    <section ref={ref} className="py-24 md:py-32 bg-background relative overflow-hidden">
       <div className="container mx-auto px-4 md:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -92,11 +82,8 @@ const FeaturesShowcase = () => {
         >
           <span className="text-xs font-semibold text-svo-gold uppercase tracking-widest">Core Modules</span>
           <h2 className="mt-4 text-3xl md:text-5xl font-bold tracking-tight text-foreground text-balance">
-            Everything your company needs to operate. Digitally.
+            Everything your office needs. Digitally.
           </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Each module is purpose-built for corporate operations — not repurposed from consumer tools.
-          </p>
         </motion.div>
 
         {/* Module tabs */}
@@ -133,13 +120,11 @@ const FeaturesShowcase = () => {
           </div>
           <p className="text-muted-foreground leading-relaxed max-w-2xl">{current.description}</p>
 
-          <div className="mt-8 space-y-3">
-            {current.capabilities.map((cap, i) => (
-              <div key={i} className="flex items-start gap-3 text-sm">
-                <div className="w-5 h-5 rounded-full bg-svo-gold/10 flex items-center justify-center shrink-0 mt-0.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-svo-gold" />
-                </div>
-                <span className="text-foreground/80">{cap}</span>
+          <div className="mt-8 grid grid-cols-3 gap-4">
+            {current.stats.map((stat) => (
+              <div key={stat.label} className="bg-muted/50 rounded-xl p-4 text-center">
+                <p className="text-2xl md:text-3xl font-bold text-foreground">{stat.value}</p>
+                <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
               </div>
             ))}
           </div>

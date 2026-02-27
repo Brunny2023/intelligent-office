@@ -9,6 +9,7 @@ const CTASection = () => {
 
   return (
     <section ref={ref} className="py-24 md:py-32 relative overflow-hidden gradient-hero-bg">
+      {/* Background glow */}
       <div className="absolute inset-0">
         <div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full opacity-20"
@@ -24,12 +25,11 @@ const CTASection = () => {
           className="max-w-3xl mx-auto"
         >
           <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight text-primary-foreground text-balance leading-[1.1]">
-            Stop Managing Apps.{" "}
-            <br className="hidden sm:block" />
-            <span className="gradient-text">Start Running a Company.</span>
+            Run Your Company on{" "}
+            <span className="gradient-text">Intelligence</span>
           </h2>
           <p className="mt-6 text-lg text-primary-foreground/60 max-w-xl mx-auto">
-            Soteria is the operating system your company has been assembling from 8 different tools — except it actually works as one.
+            Join forward-thinking organizations already operating their entire company through Soteria.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
