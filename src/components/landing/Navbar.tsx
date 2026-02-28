@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Shield } from "lucide-react";
@@ -42,10 +43,12 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          <Button variant="ghost" size="sm">Sign In</Button>
-          <Button size="sm" className="bg-svo-gold text-svo-navy hover:bg-svo-gold/90 font-semibold">
-            Start Free Trial
-          </Button>
+          <Link to="/signin"><Button variant="ghost" size="sm">Sign In</Button></Link>
+          <Link to="/signup">
+            <Button size="sm" className="bg-svo-gold text-svo-navy hover:bg-svo-gold/90 font-semibold">
+              Start Free Trial
+            </Button>
+          </Link>
         </div>
 
         <button className="md:hidden p-2" onClick={() => setOpen(!open)}>
@@ -73,10 +76,12 @@ const Navbar = () => {
                 </a>
               ))}
               <div className="flex flex-col gap-2 pt-2 border-t border-border/30">
-                <Button variant="ghost" size="sm">Sign In</Button>
-                <Button size="sm" className="bg-svo-gold text-svo-navy hover:bg-svo-gold/90 font-semibold">
-                  Start Free Trial
-                </Button>
+                <Link to="/signin"><Button variant="ghost" size="sm" className="w-full">Sign In</Button></Link>
+                <Link to="/signup">
+                  <Button size="sm" className="w-full bg-svo-gold text-svo-navy hover:bg-svo-gold/90 font-semibold">
+                    Start Free Trial
+                  </Button>
+                </Link>
               </div>
             </div>
           </motion.div>
