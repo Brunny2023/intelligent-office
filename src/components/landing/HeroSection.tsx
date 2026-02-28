@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Users, BarChart3, MessageSquare, Brain, Clock } from "lucide-react";
 
@@ -77,14 +78,16 @@ const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Button
-              size="lg"
-              className="bg-svo-gold text-svo-navy hover:bg-svo-gold/90 font-semibold text-base px-8 h-12 rounded-xl shadow-lg"
-              style={{ boxShadow: "0 8px 32px -8px hsl(38 80% 55% / 0.4)" }}
-            >
-              Start Free Trial
-              <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
+            <Link to="/signup">
+              <Button
+                size="lg"
+                className="bg-svo-gold text-svo-navy hover:bg-svo-gold/90 font-semibold text-base px-8 h-12 rounded-xl shadow-lg"
+                style={{ boxShadow: "0 8px 32px -8px hsl(38 80% 55% / 0.4)" }}
+              >
+                Start Free Trial
+                <ArrowRight className="w-4 h-4 ml-1" />
+              </Button>
+            </Link>
             <Button
               variant="ghost"
               size="lg"
