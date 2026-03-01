@@ -1,59 +1,35 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
+import { useOrganization } from "@/hooks/useOrganization";
+import ClockInWidget from "@/components/attendance/ClockInWidget";
+import ActivityFeed from "@/components/activity/ActivityFeed";
 import { Button } from "@/components/ui/button";
 import {
   Shield, Clock, CheckSquare, MessageSquare, BarChart3,
-  FileText, Bell, LogOut, Building2, Users
+  FileText, Bell, LogOut, Building2, Users, Activity
 } from "lucide-react";
 
 const modules = [
-  { icon: Clock, label: "Attendance", description: "Check in & workforce presence", color: "bg-svo-blue/10 text-svo-blue" },
-  { icon: CheckSquare, label: "Execution", description: "Projects, tasks & workflows", color: "bg-svo-gold/10 text-svo-gold" },
-  { icon: MessageSquare, label: "Communication", description: "Messages & channels", color: "bg-emerald-500/10 text-emerald-500" },
-  { icon: BarChart3, label: "Intelligence", description: "KPIs & performance", color: "bg-purple-500/10 text-purple-500" },
-  { icon: FileText, label: "Documents", description: "Files & knowledge base", color: "bg-orange-500/10 text-orange-500" },
-  { icon: Bell, label: "Announcements", description: "Broadcasts & updates", color: "bg-rose-500/10 text-rose-500" },
+  { icon: Clock, label: "Attendance", description: "Check in & workforce presence", color: "bg-svo-blue/10 text-svo-blue", path: "/attendance" },
+  { icon: Activity, label: "Activity Log", description: "Track all operations", color: "bg-accent/10 text-accent", path: "/activity" },
+  { icon: CheckSquare, label: "Execution", description: "Projects, tasks & workflows", color: "bg-svo-gold/10 text-svo-gold", path: null },
+  { icon: MessageSquare, label: "Communication", description: "Messages & channels", color: "bg-svo-blue-light/10 text-svo-blue-light", path: null },
+  { icon: BarChart3, label: "Intelligence", description: "KPIs & performance", color: "bg-accent/10 text-accent", path: null },
+  { icon: FileText, label: "Documents", description: "Files & knowledge base", color: "bg-svo-gold-light/10 text-svo-gold-light", path: null },
+  { icon: Bell, label: "Announcements", description: "Broadcasts & updates", color: "bg-destructive/10 text-destructive", path: null },
 ];
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<any>(null);
-  const [org, setOrg] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { profile, org, loading } = useOrganization();
 
   useEffect(() => {
-    const loadData = async () => {
-      if (!user) return;
-
-      const { data: profileData } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-
-      if (profileData) {
-        setProfile(profileData);
-        if (!profileData.organization_id) {
-          navigate("/onboarding");
-          return;
-        }
-
-        const { data: orgData } = await supabase
-          .from("organizations")
-          .select("*")
-          .eq("id", profileData.organization_id)
-          .single();
-
-        setOrg(orgData);
-      }
-      setLoading(false);
-    };
-
-    loadData();
-  }, [user, navigate]);
+    if (!loading && profile && !profile.organization_id) {
+      navigate("/onboarding");
+    }
+  }, [loading, profile, navigate]);
 
   if (loading) {
     return (
@@ -96,49 +72,68 @@ const Dashboard = () => {
       </header>
 
       {/* Main */}
-      <main className="container mx-auto px-4 md:px-8 py-8">
-        <div className="mb-8">
+      <main className="container mx-auto px-4 md:px-8 py-8 space-y-8">
+        <div>
           <h1 className="text-2xl md:text-3xl font-bold text-foreground">
             Welcome back, {profile?.full_name?.split(" ")[0] || "there"} 👋
           </h1>
           <p className="text-muted-foreground mt-1">Here's your digital headquarters overview</p>
         </div>
 
-        {/* Quick stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {[
-            { label: "Team Members", value: "—", icon: Users },
-            { label: "Active Tasks", value: "—", icon: CheckSquare },
-            { label: "Messages", value: "—", icon: MessageSquare },
-            { label: "Health Score", value: "—", icon: BarChart3 },
-          ].map((stat) => (
-            <div key={stat.label} className="glass-card rounded-xl p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <stat.icon className="w-4 h-4 text-muted-foreground" />
-                <span className="text-xs text-muted-foreground">{stat.label}</span>
+        {/* Top section: Clock-in + Quick stats */}
+        <div className="grid lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-1">
+            <ClockInWidget />
+          </div>
+          <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { label: "Team Members", value: "—", icon: Users },
+              { label: "Active Tasks", value: "—", icon: CheckSquare },
+              { label: "Messages", value: "—", icon: MessageSquare },
+              { label: "Health Score", value: "—", icon: BarChart3 },
+            ].map((stat) => (
+              <div key={stat.label} className="glass-card rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <stat.icon className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-xs text-muted-foreground">{stat.label}</span>
+                </div>
+                <p className="text-2xl font-bold text-foreground">{stat.value}</p>
               </div>
-              <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        {/* Module grid */}
-        <h2 className="text-lg font-semibold text-foreground mb-4">Modules</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {modules.map((mod) => (
-            <button
-              key={mod.label}
-              className="glass-card-strong rounded-xl p-6 text-left hover:border-svo-gold/20 transition-all group"
-            >
-              <div className={`w-10 h-10 rounded-xl ${mod.color} flex items-center justify-center mb-3`}>
-                <mod.icon className="w-5 h-5" />
-              </div>
-              <h3 className="font-semibold text-foreground group-hover:text-svo-gold transition-colors">
-                {mod.label}
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1">{mod.description}</p>
-            </button>
-          ))}
+        {/* Module grid + Activity feed */}
+        <div className="grid lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <h2 className="text-lg font-semibold text-foreground mb-4">Modules</h2>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {modules.map((mod) => (
+                <button
+                  key={mod.label}
+                  onClick={() => mod.path && navigate(mod.path)}
+                  disabled={!mod.path}
+                  className="glass-card-strong rounded-xl p-6 text-left hover:border-svo-gold/20 transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <div className={`w-10 h-10 rounded-xl ${mod.color} flex items-center justify-center mb-3`}>
+                    <mod.icon className="w-5 h-5" />
+                  </div>
+                  <h3 className="font-semibold text-foreground group-hover:text-svo-gold transition-colors">
+                    {mod.label}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {mod.description}
+                    {!mod.path && " (Coming soon)"}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h2 className="text-lg font-semibold text-foreground mb-4">Recent Activity</h2>
+            <ActivityFeed scope="organization" limit={10} />
+          </div>
         </div>
       </main>
     </div>
