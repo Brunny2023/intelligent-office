@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_logs: {
+        Row: {
+          action: string
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          metadata: Json | null
+          organization_id: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          metadata?: Json | null
+          organization_id: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          metadata?: Json | null
+          organization_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      attendance_records: {
+        Row: {
+          clock_in: string
+          clock_out: string | null
+          created_at: string
+          id: string
+          ip_address: string | null
+          notes: string | null
+          organization_id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          clock_in?: string
+          clock_out?: string | null
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          notes?: string | null
+          organization_id: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          clock_in?: string
+          clock_out?: string | null
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          notes?: string | null
+          organization_id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       departments: {
         Row: {
           created_at: string
@@ -45,6 +114,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      leave_requests: {
+        Row: {
+          created_at: string
+          end_date: string
+          id: string
+          leave_type: Database["public"]["Enums"]["leave_type"]
+          organization_id: string
+          reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          start_date: string
+          status: Database["public"]["Enums"]["leave_status"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          end_date: string
+          id?: string
+          leave_type?: Database["public"]["Enums"]["leave_type"]
+          organization_id: string
+          reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          start_date: string
+          status?: Database["public"]["Enums"]["leave_status"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string
+          id?: string
+          leave_type?: Database["public"]["Enums"]["leave_type"]
+          organization_id?: string
+          reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          start_date?: string
+          status?: Database["public"]["Enums"]["leave_status"]
+          user_id?: string
+        }
+        Relationships: []
       }
       organizations: {
         Row: {
@@ -181,6 +292,15 @@ export type Database = {
         | "staff"
         | "contractor"
         | "auditor"
+      leave_status: "pending" | "approved" | "rejected" | "cancelled"
+      leave_type:
+        | "annual"
+        | "sick"
+        | "personal"
+        | "maternity"
+        | "paternity"
+        | "unpaid"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -315,6 +435,16 @@ export const Constants = {
         "staff",
         "contractor",
         "auditor",
+      ],
+      leave_status: ["pending", "approved", "rejected", "cancelled"],
+      leave_type: [
+        "annual",
+        "sick",
+        "personal",
+        "maternity",
+        "paternity",
+        "unpaid",
+        "other",
       ],
     },
   },
