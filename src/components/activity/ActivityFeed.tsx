@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useOrganization } from "@/hooks/useOrganization";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProfileNames } from "@/hooks/useProfileNames";
 import { supabase } from "@/integrations/supabase/client";
-import { Activity, LogIn, LogOut, CalendarDays, UserPlus, Building2 } from "lucide-react";
-import { format, formatDistanceToNow } from "date-fns";
+import { Activity, LogIn, LogOut, CalendarDays, UserPlus, Building2, CheckSquare, MessageSquare, FileText } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import { motion, AnimatePresence } from "framer-motion";
 
 const actionIcons: Record<string, React.ElementType> = {
   clock_in: LogIn,
@@ -11,6 +13,10 @@ const actionIcons: Record<string, React.ElementType> = {
   leave_requested: CalendarDays,
   user_joined: UserPlus,
   org_created: Building2,
+  task_created: CheckSquare,
+  task_status_changed: CheckSquare,
+  project_created: FileText,
+  message_sent: MessageSquare,
 };
 
 const actionLabels: Record<string, string> = {
@@ -19,6 +25,10 @@ const actionLabels: Record<string, string> = {
   leave_requested: "requested leave",
   user_joined: "joined the organization",
   org_created: "created the organization",
+  task_created: "created a task",
+  task_status_changed: "updated task status",
+  project_created: "created a project",
+  message_sent: "sent a message",
 };
 
 interface ActivityFeedProps {
@@ -29,6 +39,7 @@ interface ActivityFeedProps {
 const ActivityFeed = ({ scope = "organization", limit = 25 }: ActivityFeedProps) => {
   const { user } = useAuth();
   const { org } = useOrganization();
+  const { resolve, getName } = useProfileNames();
   const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -49,6 +60,12 @@ const ActivityFeed = ({ scope = "organization", limit = 25 }: ActivityFeedProps)
 
       const { data } = await query;
       setLogs(data || []);
+
+      // Resolve user names
+      if (data && data.length > 0) {
+        const userIds = [...new Set(data.map(l => l.user_id))];
+        await resolve(userIds);
+      }
       setLoading(false);
     };
     fetchLogs();
@@ -78,27 +95,34 @@ const ActivityFeed = ({ scope = "organization", limit = 25 }: ActivityFeedProps)
         {logs.length === 0 ? (
           <p className="p-4 text-sm text-muted-foreground text-center">No activity recorded yet</p>
         ) : (
-          logs.map((log) => {
-            const Icon = actionIcons[log.action] || Activity;
-            const label = actionLabels[log.action] || log.action;
+          <AnimatePresence initial={false}>
+            {logs.map((log, i) => {
+              const Icon = actionIcons[log.action] || Activity;
+              const label = actionLabels[log.action] || log.action;
 
-            return (
-              <div key={log.id} className="flex items-start gap-3 p-3 px-4">
-                <div className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center mt-0.5 shrink-0">
-                  <Icon className="w-3.5 h-3.5 text-muted-foreground" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-foreground">
-                    <span className="font-medium">{log.user_id.slice(0, 8)}…</span>{" "}
-                    <span className="text-muted-foreground">{label}</span>
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {formatDistanceToNow(new Date(log.created_at), { addSuffix: true })}
-                  </p>
-                </div>
-              </div>
-            );
-          })
+              return (
+                <motion.div
+                  key={log.id}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0, transition: { delay: i * 0.02 } }}
+                  className="flex items-start gap-3 p-3 px-4 hover:bg-muted/30 transition-colors"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center mt-0.5 shrink-0">
+                    <Icon className="w-3.5 h-3.5 text-muted-foreground" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-foreground">
+                      <span className="font-medium">{getName(log.user_id)}</span>{" "}
+                      <span className="text-muted-foreground">{label}</span>
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatDistanceToNow(new Date(log.created_at), { addSuffix: true })}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
         )}
       </div>
     </div>
