@@ -4,11 +4,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useOrganization } from "@/hooks/useOrganization";
 import ClockInWidget from "@/components/attendance/ClockInWidget";
 import ActivityFeed from "@/components/activity/ActivityFeed";
+import PerformanceWidget from "@/components/dashboard/PerformanceWidget";
 import AppLayout from "@/components/layout/AppLayout";
 import { motion } from "framer-motion";
 import {
   Users, CheckSquare, MessageSquare, BarChart3,
-  Clock, Activity, Video
+  Clock, Activity, Video, FileText, DollarSign, Briefcase
 } from "lucide-react";
 
 const quickStats = [
@@ -20,11 +21,13 @@ const quickStats = [
 
 const modules = [
   { icon: Clock, label: "Attendance", description: "Check in & workforce presence", color: "bg-svo-blue/10 text-svo-blue", path: "/attendance" },
-  { icon: Activity, label: "Activity Log", description: "Track all operations", color: "bg-accent/10 text-accent", path: "/activity" },
   { icon: CheckSquare, label: "Execution", description: "Projects, tasks & workflows", color: "bg-svo-gold/10 text-svo-gold", path: "/execution" },
   { icon: MessageSquare, label: "Communication", description: "Messages & channels", color: "bg-svo-blue-light/10 text-svo-blue-light", path: "/messages" },
   { icon: Video, label: "Meetings", description: "Video conferencing & AI", color: "bg-svo-blue/10 text-svo-blue", path: "/meetings" },
-  { icon: BarChart3, label: "Intelligence", description: "KPIs & performance", color: "bg-accent/10 text-accent", path: null },
+  { icon: FileText, label: "Documents", description: "Files & knowledge base", color: "bg-accent/10 text-accent", path: "/documents" },
+  { icon: BarChart3, label: "Intelligence", description: "KPIs & performance", color: "bg-accent/10 text-accent", path: "/intelligence" },
+  { icon: Briefcase, label: "HR", description: "Recruitment & onboarding", color: "bg-svo-gold/10 text-svo-gold", path: "/hr" },
+  { icon: DollarSign, label: "Finance", description: "Payroll & expenses", color: "bg-green-500/10 text-green-600", path: "/finance" },
 ];
 
 const Dashboard = () => {
@@ -86,6 +89,14 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {/* Performance Widget */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0, transition: { delay: 0.25 } }}
+        >
+          <PerformanceWidget />
+        </motion.div>
+
         {/* Module grid + Activity feed */}
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
@@ -95,12 +106,11 @@ const Dashboard = () => {
                 <motion.button
                   key={mod.label}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0, transition: { delay: 0.2 + i * 0.05 } }}
+                  animate={{ opacity: 1, y: 0, transition: { delay: 0.2 + i * 0.04 } }}
                   whileHover={{ y: -4, boxShadow: "0 8px 24px hsl(var(--svo-navy) / 0.1)" }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => mod.path && navigate(mod.path)}
-                  disabled={!mod.path}
-                  className="glass-card-strong rounded-xl p-6 text-left transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="glass-card-strong rounded-xl p-6 text-left transition-all group"
                 >
                   <div className={`w-10 h-10 rounded-xl ${mod.color} flex items-center justify-center mb-3`}>
                     <mod.icon className="w-5 h-5" />
@@ -108,10 +118,7 @@ const Dashboard = () => {
                   <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors">
                     {mod.label}
                   </h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {mod.description}
-                    {!mod.path && " (Coming soon)"}
-                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">{mod.description}</p>
                 </motion.button>
               ))}
             </div>

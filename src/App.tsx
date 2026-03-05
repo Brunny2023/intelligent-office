@@ -17,6 +17,10 @@ import ActivityModule from "./pages/ActivityModule";
 import ExecutionModule from "./pages/ExecutionModule";
 import MessagesModule from "./pages/MessagesModule";
 import MeetingsModule from "./pages/MeetingsModule";
+import DocumentsModule from "./pages/DocumentsModule";
+import KPIModule from "./pages/KPIModule";
+import HRModule from "./pages/HRModule";
+import FinanceModule from "./pages/FinanceModule";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +45,10 @@ const App = () => (
             <Route path="/execution" element={<ProtectedRoute><ExecutionModule /></ProtectedRoute>} />
             <Route path="/messages" element={<ProtectedRoute><MessagesModule /></ProtectedRoute>} />
             <Route path="/meetings" element={<ProtectedRoute><MeetingsModule /></ProtectedRoute>} />
+            <Route path="/documents" element={<ProtectedRoute><DocumentsModule /></ProtectedRoute>} />
+            <Route path="/intelligence" element={<ProtectedRoute><KPIModule /></ProtectedRoute>} />
+            <Route path="/hr" element={<ProtectedRoute><HRModule /></ProtectedRoute>} />
+            <Route path="/finance" element={<ProtectedRoute><FinanceModule /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
