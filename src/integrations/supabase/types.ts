@@ -83,6 +83,72 @@ export type Database = {
         }
         Relationships: []
       }
+      candidates: {
+        Row: {
+          cover_letter: string | null
+          created_at: string
+          created_by: string
+          email: string
+          full_name: string
+          id: string
+          job_posting_id: string | null
+          notes: string | null
+          organization_id: string
+          phone: string | null
+          rating: number | null
+          resume_url: string | null
+          stage: string | null
+          updated_at: string
+        }
+        Insert: {
+          cover_letter?: string | null
+          created_at?: string
+          created_by: string
+          email: string
+          full_name: string
+          id?: string
+          job_posting_id?: string | null
+          notes?: string | null
+          organization_id: string
+          phone?: string | null
+          rating?: number | null
+          resume_url?: string | null
+          stage?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cover_letter?: string | null
+          created_at?: string
+          created_by?: string
+          email?: string
+          full_name?: string
+          id?: string
+          job_posting_id?: string | null
+          notes?: string | null
+          organization_id?: string
+          phone?: string | null
+          rating?: number | null
+          resume_url?: string | null
+          stage?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidates_job_posting_id_fkey"
+            columns: ["job_posting_id"]
+            isOneToOne: false
+            referencedRelation: "job_postings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "candidates_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       channel_members: {
         Row: {
           channel_id: string
@@ -175,6 +241,286 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "departments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documents: {
+        Row: {
+          category: string | null
+          created_at: string
+          department_id: string | null
+          description: string | null
+          file_name: string
+          file_size: number | null
+          file_type: string | null
+          file_url: string
+          id: string
+          organization_id: string
+          project_id: string | null
+          status: string | null
+          tags: string[] | null
+          task_id: string | null
+          title: string
+          updated_at: string
+          uploaded_by: string
+          version: number | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          department_id?: string | null
+          description?: string | null
+          file_name: string
+          file_size?: number | null
+          file_type?: string | null
+          file_url: string
+          id?: string
+          organization_id: string
+          project_id?: string | null
+          status?: string | null
+          tags?: string[] | null
+          task_id?: string | null
+          title: string
+          updated_at?: string
+          uploaded_by: string
+          version?: number | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          department_id?: string | null
+          description?: string | null
+          file_name?: string
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string
+          id?: string
+          organization_id?: string
+          project_id?: string | null
+          status?: string | null
+          tags?: string[] | null
+          task_id?: string | null
+          title?: string
+          updated_at?: string
+          uploaded_by?: string
+          version?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expense_reports: {
+        Row: {
+          amount: number
+          approved_at: string | null
+          approved_by: string | null
+          category: string | null
+          created_at: string
+          currency: string | null
+          description: string | null
+          id: string
+          organization_id: string
+          receipt_url: string | null
+          status: string | null
+          submitted_by: string
+          title: string
+        }
+        Insert: {
+          amount?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          category?: string | null
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          id?: string
+          organization_id: string
+          receipt_url?: string | null
+          status?: string | null
+          submitted_by: string
+          title: string
+        }
+        Update: {
+          amount?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          category?: string | null
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          id?: string
+          organization_id?: string
+          receipt_url?: string | null
+          status?: string | null
+          submitted_by?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expense_reports_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_postings: {
+        Row: {
+          created_at: string
+          created_by: string
+          department_id: string | null
+          description: string | null
+          employment_type: string | null
+          id: string
+          location: string | null
+          organization_id: string
+          requirements: string | null
+          salary_range: string | null
+          status: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          department_id?: string | null
+          description?: string | null
+          employment_type?: string | null
+          id?: string
+          location?: string | null
+          organization_id: string
+          requirements?: string | null
+          salary_range?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          department_id?: string | null
+          description?: string | null
+          employment_type?: string | null
+          id?: string
+          location?: string | null
+          organization_id?: string
+          requirements?: string | null
+          salary_range?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_postings_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_postings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kpis: {
+        Row: {
+          category: string | null
+          created_at: string
+          current_value: number | null
+          department_id: string | null
+          description: string | null
+          id: string
+          organization_id: string
+          owner_id: string | null
+          period_end: string | null
+          period_start: string | null
+          status: string | null
+          target_value: number | null
+          title: string
+          unit: string | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          current_value?: number | null
+          department_id?: string | null
+          description?: string | null
+          id?: string
+          organization_id: string
+          owner_id?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: string | null
+          target_value?: number | null
+          title: string
+          unit?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          current_value?: number | null
+          department_id?: string | null
+          description?: string | null
+          id?: string
+          organization_id?: string
+          owner_id?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: string | null
+          target_value?: number | null
+          title?: string
+          unit?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kpis_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "kpis_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -298,6 +644,133 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      payroll_records: {
+        Row: {
+          approved_by: string | null
+          base_salary: number | null
+          bonuses: number | null
+          created_at: string
+          currency: string | null
+          deductions: number | null
+          id: string
+          net_pay: number | null
+          notes: string | null
+          organization_id: string
+          period_end: string
+          period_start: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          approved_by?: string | null
+          base_salary?: number | null
+          bonuses?: number | null
+          created_at?: string
+          currency?: string | null
+          deductions?: number | null
+          id?: string
+          net_pay?: number | null
+          notes?: string | null
+          organization_id: string
+          period_end: string
+          period_start: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          approved_by?: string | null
+          base_salary?: number | null
+          bonuses?: number | null
+          created_at?: string
+          currency?: string | null
+          deductions?: number | null
+          id?: string
+          net_pay?: number | null
+          notes?: string | null
+          organization_id?: string
+          period_end?: string
+          period_start?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payroll_records_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      performance_reviews: {
+        Row: {
+          attendance_rate: number | null
+          comments: string | null
+          communication_score: number | null
+          created_at: string
+          id: string
+          improvements: string | null
+          organization_id: string
+          overall_rating: number | null
+          quality_score: number | null
+          review_period_end: string
+          review_period_start: string
+          reviewer_id: string
+          status: string | null
+          strengths: string | null
+          task_completion_rate: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attendance_rate?: number | null
+          comments?: string | null
+          communication_score?: number | null
+          created_at?: string
+          id?: string
+          improvements?: string | null
+          organization_id: string
+          overall_rating?: number | null
+          quality_score?: number | null
+          review_period_end: string
+          review_period_start: string
+          reviewer_id: string
+          status?: string | null
+          strengths?: string | null
+          task_completion_rate?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attendance_rate?: number | null
+          comments?: string | null
+          communication_score?: number | null
+          created_at?: string
+          id?: string
+          improvements?: string | null
+          organization_id?: string
+          overall_rating?: number | null
+          quality_score?: number | null
+          review_period_end?: string
+          review_period_start?: string
+          reviewer_id?: string
+          status?: string | null
+          strengths?: string | null
+          task_completion_rate?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "performance_reviews_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -508,6 +981,53 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      terminations: {
+        Row: {
+          created_at: string
+          exit_interview_notes: string | null
+          id: string
+          last_working_day: string | null
+          organization_id: string
+          reason: string | null
+          status: string | null
+          terminated_by: string
+          termination_type: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          exit_interview_notes?: string | null
+          id?: string
+          last_working_day?: string | null
+          organization_id: string
+          reason?: string | null
+          status?: string | null
+          terminated_by: string
+          termination_type?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          exit_interview_notes?: string | null
+          id?: string
+          last_working_day?: string | null
+          organization_id?: string
+          reason?: string | null
+          status?: string | null
+          terminated_by?: string
+          termination_type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "terminations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]

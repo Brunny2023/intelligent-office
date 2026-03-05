@@ -4,8 +4,8 @@ import { useOrganization } from "@/hooks/useOrganization";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Shield, Clock, CheckSquare, MessageSquare, BarChart3,
-  FileText, Bell, LogOut, Building2, Activity, Video,
-  ChevronLeft, ChevronRight, Home
+  FileText, LogOut, Building2, Activity, Video,
+  ChevronLeft, ChevronRight, Home, Briefcase, DollarSign
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -17,9 +17,10 @@ const navItems = [
   { icon: MessageSquare, label: "Messages", path: "/messages" },
   { icon: Video, label: "Meetings", path: "/meetings" },
   { icon: Activity, label: "Activity", path: "/activity" },
-  { icon: BarChart3, label: "Intelligence", path: "/intelligence", disabled: true },
-  { icon: FileText, label: "Documents", path: "/documents", disabled: true },
-  { icon: Bell, label: "Announcements", path: "/announcements", disabled: true },
+  { icon: FileText, label: "Documents", path: "/documents" },
+  { icon: BarChart3, label: "Intelligence", path: "/intelligence" },
+  { icon: Briefcase, label: "HR", path: "/hr" },
+  { icon: DollarSign, label: "Finance", path: "/finance" },
 ];
 
 const AppSidebar = () => {
@@ -71,14 +72,12 @@ const AppSidebar = () => {
               key={item.path}
               whileHover={{ x: 2 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => !item.disabled && navigate(item.path)}
-              disabled={item.disabled}
+              onClick={() => navigate(item.path)}
               className={cn(
                 "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors relative",
                 isActive
                   ? "bg-sidebar-accent text-sidebar-primary"
-                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
-                item.disabled && "opacity-30 cursor-not-allowed"
+                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
               )}
             >
               {isActive && (
