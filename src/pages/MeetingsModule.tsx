@@ -16,8 +16,6 @@ import {
   RoomAudioRenderer,
   ControlBar,
 } from "@livekit/components-react";
-// @ts-ignore
-import "@livekit/components-styles";
 
 const MeetingsModule = () => {
   const { user } = useAuth();
