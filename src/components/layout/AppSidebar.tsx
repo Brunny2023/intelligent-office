@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Shield, Clock, CheckSquare, MessageSquare, BarChart3,
   FileText, LogOut, Building2, Activity, Video,
-  ChevronLeft, ChevronRight, Home, Briefcase, DollarSign
+  ChevronLeft, ChevronRight, Home, Briefcase, DollarSign,
+  Megaphone, Brain
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -16,9 +17,11 @@ const navItems = [
   { icon: CheckSquare, label: "Execution", path: "/execution" },
   { icon: MessageSquare, label: "Messages", path: "/messages" },
   { icon: Video, label: "Meetings", path: "/meetings" },
+  { icon: Megaphone, label: "Announcements", path: "/announcements" },
   { icon: Activity, label: "Activity", path: "/activity" },
   { icon: FileText, label: "Documents", path: "/documents" },
   { icon: BarChart3, label: "Intelligence", path: "/intelligence" },
+  { icon: Brain, label: "AI Insights", path: "/ai-insights" },
   { icon: Briefcase, label: "HR", path: "/hr" },
   { icon: DollarSign, label: "Finance", path: "/finance" },
 ];
