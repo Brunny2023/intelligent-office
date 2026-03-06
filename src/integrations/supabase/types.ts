@@ -47,6 +47,151 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_insights: {
+        Row: {
+          content: string
+          created_by: string | null
+          expires_at: string | null
+          generated_at: string
+          id: string
+          insight_type: string
+          is_read: boolean
+          metadata: Json | null
+          organization_id: string
+          severity: string
+          title: string
+        }
+        Insert: {
+          content: string
+          created_by?: string | null
+          expires_at?: string | null
+          generated_at?: string
+          id?: string
+          insight_type?: string
+          is_read?: boolean
+          metadata?: Json | null
+          organization_id: string
+          severity?: string
+          title: string
+        }
+        Update: {
+          content?: string
+          created_by?: string | null
+          expires_at?: string | null
+          generated_at?: string
+          id?: string
+          insight_type?: string
+          is_read?: boolean
+          metadata?: Json | null
+          organization_id?: string
+          severity?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_insights_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      announcement_reads: {
+        Row: {
+          acknowledged: boolean
+          acknowledged_at: string | null
+          announcement_id: string
+          id: string
+          read_at: string
+          user_id: string
+        }
+        Insert: {
+          acknowledged?: boolean
+          acknowledged_at?: string | null
+          announcement_id: string
+          id?: string
+          read_at?: string
+          user_id: string
+        }
+        Update: {
+          acknowledged?: boolean
+          acknowledged_at?: string | null
+          announcement_id?: string
+          id?: string
+          read_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "announcement_reads_announcement_id_fkey"
+            columns: ["announcement_id"]
+            isOneToOne: false
+            referencedRelation: "announcements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      announcements: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string
+          department_id: string | null
+          id: string
+          is_mandatory: boolean
+          organization_id: string
+          priority: string
+          published_at: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by: string
+          department_id?: string | null
+          id?: string
+          is_mandatory?: boolean
+          organization_id: string
+          priority?: string
+          published_at?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string
+          department_id?: string | null
+          id?: string
+          is_mandatory?: boolean
+          organization_id?: string
+          priority?: string
+          published_at?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "announcements_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "announcements_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       attendance_records: {
         Row: {
           clock_in: string

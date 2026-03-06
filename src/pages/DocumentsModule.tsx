@@ -7,11 +7,12 @@ import AppLayout from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Plus, Download, Search, FolderOpen, File, FileImage, FileSpreadsheet } from "lucide-react";
+import { FileText, Plus, Download, Search, FolderOpen, File, FileImage, FileSpreadsheet, Upload, Eye, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
@@ -43,45 +44,65 @@ const DocumentsModule = () => {
   const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState({ title: "", category: "general", description: "" });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchDocuments = async () => {
     if (!org) return;
-    supabase.from("documents").select("*").eq("organization_id", org.id).order("created_at", { ascending: false })
-      .then(({ data }) => {
-        setDocuments(data || []);
-        if (data) resolve(data.map(d => d.uploaded_by));
-        setLoading(false);
-      });
-  }, [org]);
+    const { data } = await supabase.from("documents").select("*").eq("organization_id", org.id).order("created_at", { ascending: false });
+    setDocuments(data || []);
+    if (data) resolve(data.map(d => d.uploaded_by));
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchDocuments(); }, [org]);
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !org || !selectedFile) { toast.error("Please select a file"); return; }
     setUploading(true);
 
-    // For now, store as a placeholder URL since storage bucket setup may be needed
-    const fileUrl = `documents/${org.id}/${Date.now()}-${selectedFile.name}`;
+    const filePath = `${org.id}/${Date.now()}-${selectedFile.name}`;
+
+    // Upload to storage bucket
+    const { error: uploadError } = await supabase.storage.from("documents").upload(filePath, selectedFile);
+    if (uploadError) { toast.error("Upload failed: " + uploadError.message); setUploading(false); return; }
+
+    const { data: urlData } = supabase.storage.from("documents").getPublicUrl(filePath);
 
     const { error } = await supabase.from("documents").insert({
       organization_id: org.id,
       uploaded_by: user.id,
       title: form.title || selectedFile.name,
       description: form.description || null,
-      file_url: fileUrl,
+      file_url: filePath,
       file_name: selectedFile.name,
       file_size: selectedFile.size,
       file_type: selectedFile.type,
       category: form.category,
     });
 
-    if (error) { toast.error("Failed to upload document"); setUploading(false); return; }
-    toast.success("Document recorded!");
+    if (error) { toast.error("Failed to save document record"); setUploading(false); return; }
+    toast.success("Document uploaded!");
     setDialogOpen(false);
     setSelectedFile(null);
     setForm({ title: "", category: "general", description: "" });
-    const { data } = await supabase.from("documents").select("*").eq("organization_id", org.id).order("created_at", { ascending: false });
-    setDocuments(data || []);
+    fetchDocuments();
     setUploading(false);
+  };
+
+  const downloadFile = async (doc: any) => {
+    const { data, error } = await supabase.storage.from("documents").download(doc.file_url);
+    if (error || !data) { toast.error("Download failed"); return; }
+    const url = URL.createObjectURL(data);
+    const a = document.createElement("a");
+    a.href = url; a.download = doc.file_name; a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const previewFile = async (doc: any) => {
+    const { data, error } = await supabase.storage.from("documents").createSignedUrl(doc.file_url, 3600);
+    if (error || !data?.signedUrl) { toast.error("Preview unavailable"); return; }
+    setPreviewUrl(data.signedUrl);
   };
 
   const filtered = documents.filter(d => {
@@ -101,6 +122,25 @@ const DocumentsModule = () => {
           <h1 className="text-2xl font-bold text-foreground">Documents & Knowledge Base</h1>
           <p className="text-muted-foreground mt-1">Organization files, SOPs, policies & templates</p>
         </motion.div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-4">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card rounded-xl p-4">
+            <FileText className="w-5 h-5 text-accent mb-2" />
+            <p className="text-2xl font-bold text-foreground">{documents.length}</p>
+            <p className="text-xs text-muted-foreground">Total Documents</p>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.05 } }} className="glass-card rounded-xl p-4">
+            <FolderOpen className="w-5 h-5 text-svo-blue mb-2" />
+            <p className="text-2xl font-bold text-foreground">{new Set(documents.map(d => d.category)).size}</p>
+            <p className="text-xs text-muted-foreground">Categories</p>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }} className="glass-card rounded-xl p-4">
+            <Upload className="w-5 h-5 text-svo-gold mb-2" />
+            <p className="text-2xl font-bold text-foreground">{documents.length > 0 ? Math.round(documents.reduce((s, d) => s + Number(d.file_size || 0), 0) / 1024 / 1024) : 0} MB</p>
+            <p className="text-xs text-muted-foreground">Total Size</p>
+          </motion.div>
+        </div>
 
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
@@ -125,10 +165,13 @@ const DocumentsModule = () => {
                   <Input type="file" onChange={e => setSelectedFile(e.target.files?.[0] || null)} className="rounded-xl" required />
                 </div>
                 <div className="space-y-2"><Label>Title</Label>
-                  <Input value={form.title} onChange={e => setForm({...form, title: e.target.value})} placeholder="Document title" className="rounded-xl" />
+                  <Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Document title" className="rounded-xl" />
+                </div>
+                <div className="space-y-2"><Label>Description</Label>
+                  <Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Brief description" className="rounded-xl resize-none" rows={2} />
                 </div>
                 <div className="space-y-2"><Label>Category</Label>
-                  <Select value={form.category} onValueChange={v => setForm({...form, category: v})}>
+                  <Select value={form.category} onValueChange={v => setForm({ ...form, category: v })}>
                     <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                     <SelectContent>{Object.keys(categoryColors).map(c => <SelectItem key={c} value={c} className="capitalize">{c}</SelectItem>)}</SelectContent>
                   </Select>
@@ -140,6 +183,16 @@ const DocumentsModule = () => {
             </DialogContent>
           </Dialog>
         </div>
+
+        {/* Preview modal */}
+        {previewUrl && (
+          <Dialog open={!!previewUrl} onOpenChange={() => setPreviewUrl(null)}>
+            <DialogContent className="rounded-2xl max-w-4xl max-h-[85vh]">
+              <DialogHeader><DialogTitle>Document Preview</DialogTitle></DialogHeader>
+              <iframe src={previewUrl} className="w-full h-[70vh] rounded-xl border border-border" />
+            </DialogContent>
+          </Dialog>
+        )}
 
         {loading ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -172,15 +225,30 @@ const DocumentsModule = () => {
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-foreground text-sm truncate">{doc.title}</h4>
                         <p className="text-xs text-muted-foreground truncate">{doc.file_name}</p>
+                        {doc.description && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{doc.description}</p>}
                       </div>
                     </div>
                     <div className="flex items-center justify-between mt-3">
                       <Badge variant="outline" className={`text-[10px] ${categoryColors[doc.category] || ""}`}>{doc.category}</Badge>
-                      <span className="text-[10px] text-muted-foreground">{getName(doc.uploaded_by)}</span>
+                      <div className="flex items-center gap-1">
+                        <Badge variant="outline" className="text-[10px]">v{doc.version || 1}</Badge>
+                      </div>
                     </div>
-                    <p className="text-[10px] text-muted-foreground mt-2">
-                      {format(new Date(doc.created_at), "MMM d, yyyy")} · {doc.file_size ? `${Math.round(doc.file_size / 1024)}KB` : ""}
-                    </p>
+                    <div className="flex items-center justify-between mt-2">
+                      <div>
+                        <span className="text-[10px] text-muted-foreground">{getName(doc.uploaded_by)}</span>
+                        <span className="text-[10px] text-muted-foreground"> · {format(new Date(doc.created_at), "MMM d, yyyy")}</span>
+                        <span className="text-[10px] text-muted-foreground"> · {doc.file_size ? `${Math.round(doc.file_size / 1024)}KB` : ""}</span>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-3">
+                      <Button size="sm" variant="outline" className="rounded-lg text-xs h-7 flex-1" onClick={() => previewFile(doc)}>
+                        <Eye className="w-3 h-3 mr-1" /> Preview
+                      </Button>
+                      <Button size="sm" variant="outline" className="rounded-lg text-xs h-7 flex-1" onClick={() => downloadFile(doc)}>
+                        <Download className="w-3 h-3 mr-1" /> Download
+                      </Button>
+                    </div>
                   </motion.div>
                 );
               })}

@@ -13,9 +13,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { motion } from "framer-motion";
-import { DollarSign, Receipt, Plus, TrendingUp, TrendingDown, Wallet, PieChart } from "lucide-react";
+import { DollarSign, Receipt, Plus, TrendingUp, TrendingDown, Wallet, PieChart, FileText, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
-import { format } from "date-fns";
+import { format, startOfMonth, endOfMonth, subMonths } from "date-fns";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart as RePieChart, Pie, Cell } from "recharts";
+
+const CHART_COLORS = ["hsl(var(--accent))", "hsl(var(--svo-blue))", "hsl(var(--svo-gold))", "hsl(var(--destructive))", "#10b981", "#8b5cf6"];
 
 // ==================== PAYROLL ====================
 const PayrollTab = () => {
@@ -60,11 +63,20 @@ const PayrollTab = () => {
     setRecords(data || []);
   };
 
+  const approvePayroll = async (id: string) => {
+    if (!user) return;
+    await supabase.from("payroll_records").update({ status: "approved", approved_by: user.id }).eq("id", id);
+    setRecords(prev => prev.map(r => r.id === id ? { ...r, status: "approved" } : r));
+    toast.success("Payroll approved");
+  };
+
   const totalPayroll = records.reduce((sum, r) => sum + Number(r.net_pay || 0), 0);
+  const totalBonuses = records.reduce((sum, r) => sum + Number(r.bonuses || 0), 0);
+  const totalDeductions = records.reduce((sum, r) => sum + Number(r.deductions || 0), 0);
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-4 mb-4">
+      <div className="grid grid-cols-4 gap-4 mb-4">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card rounded-xl p-4">
           <Wallet className="w-5 h-5 text-accent mb-2" />
           <p className="text-2xl font-bold text-foreground">${totalPayroll.toLocaleString()}</p>
@@ -72,13 +84,18 @@ const PayrollTab = () => {
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.05 } }} className="glass-card rounded-xl p-4">
           <TrendingUp className="w-5 h-5 text-green-500 mb-2" />
-          <p className="text-2xl font-bold text-foreground">{records.length}</p>
-          <p className="text-xs text-muted-foreground">Records</p>
+          <p className="text-2xl font-bold text-foreground">${totalBonuses.toLocaleString()}</p>
+          <p className="text-xs text-muted-foreground">Total Bonuses</p>
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }} className="glass-card rounded-xl p-4">
+          <TrendingDown className="w-5 h-5 text-destructive mb-2" />
+          <p className="text-2xl font-bold text-foreground">${totalDeductions.toLocaleString()}</p>
+          <p className="text-xs text-muted-foreground">Total Deductions</p>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.15 } }} className="glass-card rounded-xl p-4">
           <PieChart className="w-5 h-5 text-svo-blue mb-2" />
-          <p className="text-2xl font-bold text-foreground">{staff.length}</p>
-          <p className="text-xs text-muted-foreground">Staff</p>
+          <p className="text-2xl font-bold text-foreground">{records.length}</p>
+          <p className="text-xs text-muted-foreground">Records</p>
         </motion.div>
       </div>
 
@@ -123,10 +140,15 @@ const PayrollTab = () => {
                 <div>
                   <p className="font-medium text-foreground text-sm">{getName(r.user_id)}</p>
                   <p className="text-xs text-muted-foreground">{format(new Date(r.period_start), "MMM d")} — {format(new Date(r.period_end), "MMM d, yyyy")}</p>
+                  <p className="text-[10px] text-muted-foreground">Base: ${Number(r.base_salary).toLocaleString()} · Bonus: ${Number(r.bonuses).toLocaleString()} · Deduct: ${Number(r.deductions).toLocaleString()}</p>
                 </div>
-                <div className="text-right">
+                <div className="flex items-center gap-3">
                   <p className="font-bold text-foreground">${Number(r.net_pay).toLocaleString()}</p>
-                  <Badge variant="outline" className={r.status === "approved" ? "bg-green-500/10 text-green-600" : "bg-accent/10 text-accent"}>{r.status}</Badge>
+                  {r.status === "draft" ? (
+                    <Button size="sm" variant="outline" className="rounded-lg text-xs h-7" onClick={() => approvePayroll(r.id)}>Approve</Button>
+                  ) : (
+                    <Badge variant="outline" className="bg-green-500/10 text-green-600">{r.status}</Badge>
+                  )}
                 </div>
               </div>
             ))}
@@ -168,23 +190,33 @@ const ExpensesTab = () => {
     if (error) { toast.error("Failed to submit expense"); return; }
     toast.success("Expense submitted!");
     setDialogOpen(false);
+    setForm({ title: "", description: "", amount: "", category: "general", currency: "USD" });
     const { data } = await supabase.from("expense_reports").select("*").eq("organization_id", org.id).order("created_at", { ascending: false });
     setExpenses(data || []);
   };
 
-  const approveExpense = async (id: string) => {
+  const updateExpenseStatus = async (id: string, status: string) => {
     if (!user) return;
-    await supabase.from("expense_reports").update({ status: "approved", approved_by: user.id, approved_at: new Date().toISOString() }).eq("id", id);
-    setExpenses(prev => prev.map(e => e.id === id ? { ...e, status: "approved" } : e));
-    toast.success("Expense approved");
+    await supabase.from("expense_reports").update({ status, approved_by: user.id, approved_at: new Date().toISOString() }).eq("id", id);
+    setExpenses(prev => prev.map(e => e.id === id ? { ...e, status } : e));
+    toast.success(`Expense ${status}`);
   };
 
   const totalExpenses = expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
   const pendingCount = expenses.filter(e => e.status === "pending").length;
+  const approvedTotal = expenses.filter(e => e.status === "approved").reduce((sum, e) => sum + Number(e.amount || 0), 0);
+
+  // Category breakdown for chart
+  const categoryBreakdown = Object.entries(
+    expenses.reduce((acc: Record<string, number>, e) => {
+      acc[e.category || "general"] = (acc[e.category || "general"] || 0) + Number(e.amount || 0);
+      return acc;
+    }, {})
+  ).map(([name, value]) => ({ name, value: value as number }));
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-3 gap-4 mb-4">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card rounded-xl p-4">
           <TrendingDown className="w-5 h-5 text-destructive mb-2" />
           <p className="text-2xl font-bold text-foreground">${totalExpenses.toLocaleString()}</p>
@@ -195,7 +227,27 @@ const ExpensesTab = () => {
           <p className="text-2xl font-bold text-foreground">{pendingCount}</p>
           <p className="text-xs text-muted-foreground">Pending Approval</p>
         </motion.div>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }} className="glass-card rounded-xl p-4">
+          <TrendingUp className="w-5 h-5 text-green-500 mb-2" />
+          <p className="text-2xl font-bold text-foreground">${approvedTotal.toLocaleString()}</p>
+          <p className="text-xs text-muted-foreground">Approved Total</p>
+        </motion.div>
       </div>
+
+      {/* Category chart */}
+      {categoryBreakdown.length > 0 && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card rounded-xl p-4">
+          <h4 className="font-semibold text-foreground text-sm mb-3">Expense by Category</h4>
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={categoryBreakdown}>
+              <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+              <YAxis tick={{ fontSize: 11 }} />
+              <Tooltip />
+              <Bar dataKey="value" fill="hsl(var(--accent))" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </motion.div>
+      )}
 
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-foreground">Expense Reports</h3>
@@ -239,14 +291,18 @@ const ExpensesTab = () => {
               <div key={e.id} className="p-4 flex items-center justify-between">
                 <div>
                   <p className="font-medium text-foreground text-sm">{e.title}</p>
-                  <p className="text-xs text-muted-foreground">{getName(e.submitted_by)} · {e.category}</p>
+                  <p className="text-xs text-muted-foreground">{getName(e.submitted_by)} · {e.category} · {format(new Date(e.created_at), "MMM d, yyyy")}</p>
+                  {e.description && <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{e.description}</p>}
                 </div>
                 <div className="flex items-center gap-3">
                   <p className="font-bold text-foreground">${Number(e.amount).toLocaleString()}</p>
                   {e.status === "pending" ? (
-                    <Button size="sm" variant="outline" className="rounded-lg text-xs h-7" onClick={() => approveExpense(e.id)}>Approve</Button>
+                    <div className="flex gap-1">
+                      <Button size="sm" variant="outline" className="rounded-lg text-xs h-7 text-green-600 border-green-300 hover:bg-green-50" onClick={() => updateExpenseStatus(e.id, "approved")}>Approve</Button>
+                      <Button size="sm" variant="outline" className="rounded-lg text-xs h-7 text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => updateExpenseStatus(e.id, "rejected")}>Reject</Button>
+                    </div>
                   ) : (
-                    <Badge variant="outline" className="bg-green-500/10 text-green-600">{e.status}</Badge>
+                    <Badge variant="outline" className={e.status === "approved" ? "bg-green-500/10 text-green-600" : "bg-destructive/10 text-destructive"}>{e.status}</Badge>
                   )}
                 </div>
               </div>
@@ -258,14 +314,98 @@ const ExpensesTab = () => {
   );
 };
 
+// ==================== FINANCIAL REPORTS ====================
+const ReportsTab = () => {
+  const { org } = useOrganization();
+  const [payrollData, setPayrollData] = useState<any[]>([]);
+  const [expenseData, setExpenseData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!org) return;
+    Promise.all([
+      supabase.from("payroll_records").select("net_pay, period_start, status").eq("organization_id", org.id),
+      supabase.from("expense_reports").select("amount, category, status, created_at").eq("organization_id", org.id),
+    ]).then(([{ data: payroll }, { data: expenses }]) => {
+      // Aggregate payroll by month
+      const monthly: Record<string, number> = {};
+      (payroll || []).forEach(p => {
+        const month = format(new Date(p.period_start), "MMM yyyy");
+        monthly[month] = (monthly[month] || 0) + Number(p.net_pay || 0);
+      });
+      setPayrollData(Object.entries(monthly).map(([month, total]) => ({ month, total })));
+
+      // Expense category summary
+      const cats: Record<string, number> = {};
+      (expenses || []).forEach(e => {
+        cats[e.category || "general"] = (cats[e.category || "general"] || 0) + Number(e.amount || 0);
+      });
+      setExpenseData(Object.entries(cats).map(([name, value]) => ({ name, value: value as number })));
+      setLoading(false);
+    });
+  }, [org]);
+
+  const totalPayroll = payrollData.reduce((s, d) => s + d.total, 0);
+  const totalExpenses = expenseData.reduce((s, d) => s + d.value, 0);
+
+  return (
+    <div className="space-y-6">
+      <h3 className="font-semibold text-foreground">Financial Summary</h3>
+
+      <div className="grid grid-cols-2 gap-4">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card rounded-xl p-4">
+          <DollarSign className="w-5 h-5 text-accent mb-2" />
+          <p className="text-2xl font-bold text-foreground">${totalPayroll.toLocaleString()}</p>
+          <p className="text-xs text-muted-foreground">Total Payroll Spend</p>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.05 } }} className="glass-card rounded-xl p-4">
+          <Receipt className="w-5 h-5 text-destructive mb-2" />
+          <p className="text-2xl font-bold text-foreground">${totalExpenses.toLocaleString()}</p>
+          <p className="text-xs text-muted-foreground">Total Expense Spend</p>
+        </motion.div>
+      </div>
+
+      {loading ? <div className="h-40 bg-muted rounded-xl animate-pulse" /> : (
+        <>
+          {payrollData.length > 0 && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card rounded-xl p-5">
+              <h4 className="font-semibold text-foreground text-sm mb-4">Monthly Payroll Trend</h4>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={payrollData}>
+                  <XAxis dataKey="month" tick={{ fontSize: 11 }} />
+                  <YAxis tick={{ fontSize: 11 }} />
+                  <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} />
+                  <Bar dataKey="total" fill="hsl(var(--accent))" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </motion.div>
+          )}
+
+          {expenseData.length > 0 && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card rounded-xl p-5">
+              <h4 className="font-semibold text-foreground text-sm mb-4">Expense Distribution</h4>
+              <ResponsiveContainer width="100%" height={250}>
+                <RePieChart>
+                  <Pie data={expenseData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+                    {expenseData.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
+                  </Pie>
+                  <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} />
+                </RePieChart>
+              </ResponsiveContainer>
+            </motion.div>
+          )}
+        </>
+      )}
+    </div>
+  );
+};
+
 // ==================== MAIN MODULE ====================
 const FinanceModule = () => {
   const { loading } = useOrganization();
 
   if (loading) {
-    return (
-      <AppLayout title="Finance"><div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" /></div></AppLayout>
-    );
+    return <AppLayout title="Finance"><div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" /></div></AppLayout>;
   }
 
   return (
@@ -280,9 +420,11 @@ const FinanceModule = () => {
           <TabsList className="bg-muted/50 rounded-xl p-1">
             <TabsTrigger value="payroll" className="rounded-lg data-[state=active]:bg-card"><DollarSign className="w-4 h-4 mr-1.5" />Payroll</TabsTrigger>
             <TabsTrigger value="expenses" className="rounded-lg data-[state=active]:bg-card"><Receipt className="w-4 h-4 mr-1.5" />Expenses</TabsTrigger>
+            <TabsTrigger value="reports" className="rounded-lg data-[state=active]:bg-card"><BarChart3 className="w-4 h-4 mr-1.5" />Reports</TabsTrigger>
           </TabsList>
           <TabsContent value="payroll"><PayrollTab /></TabsContent>
           <TabsContent value="expenses"><ExpensesTab /></TabsContent>
+          <TabsContent value="reports"><ReportsTab /></TabsContent>
         </Tabs>
       </div>
     </AppLayout>

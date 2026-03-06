@@ -21,6 +21,8 @@ import DocumentsModule from "./pages/DocumentsModule";
 import KPIModule from "./pages/KPIModule";
 import HRModule from "./pages/HRModule";
 import FinanceModule from "./pages/FinanceModule";
+import AnnouncementsModule from "./pages/AnnouncementsModule";
+import AIInsightsModule from "./pages/AIInsightsModule";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -49,6 +51,8 @@ const App = () => (
             <Route path="/intelligence" element={<ProtectedRoute><KPIModule /></ProtectedRoute>} />
             <Route path="/hr" element={<ProtectedRoute><HRModule /></ProtectedRoute>} />
             <Route path="/finance" element={<ProtectedRoute><FinanceModule /></ProtectedRoute>} />
+            <Route path="/announcements" element={<ProtectedRoute><AnnouncementsModule /></ProtectedRoute>} />
+            <Route path="/ai-insights" element={<ProtectedRoute><AIInsightsModule /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
