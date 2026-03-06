@@ -9,7 +9,8 @@ import AppLayout from "@/components/layout/AppLayout";
 import { motion } from "framer-motion";
 import {
   Users, CheckSquare, MessageSquare, BarChart3,
-  Clock, Activity, Video, FileText, DollarSign, Briefcase
+  Clock, Activity, Video, FileText, DollarSign, Briefcase,
+  Megaphone, Brain
 } from "lucide-react";
 
 const quickStats = [
@@ -24,8 +25,10 @@ const modules = [
   { icon: CheckSquare, label: "Execution", description: "Projects, tasks & workflows", color: "bg-svo-gold/10 text-svo-gold", path: "/execution" },
   { icon: MessageSquare, label: "Communication", description: "Messages & channels", color: "bg-svo-blue-light/10 text-svo-blue-light", path: "/messages" },
   { icon: Video, label: "Meetings", description: "Video conferencing & AI", color: "bg-svo-blue/10 text-svo-blue", path: "/meetings" },
+  { icon: Megaphone, label: "Announcements", description: "Corporate broadcasts", color: "bg-destructive/10 text-destructive", path: "/announcements" },
   { icon: FileText, label: "Documents", description: "Files & knowledge base", color: "bg-accent/10 text-accent", path: "/documents" },
   { icon: BarChart3, label: "Intelligence", description: "KPIs & performance", color: "bg-accent/10 text-accent", path: "/intelligence" },
+  { icon: Brain, label: "AI Insights", description: "Anomalies & analysis", color: "bg-svo-gold/10 text-svo-gold", path: "/ai-insights" },
   { icon: Briefcase, label: "HR", description: "Recruitment & onboarding", color: "bg-svo-gold/10 text-svo-gold", path: "/hr" },
   { icon: DollarSign, label: "Finance", description: "Payroll & expenses", color: "bg-green-500/10 text-green-600", path: "/finance" },
 ];
