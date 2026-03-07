@@ -23,6 +23,9 @@ import HRModule from "./pages/HRModule";
 import FinanceModule from "./pages/FinanceModule";
 import AnnouncementsModule from "./pages/AnnouncementsModule";
 import AIInsightsModule from "./pages/AIInsightsModule";
+import ExecutiveModule from "./pages/ExecutiveModule";
+import WorkflowsModule from "./pages/WorkflowsModule";
+import TeamModule from "./pages/TeamModule";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -53,6 +56,9 @@ const App = () => (
             <Route path="/finance" element={<ProtectedRoute><FinanceModule /></ProtectedRoute>} />
             <Route path="/announcements" element={<ProtectedRoute><AnnouncementsModule /></ProtectedRoute>} />
             <Route path="/ai-insights" element={<ProtectedRoute><AIInsightsModule /></ProtectedRoute>} />
+            <Route path="/executive" element={<ProtectedRoute><ExecutiveModule /></ProtectedRoute>} />
+            <Route path="/workflows" element={<ProtectedRoute><WorkflowsModule /></ProtectedRoute>} />
+            <Route path="/team" element={<ProtectedRoute><TeamModule /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
