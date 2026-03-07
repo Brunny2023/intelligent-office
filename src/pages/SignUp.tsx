@@ -1,46 +1,49 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Shield, ArrowRight, Eye, EyeOff } from "lucide-react";
+import { Shield, ArrowRight, Eye, EyeOff, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const inviteToken = searchParams.get("invite");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-  });
+  const [form, setForm] = useState({ fullName: "", email: "", password: "" });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.fullName || !form.email || !form.password) {
-      toast.error("Please fill in all fields");
-      return;
-    }
-    if (form.password.length < 6) {
-      toast.error("Password must be at least 6 characters");
-      return;
-    }
+    if (!form.fullName || !form.email || !form.password) { toast.error("Please fill in all fields"); return; }
+    if (form.password.length < 6) { toast.error("Password must be at least 6 characters"); return; }
 
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { data: signUpData, error } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
       options: {
-        data: { full_name: form.fullName },
+        data: { full_name: form.fullName, invite_token: inviteToken || undefined },
         emailRedirectTo: window.location.origin,
       },
     });
 
     setLoading(false);
-    if (error) {
-      toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
+
+    // If invite token present and user confirmed (auto-confirm enabled or already confirmed)
+    if (inviteToken && signUpData.user) {
+      toast.success("Account created! Accepting invitation...");
+      // Accept invitation after sign up
+      const { data: result } = await supabase.rpc("accept_invitation", { _token: inviteToken });
+      if (result && typeof result === "object" && "error" in (result as any)) {
+        toast.error((result as any).error);
+      } else {
+        toast.success("Invitation accepted!");
+      }
+      navigate("/dashboard");
     } else {
       toast.success("Check your email to confirm your account!");
       navigate("/signin");
@@ -59,69 +62,44 @@ const SignUp = () => {
               Soteria<span className="text-svo-gold">.</span>
             </span>
           </Link>
-          <h1 className="text-2xl font-bold text-primary-foreground">Create your account</h1>
-          <p className="text-primary-foreground/50 text-sm mt-2">Get started with your digital headquarters</p>
+          <h1 className="text-2xl font-bold text-primary-foreground">
+            {inviteToken ? "Accept Your Invitation" : "Create your account"}
+          </h1>
+          <p className="text-primary-foreground/50 text-sm mt-2">
+            {inviteToken ? "Sign up to join your team" : "Get started with your digital headquarters"}
+          </p>
+          {inviteToken && (
+            <div className="mt-3 inline-flex items-center gap-1 bg-svo-gold/10 text-svo-gold text-xs px-3 py-1 rounded-full">
+              <UserPlus className="w-3 h-3" /> You have a team invitation
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="glass-card-strong rounded-2xl p-8 space-y-5">
           <div className="space-y-2">
             <Label htmlFor="fullName" className="text-foreground">Full Name</Label>
-            <Input
-              id="fullName"
-              placeholder="John Doe"
-              value={form.fullName}
-              onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-              className="h-11 rounded-xl"
-            />
+            <Input id="fullName" placeholder="John Doe" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} className="h-11 rounded-xl" />
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="email" className="text-foreground">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="john@company.com"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="h-11 rounded-xl"
-            />
+            <Input id="email" type="email" placeholder="john@company.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="h-11 rounded-xl" />
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="password" className="text-foreground">Password</Label>
             <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Min. 6 characters"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-                className="h-11 rounded-xl pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              >
+              <Input id="password" type={showPassword ? "text" : "password"} placeholder="Min. 6 characters" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="h-11 rounded-xl pr-10" />
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </div>
-
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-full h-11 rounded-xl bg-svo-gold text-svo-navy hover:bg-svo-gold/90 font-semibold"
-          >
-            {loading ? "Creating account..." : "Create Account"}
+          <Button type="submit" disabled={loading} className="w-full h-11 rounded-xl bg-svo-gold text-svo-navy hover:bg-svo-gold/90 font-semibold">
+            {loading ? "Creating account..." : inviteToken ? "Join Team" : "Create Account"}
             {!loading && <ArrowRight className="w-4 h-4 ml-1" />}
           </Button>
-
           <p className="text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link to="/signin" className="text-svo-gold hover:underline font-medium">
-              Sign in
-            </Link>
+            <Link to={inviteToken ? `/signin?invite=${inviteToken}` : "/signin"} className="text-svo-gold hover:underline font-medium">Sign in</Link>
           </p>
         </form>
       </div>

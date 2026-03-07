@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 import {
   Users, CheckSquare, MessageSquare, BarChart3,
   Clock, Activity, Video, FileText, DollarSign, Briefcase,
-  Megaphone, Brain
+  Megaphone, Brain, Crown, Workflow, UserPlus
 } from "lucide-react";
 
 const quickStats = [
@@ -29,8 +29,11 @@ const modules = [
   { icon: FileText, label: "Documents", description: "Files & knowledge base", color: "bg-accent/10 text-accent", path: "/documents" },
   { icon: BarChart3, label: "Intelligence", description: "KPIs & performance", color: "bg-accent/10 text-accent", path: "/intelligence" },
   { icon: Brain, label: "AI Insights", description: "Anomalies & analysis", color: "bg-svo-gold/10 text-svo-gold", path: "/ai-insights" },
+  { icon: Crown, label: "Executive", description: "Control center & health", color: "bg-accent/10 text-accent", path: "/executive" },
+  { icon: Workflow, label: "Workflows", description: "Automation & approvals", color: "bg-svo-blue/10 text-svo-blue", path: "/workflows" },
   { icon: Briefcase, label: "HR", description: "Recruitment & onboarding", color: "bg-svo-gold/10 text-svo-gold", path: "/hr" },
   { icon: DollarSign, label: "Finance", description: "Payroll & expenses", color: "bg-green-500/10 text-green-600", path: "/finance" },
+  { icon: UserPlus, label: "Team", description: "Members & invitations", color: "bg-svo-blue-light/10 text-svo-blue-light", path: "/team" },
 ];
 
 const Dashboard = () => {
@@ -64,21 +67,13 @@ const Dashboard = () => {
           <p className="text-muted-foreground mt-1">Here's your digital headquarters overview</p>
         </motion.div>
 
-        {/* Top section: Clock-in + Quick stats */}
         <div className="grid lg:grid-cols-3 gap-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }}
-            className="lg:col-span-1"
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }} className="lg:col-span-1">
             <ClockInWidget />
           </motion.div>
           <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-4">
             {quickStats.map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0, transition: { delay: 0.15 + i * 0.05 } }}
+              <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.15 + i * 0.05 } }}
                 whileHover={{ y: -2, boxShadow: "0 4px 12px hsl(var(--svo-navy) / 0.08)" }}
                 className="glass-card rounded-xl p-4 cursor-default"
               >
@@ -92,45 +87,30 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Performance Widget */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0, transition: { delay: 0.25 } }}
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.25 } }}>
           <PerformanceWidget />
         </motion.div>
 
-        {/* Module grid + Activity feed */}
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <h2 className="text-lg font-semibold text-foreground mb-4">Modules</h2>
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {modules.map((mod, i) => (
-                <motion.button
-                  key={mod.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0, transition: { delay: 0.2 + i * 0.04 } }}
-                  whileHover={{ y: -4, boxShadow: "0 8px 24px hsl(var(--svo-navy) / 0.1)" }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => mod.path && navigate(mod.path)}
-                  className="glass-card-strong rounded-xl p-6 text-left transition-all group"
+                <motion.button key={mod.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.2 + i * 0.03 } }}
+                  whileHover={{ y: -4, boxShadow: "0 8px 24px hsl(var(--svo-navy) / 0.1)" }} whileTap={{ scale: 0.98 }}
+                  onClick={() => navigate(mod.path)} className="glass-card-strong rounded-xl p-5 text-left transition-all group"
                 >
                   <div className={`w-10 h-10 rounded-xl ${mod.color} flex items-center justify-center mb-3`}>
                     <mod.icon className="w-5 h-5" />
                   </div>
-                  <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors">
-                    {mod.label}
-                  </h3>
+                  <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors">{mod.label}</h3>
                   <p className="text-sm text-muted-foreground mt-1">{mod.description}</p>
                 </motion.button>
               ))}
             </div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}>
             <h2 className="text-lg font-semibold text-foreground mb-4">Recent Activity</h2>
             <ActivityFeed scope="organization" limit={10} />
           </motion.div>
