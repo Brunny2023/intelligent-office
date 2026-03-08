@@ -19,6 +19,17 @@ import featureDocuments from "@/assets/feature-documents.jpg";
 import featureHr from "@/assets/feature-hr.jpg";
 import featureFinance from "@/assets/feature-finance.jpg";
 import featureSecurity from "@/assets/feature-security.jpg";
+import featureJobPlanning from "@/assets/feature-job-planning.jpg";
+import featureMeetings from "@/assets/feature-meetings.jpg";
+import featureAnnouncements from "@/assets/feature-announcements.jpg";
+import featureActivity from "@/assets/feature-activity.jpg";
+import featureAiInsights from "@/assets/feature-ai-insights.jpg";
+import featureExecutive from "@/assets/feature-executive.jpg";
+import featureWorkflows from "@/assets/feature-workflows.jpg";
+import featureTeam from "@/assets/feature-team.jpg";
+import featureSupport from "@/assets/feature-support.jpg";
+import featureAdmin from "@/assets/feature-admin.jpg";
+import featureSettings from "@/assets/feature-settings.jpg";
 
 const features = [
   {
