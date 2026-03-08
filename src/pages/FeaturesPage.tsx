@@ -104,7 +104,7 @@ const features = [
       "Integrated with team channels and projects",
       "No external app installation required",
     ],
-    image: featureCommunication,
+    image: featureMeetings,
     align: "right" as const,
   },
   {
