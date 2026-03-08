@@ -69,7 +69,7 @@ const Dashboard = () => {
           >
             <div className="flex items-start gap-4">
               {org.logo_url && (
-                <img src={org.logo_url} alt={org.name} className="w-12 h-12 rounded-xl object-cover shrink-0" />
+                <img src={org.logo_url} alt={org.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover shrink-0" />
               )}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
