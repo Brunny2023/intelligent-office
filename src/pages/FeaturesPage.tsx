@@ -119,7 +119,7 @@ const features = [
       "Department-targeted or organization-wide delivery",
       "Draft, schedule, and publish workflows",
     ],
-    image: featureCommunication,
+    image: featureAnnouncements,
     align: "left" as const,
   },
   {
