@@ -19,6 +19,17 @@ import featureDocuments from "@/assets/feature-documents.jpg";
 import featureHr from "@/assets/feature-hr.jpg";
 import featureFinance from "@/assets/feature-finance.jpg";
 import featureSecurity from "@/assets/feature-security.jpg";
+import featureJobPlanning from "@/assets/feature-job-planning.jpg";
+import featureMeetings from "@/assets/feature-meetings.jpg";
+import featureAnnouncements from "@/assets/feature-announcements.jpg";
+import featureActivity from "@/assets/feature-activity.jpg";
+import featureAiInsights from "@/assets/feature-ai-insights.jpg";
+import featureExecutive from "@/assets/feature-executive.jpg";
+import featureWorkflows from "@/assets/feature-workflows.jpg";
+import featureTeam from "@/assets/feature-team.jpg";
+import featureSupport from "@/assets/feature-support.jpg";
+import featureAdmin from "@/assets/feature-admin.jpg";
+import featureSettings from "@/assets/feature-settings.jpg";
 
 const features = [
   {
@@ -48,7 +59,7 @@ const features = [
       "Period-based goals: weekly, monthly, quarterly",
       "Automated reminders and due date alerts",
     ],
-    image: featureExecution,
+    image: featureJobPlanning,
     align: "left" as const,
   },
   {
@@ -93,7 +104,7 @@ const features = [
       "Integrated with team channels and projects",
       "No external app installation required",
     ],
-    image: featureCommunication,
+    image: featureMeetings,
     align: "right" as const,
   },
   {
@@ -108,7 +119,7 @@ const features = [
       "Department-targeted or organization-wide delivery",
       "Draft, schedule, and publish workflows",
     ],
-    image: featureCommunication,
+    image: featureAnnouncements,
     align: "left" as const,
   },
   {
@@ -123,7 +134,7 @@ const features = [
       "Exportable audit trail for compliance",
       "Real-time activity feed for managers",
     ],
-    image: featureIntelligence,
+    image: featureActivity,
     align: "right" as const,
   },
   {
@@ -153,7 +164,7 @@ const features = [
       "Custom KPI creation with target tracking",
       "Period-based reporting with visual charts",
     ],
-    image: featureIntelligence,
+    image: featureAiInsights,
     align: "right" as const,
   },
   {
@@ -168,7 +179,7 @@ const features = [
       "Risk flagging with severity classification",
       "Actionable recommendations for improvement",
     ],
-    image: featureIntelligence,
+    image: featureExecutive,
     align: "left" as const,
   },
   {
@@ -198,7 +209,7 @@ const features = [
       "Multi-level approval chains with escalation",
       "Complete instance tracking with step logs",
     ],
-    image: featureExecution,
+    image: featureWorkflows,
     align: "left" as const,
   },
   {
@@ -213,7 +224,7 @@ const features = [
       "Performance review system with auto-populated metrics",
       "Employee onboarding checklists and termination workflows",
     ],
-    image: featureHr,
+    image: featureTeam,
     align: "right" as const,
   },
   {
@@ -258,7 +269,7 @@ const features = [
       "Status tracking: open, in-progress, resolved, closed",
       "Admin queue with filtering and assignment",
     ],
-    image: featureDocuments,
+    image: featureSupport,
     align: "left" as const,
   },
   {
@@ -273,7 +284,7 @@ const features = [
       "Real-time notification system for admins",
       "Audit trail access and compliance monitoring",
     ],
-    image: featureIntelligence,
+    image: featureAdmin,
     align: "right" as const,
   },
   {
@@ -288,7 +299,7 @@ const features = [
       "IP restriction with allowlist management",
       "Complete audit trail with searchable logs",
     ],
-    image: featureSecurity,
+    image: featureSettings,
     align: "left" as const,
   },
   {
