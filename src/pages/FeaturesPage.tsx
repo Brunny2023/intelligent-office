@@ -269,7 +269,7 @@ const features = [
       "Status tracking: open, in-progress, resolved, closed",
       "Admin queue with filtering and assignment",
     ],
-    image: featureDocuments,
+    image: featureSupport,
     align: "left" as const,
   },
   {
