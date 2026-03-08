@@ -132,7 +132,7 @@ const ExecutiveModule = () => {
         </motion.div>
 
         {/* Health Score + KPI cards */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
           {[
             { label: "Health Score", value: `${metrics.healthScore}%`, icon: TrendingUp, color: metrics.healthScore >= 70 ? "text-green-600" : metrics.healthScore >= 40 ? "text-svo-gold" : "text-destructive" },
             { label: "Present Today", value: `${metrics.presentToday}/${metrics.totalStaff}`, icon: Users, color: "text-svo-blue" },
