@@ -284,7 +284,7 @@ const features = [
       "Real-time notification system for admins",
       "Audit trail access and compliance monitoring",
     ],
-    image: featureIntelligence,
+    image: featureAdmin,
     align: "right" as const,
   },
   {
