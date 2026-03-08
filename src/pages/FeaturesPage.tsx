@@ -59,7 +59,7 @@ const features = [
       "Period-based goals: weekly, monthly, quarterly",
       "Automated reminders and due date alerts",
     ],
-    image: featureExecution,
+    image: featureJobPlanning,
     align: "left" as const,
   },
   {
