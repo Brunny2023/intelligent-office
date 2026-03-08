@@ -112,11 +112,11 @@ const FeaturesShowcase = () => {
           transition={{ duration: 0.4 }}
           className="max-w-4xl mx-auto glass-card-strong rounded-2xl p-8 md:p-12"
         >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-svo-gold/10 flex items-center justify-center">
+          <div className="flex items-start sm:items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-svo-gold/10 flex items-center justify-center shrink-0">
               <current.icon className="w-5 h-5 text-svo-gold" />
             </div>
-            <h3 className="text-xl md:text-2xl font-bold text-foreground">{current.title}</h3>
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">{current.title}</h3>
           </div>
           <p className="text-muted-foreground leading-relaxed max-w-2xl">{current.description}</p>
 
