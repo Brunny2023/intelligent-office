@@ -53,6 +53,7 @@ const Onboarding = () => {
         mission: form.mission || null,
         brand_tagline: form.tagline || null,
         core_values: form.coreValues,
+        logo_url: form.logoUrl || null,
       } as any)
       .select()
       .single();
