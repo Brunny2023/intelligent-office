@@ -28,6 +28,7 @@ const moreItems = [
   { icon: Shield, label: "Security", path: "/security" },
   { icon: Ticket, label: "Support", path: "/support" },
   { icon: ShieldCheck, label: "Admin", path: "/admin" },
+  { icon: Settings, label: "Settings", path: "/settings" },
 ];
 
 const MobileNav = () => {
