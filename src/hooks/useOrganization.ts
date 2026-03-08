@@ -18,6 +18,10 @@ export interface Organization {
   slug: string;
   logo_url: string | null;
   primary_color: string | null;
+  mission: string | null;
+  core_values: string[];
+  brand_tagline: string | null;
+  favicon_url: string | null;
 }
 
 export const useOrganization = () => {
@@ -44,7 +48,15 @@ export const useOrganization = () => {
             .select("*")
             .eq("id", p.organization_id)
             .single();
-          setOrg(o as Organization);
+          if (o) {
+            setOrg({
+              ...o,
+              core_values: (o as any).core_values || [],
+              mission: (o as any).mission || null,
+              brand_tagline: (o as any).brand_tagline || null,
+              favicon_url: (o as any).favicon_url || null,
+            } as Organization);
+          }
         }
       }
       setLoading(false);
