@@ -140,7 +140,7 @@ const Dashboard = () => {
                 <motion.button key={mod.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.2 + i * 0.03 } }}
                   whileHover={{ y: -6, boxShadow: "0 12px 32px hsl(var(--svo-navy) / 0.12)", transition: { type: "spring", stiffness: 400, damping: 20 } }}
                   whileTap={{ scale: 0.96 }}
-                  onClick={() => navigate(mod.path)} className="glass-card-strong rounded-xl p-5 text-left transition-all group"
+                  onClick={() => navigate(mod.path)} className="glass-card-strong rounded-xl p-4 md:p-5 text-left transition-all group"
                 >
                   <motion.div
                     whileHover={{ rotate: [0, -10, 10, 0], transition: { duration: 0.5 } }}
