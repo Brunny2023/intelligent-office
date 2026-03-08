@@ -19,7 +19,7 @@ const Onboarding = () => {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
     orgName: "", slug: "", mission: "", tagline: "",
-    coreValues: [] as string[], newValue: "",
+    coreValues: [] as string[], newValue: "", logoUrl: "",
   });
 
   const generateSlug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
