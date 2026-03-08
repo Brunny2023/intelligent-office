@@ -127,15 +127,22 @@ const Onboarding = () => {
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 className="space-y-5"
               >
-                <div className="space-y-2">
-                  <Label htmlFor="orgName" className="text-foreground">Organization Name</Label>
-                  <Input
-                    id="orgName"
-                    placeholder="Acme Corporation"
-                    value={form.orgName}
-                    onChange={e => handleNameChange(e.target.value)}
-                    className="h-11 rounded-xl"
+                <div className="flex items-start gap-4">
+                  <LogoUpload
+                    currentUrl={form.logoUrl || null}
+                    onUploaded={(url) => setForm(f => ({ ...f, logoUrl: url }))}
+                    size="lg"
                   />
+                  <div className="flex-1 space-y-2">
+                    <Label htmlFor="orgName" className="text-foreground">Organization Name</Label>
+                    <Input
+                      id="orgName"
+                      placeholder="Acme Corporation"
+                      value={form.orgName}
+                      onChange={e => handleNameChange(e.target.value)}
+                      className="h-11 rounded-xl"
+                    />
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="slug" className="text-foreground">Workspace URL</Label>
