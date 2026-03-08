@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Building2, ArrowRight, ArrowLeft, Plus, X, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import LogoUpload from "@/components/LogoUpload";
 
 const Onboarding = () => {
   const { user } = useAuth();
