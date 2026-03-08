@@ -16,9 +16,14 @@ const Footer = () => (
           <a href="#" className="hover:text-primary-foreground/70 transition-colors">Security</a>
           <a href="#" className="hover:text-primary-foreground/70 transition-colors">Contact</a>
         </div>
-        <p className="text-xs text-primary-foreground/30">
-          © 2026 Soteria. All rights reserved.
-        </p>
+        <div className="flex flex-col items-center md:items-end gap-1">
+          <p className="text-xs text-primary-foreground/30">
+            © 2026 Virtual Office. All rights reserved.
+          </p>
+          <p className="text-xs text-primary-foreground/25">
+            Powered by Soteria AI Technologies Limited.
+          </p>
+        </div>
       </div>
     </div>
   </footer>
