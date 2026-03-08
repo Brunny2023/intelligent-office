@@ -299,7 +299,7 @@ const features = [
       "IP restriction with allowlist management",
       "Complete audit trail with searchable logs",
     ],
-    image: featureSecurity,
+    image: featureSettings,
     align: "left" as const,
   },
   {
