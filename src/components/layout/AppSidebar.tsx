@@ -33,6 +33,7 @@ const navItems = [
   { icon: Users, label: "Team", path: "/team" },
   { icon: Lock, label: "Security", path: "/security" },
   { icon: Ticket, label: "Support", path: "/support" },
+  { icon: Settings, label: "Settings", path: "/settings" },
 ];
 
 const AppSidebar = () => {
