@@ -103,14 +103,14 @@ const TeamModule = () => {
   return (
     <AppLayout title="Team">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between">
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2"><Users className="w-7 h-7 text-accent" /> Team Management</h1>
-            <p className="text-muted-foreground mt-1">Manage members & send invitations</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2"><Users className="w-6 sm:w-7 h-6 sm:h-7 text-accent" /> Team Management</h1>
+            <p className="text-muted-foreground text-sm mt-1">Manage members & send invitations</p>
           </div>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="rounded-xl bg-accent text-accent-foreground"><UserPlus className="w-4 h-4 mr-1" /> Invite Member</Button>
+              <Button className="rounded-xl bg-accent text-accent-foreground w-full sm:w-auto"><UserPlus className="w-4 h-4 mr-1" /> Invite Member</Button>
             </DialogTrigger>
             <DialogContent className="rounded-2xl">
               <DialogHeader><DialogTitle>Invite Team Member</DialogTitle></DialogHeader>
