@@ -164,7 +164,7 @@ const features = [
       "Custom KPI creation with target tracking",
       "Period-based reporting with visual charts",
     ],
-    image: featureIntelligence,
+    image: featureAiInsights,
     align: "right" as const,
   },
   {
