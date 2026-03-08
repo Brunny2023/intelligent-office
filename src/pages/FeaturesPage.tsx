@@ -179,7 +179,7 @@ const features = [
       "Risk flagging with severity classification",
       "Actionable recommendations for improvement",
     ],
-    image: featureIntelligence,
+    image: featureExecutive,
     align: "left" as const,
   },
   {
