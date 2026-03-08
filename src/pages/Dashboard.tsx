@@ -144,12 +144,12 @@ const Dashboard = () => {
                 >
                   <motion.div
                     whileHover={{ rotate: [0, -10, 10, 0], transition: { duration: 0.5 } }}
-                    className={`w-10 h-10 rounded-xl ${mod.color} flex items-center justify-center mb-3`}
+                    className={`w-8 h-8 md:w-10 md:h-10 rounded-xl ${mod.color} flex items-center justify-center mb-2 md:mb-3`}
                   >
-                    <mod.icon className="w-5 h-5" />
+                    <mod.icon className="w-4 h-4 md:w-5 md:h-5" />
                   </motion.div>
-                  <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors">{mod.label}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{mod.description}</p>
+                  <h3 className="font-semibold text-foreground text-sm md:text-base group-hover:text-accent transition-colors">{mod.label}</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground mt-0.5 md:mt-1 line-clamp-2">{mod.description}</p>
                 </motion.button>
               ))}
             </div>
