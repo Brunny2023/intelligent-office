@@ -361,6 +361,56 @@ export type Database = {
           },
         ]
       }
+      compliance_settings: {
+        Row: {
+          allowed_ips: string[] | null
+          audit_log_enabled: boolean | null
+          data_retention_days: number | null
+          gdpr_enabled: boolean | null
+          id: string
+          ip_restriction_enabled: boolean | null
+          mfa_required: boolean | null
+          ndpr_enabled: boolean | null
+          organization_id: string
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          allowed_ips?: string[] | null
+          audit_log_enabled?: boolean | null
+          data_retention_days?: number | null
+          gdpr_enabled?: boolean | null
+          id?: string
+          ip_restriction_enabled?: boolean | null
+          mfa_required?: boolean | null
+          ndpr_enabled?: boolean | null
+          organization_id: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          allowed_ips?: string[] | null
+          audit_log_enabled?: boolean | null
+          data_retention_days?: number | null
+          gdpr_enabled?: boolean | null
+          id?: string
+          ip_restriction_enabled?: boolean | null
+          mfa_required?: boolean | null
+          ndpr_enabled?: boolean | null
+          organization_id?: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compliance_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       departments: {
         Row: {
           created_at: string
@@ -601,6 +651,119 @@ export type Database = {
           },
         ]
       }
+      job_plan_targets: {
+        Row: {
+          created_at: string | null
+          current_value: number | null
+          due_date: string | null
+          id: string
+          job_plan_id: string
+          notes: string | null
+          organization_id: string
+          period_type: string
+          reminder_at: string | null
+          status: string | null
+          target_value: number | null
+          title: string
+          unit: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_value?: number | null
+          due_date?: string | null
+          id?: string
+          job_plan_id: string
+          notes?: string | null
+          organization_id: string
+          period_type: string
+          reminder_at?: string | null
+          status?: string | null
+          target_value?: number | null
+          title: string
+          unit?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_value?: number | null
+          due_date?: string | null
+          id?: string
+          job_plan_id?: string
+          notes?: string | null
+          organization_id?: string
+          period_type?: string
+          reminder_at?: string | null
+          status?: string | null
+          target_value?: number | null
+          title?: string
+          unit?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_plan_targets_job_plan_id_fkey"
+            columns: ["job_plan_id"]
+            isOneToOne: false
+            referencedRelation: "job_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_plan_targets_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_plans: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          organization_id: string
+          start_date: string | null
+          status: string | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          organization_id: string
+          start_date?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          organization_id?: string
+          start_date?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_plans_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job_postings: {
         Row: {
           created_at: string
@@ -822,27 +985,39 @@ export type Database = {
       }
       organizations: {
         Row: {
+          brand_tagline: string | null
+          core_values: string[] | null
           created_at: string
+          favicon_url: string | null
           id: string
           logo_url: string | null
+          mission: string | null
           name: string
           primary_color: string | null
           slug: string
           updated_at: string
         }
         Insert: {
+          brand_tagline?: string | null
+          core_values?: string[] | null
           created_at?: string
+          favicon_url?: string | null
           id?: string
           logo_url?: string | null
+          mission?: string | null
           name: string
           primary_color?: string | null
           slug: string
           updated_at?: string
         }
         Update: {
+          brand_tagline?: string | null
+          core_values?: string[] | null
           created_at?: string
+          favicon_url?: string | null
           id?: string
           logo_url?: string | null
+          mission?: string | null
           name?: string
           primary_color?: string | null
           slug?: string
