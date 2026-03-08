@@ -12,3 +12,20 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /dashboard
+Disallow: /attendance
+Disallow: /execution
+Disallow: /messages
+Disallow: /meetings
+Disallow: /documents
+Disallow: /intelligence
+Disallow: /ai-insights
+Disallow: /executive
+Disallow: /workflows
+Disallow: /hr
+Disallow: /finance
+Disallow: /team
+Disallow: /security
+Disallow: /onboarding
+
+Sitemap: https://soteria.app/sitemap.xml

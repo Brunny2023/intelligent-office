@@ -22,9 +22,7 @@ const Navbar = () => {
     >
       <div className="container mx-auto flex items-center justify-between h-16 px-4 md:px-8">
         <a href="#" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-svo-gold flex items-center justify-center">
-            <Shield className="w-4 h-4 text-svo-navy" />
-          </div>
+          <img src="/soteria-logo.png" alt="Soteria Virtual Office" className="w-8 h-8 object-contain" />
           <span className="text-lg font-bold font-['Space_Grotesk'] text-foreground tracking-tight">
             Soteria<span className="text-svo-gold">.</span>
           </span>
