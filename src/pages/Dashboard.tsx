@@ -72,8 +72,8 @@ const Dashboard = () => {
                 <img src={org.logo_url} alt={org.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover shrink-0" />
               )}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <h2 className="font-bold text-foreground text-lg">{org.name}</h2>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
+                  <h2 className="font-bold text-foreground text-base sm:text-lg">{org.name}</h2>
                   {org.brand_tagline && (
                     <span className="text-xs text-accent flex items-center gap-1">
                       <Sparkles className="w-3 h-3" /> {org.brand_tagline}
