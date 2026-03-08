@@ -28,6 +28,9 @@ import WorkflowsModule from "./pages/WorkflowsModule";
 import TeamModule from "./pages/TeamModule";
 import SecurityModule from "./pages/SecurityModule";
 import JobPlanningModule from "./pages/JobPlanningModule";
+import AdminDashboard from "./pages/AdminDashboard";
+import SupportModule from "./pages/SupportModule";
+import SupportTicketDetail from "./pages/SupportTicketDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -63,6 +66,9 @@ const App = () => (
             <Route path="/team" element={<ProtectedRoute><TeamModule /></ProtectedRoute>} />
             <Route path="/security" element={<ProtectedRoute><SecurityModule /></ProtectedRoute>} />
             <Route path="/job-planning" element={<ProtectedRoute><JobPlanningModule /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/support" element={<ProtectedRoute><SupportModule /></ProtectedRoute>} />
+            <Route path="/support/:id" element={<ProtectedRoute><SupportTicketDetail /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

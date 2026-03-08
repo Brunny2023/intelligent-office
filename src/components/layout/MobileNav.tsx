@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Clock, CheckSquare, MessageSquare, Target, Menu, X, BarChart3, Shield, Users, FileText, Video, Megaphone, Brain, Crown, Workflow, Briefcase, DollarSign, Activity } from "lucide-react";
+import { Home, Clock, CheckSquare, MessageSquare, Target, Menu, X, BarChart3, Shield, Users, FileText, Video, Megaphone, Brain, Crown, Workflow, Briefcase, DollarSign, Activity, Ticket, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -26,6 +26,8 @@ const moreItems = [
   { icon: DollarSign, label: "Finance", path: "/finance" },
   { icon: Users, label: "Team", path: "/team" },
   { icon: Shield, label: "Security", path: "/security" },
+  { icon: Ticket, label: "Support", path: "/support" },
+  { icon: ShieldCheck, label: "Admin", path: "/admin" },
 ];
 
 const MobileNav = () => {
