@@ -28,6 +28,9 @@ import WorkflowsModule from "./pages/WorkflowsModule";
 import TeamModule from "./pages/TeamModule";
 import SecurityModule from "./pages/SecurityModule";
 import JobPlanningModule from "./pages/JobPlanningModule";
+import AdminDashboard from "./pages/AdminDashboard";
+import SupportModule from "./pages/SupportModule";
+import SupportTicketDetail from "./pages/SupportTicketDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
