@@ -209,7 +209,7 @@ const features = [
       "Multi-level approval chains with escalation",
       "Complete instance tracking with step logs",
     ],
-    image: featureExecution,
+    image: featureWorkflows,
     align: "left" as const,
   },
   {
