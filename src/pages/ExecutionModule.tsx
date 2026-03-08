@@ -27,7 +27,7 @@ const ExecutionModule = () => {
           <p className="text-muted-foreground mt-1">Manage projects, tasks & workflows</p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-[320px_1fr] gap-6">
+        <div className="grid lg:grid-cols-[320px_1fr] gap-4 md:gap-6">
           <div>
             <ProjectList
               onSelectProject={setSelectedProject}
