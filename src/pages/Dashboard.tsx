@@ -101,10 +101,10 @@ const Dashboard = () => {
         )}
 
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
             Welcome back, {profile?.full_name?.split(" ")[0] || "there"} 👋
           </h1>
-          <p className="text-muted-foreground mt-1">Here's your digital headquarters overview</p>
+          <p className="text-muted-foreground text-sm mt-1">Here's your digital headquarters overview</p>
         </motion.div>
 
         <div className="grid lg:grid-cols-3 gap-6">
