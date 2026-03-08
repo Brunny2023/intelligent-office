@@ -31,6 +31,8 @@ import JobPlanningModule from "./pages/JobPlanningModule";
 import AdminDashboard from "./pages/AdminDashboard";
 import SupportModule from "./pages/SupportModule";
 import SupportTicketDetail from "./pages/SupportTicketDetail";
+import SettingsModule from "./pages/SettingsModule";
+import FeaturesPage from "./pages/FeaturesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,6 +46,7 @@ const App = () => (
         <AuthProvider>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/features" element={<FeaturesPage />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -67,6 +70,7 @@ const App = () => (
             <Route path="/security" element={<ProtectedRoute><SecurityModule /></ProtectedRoute>} />
             <Route path="/job-planning" element={<ProtectedRoute><JobPlanningModule /></ProtectedRoute>} />
             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute><SettingsModule /></ProtectedRoute>} />
             <Route path="/support" element={<ProtectedRoute><SupportModule /></ProtectedRoute>} />
             <Route path="/support/:id" element={<ProtectedRoute><SupportTicketDetail /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />

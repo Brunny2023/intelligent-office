@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, Shield } from "lucide-react";
 
 const navLinks = [
-  { label: "Features", href: "#features" },
+  { label: "Features", href: "/features" },
   { label: "Security", href: "#trust" },
   { label: "Pricing", href: "#pricing" },
 ];
@@ -30,13 +30,23 @@ const Navbar = () => {
 
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {link.label}
-            </a>
+            link.href.startsWith("/") ? (
+              <Link
+                key={link.label}
+                to={link.href}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <a
+                key={link.label}
+                href={link.href}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {link.label}
+              </a>
+            )
           ))}
         </div>
 
@@ -64,14 +74,25 @@ const Navbar = () => {
           >
             <div className="px-4 py-4 flex flex-col gap-3">
               {navLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  onClick={() => setOpen(false)}
-                  className="text-sm font-medium text-muted-foreground py-2"
-                >
-                  {link.label}
-                </a>
+                link.href.startsWith("/") ? (
+                  <Link
+                    key={link.label}
+                    to={link.href}
+                    onClick={() => setOpen(false)}
+                    className="text-sm font-medium text-muted-foreground py-2"
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    onClick={() => setOpen(false)}
+                    className="text-sm font-medium text-muted-foreground py-2"
+                  >
+                    {link.label}
+                  </a>
+                )
               ))}
               <div className="flex flex-col gap-2 pt-2 border-t border-border/30">
                 <Link to="/signin"><Button variant="ghost" size="sm" className="w-full">Sign In</Button></Link>
