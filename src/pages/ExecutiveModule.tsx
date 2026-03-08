@@ -188,7 +188,7 @@ const ExecutiveModule = () => {
             <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2"><CheckSquare className="w-4 h-4 text-accent" /> Task Distribution</h3>
             {metrics.statusDist.length > 0 ? (
               <div className="flex flex-col sm:flex-row items-center gap-4">
-                <ResponsiveContainer width="60%" height={200}>
+                <ResponsiveContainer width="100%" height={200}>
                   <PieChart>
                     <Pie data={metrics.statusDist} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value">
                       {metrics.statusDist.map((_: any, i: number) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
