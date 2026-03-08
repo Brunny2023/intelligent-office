@@ -134,7 +134,7 @@ const features = [
       "Exportable audit trail for compliance",
       "Real-time activity feed for managers",
     ],
-    image: featureIntelligence,
+    image: featureActivity,
     align: "right" as const,
   },
   {
