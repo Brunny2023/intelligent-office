@@ -26,6 +26,8 @@ const moreItems = [
   { icon: DollarSign, label: "Finance", path: "/finance" },
   { icon: Users, label: "Team", path: "/team" },
   { icon: Shield, label: "Security", path: "/security" },
+  { icon: Ticket, label: "Support", path: "/support" },
+  { icon: ShieldCheck, label: "Admin", path: "/admin" },
 ];
 
 const MobileNav = () => {
