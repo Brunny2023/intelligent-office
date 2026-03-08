@@ -196,7 +196,7 @@ const ExecutiveModule = () => {
                     <Tooltip />
                   </PieChart>
                 </ResponsiveContainer>
-                <div className="flex-1 space-y-2">
+                <div className="flex flex-wrap sm:flex-col gap-2 justify-center sm:justify-start">
                   {metrics.statusDist.map((s: any, i: number) => (
                     <div key={s.name} className="flex items-center gap-2 text-xs">
                       <div className="w-3 h-3 rounded-sm" style={{ background: CHART_COLORS[i % CHART_COLORS.length] }} />

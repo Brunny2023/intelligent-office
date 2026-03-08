@@ -200,12 +200,12 @@ const TeamModule = () => {
               </div>
             ) : invitations.map((inv, i) => (
               <motion.div key={inv.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: i * 0.03 } }}
-                className="glass-card-strong rounded-xl p-4 flex items-center justify-between"
+                className="glass-card-strong rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
               >
-                <div>
-                  <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-muted-foreground" />
-                    <span className="font-medium text-foreground">{inv.email}</span>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Mail className="w-4 h-4 text-muted-foreground shrink-0" />
+                    <span className="font-medium text-foreground text-sm truncate">{inv.email}</span>
                     <Badge variant="outline" className={`text-[10px] ${roleColors[inv.role] || ""}`}>{roleLabels[inv.role] || inv.role}</Badge>
                     <Badge variant="outline" className={inv.status === "pending" ? "bg-svo-gold/10 text-svo-gold" : inv.status === "accepted" ? "bg-green-500/10 text-green-600" : "bg-muted text-muted-foreground"}>
                       {inv.status}
@@ -216,7 +216,7 @@ const TeamModule = () => {
                     {inv.status === "pending" && ` · Expires ${formatDistanceToNow(new Date(inv.expires_at), { addSuffix: true })}`}
                   </p>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 shrink-0">
                   {inv.status === "pending" && (
                     <>
                       <Button size="sm" variant="ghost" className="h-7 rounded-lg" onClick={() => copyInviteLink(inv.token)}><Copy className="w-3 h-3" /></Button>
