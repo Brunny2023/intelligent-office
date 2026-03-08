@@ -108,7 +108,7 @@ const Dashboard = () => {
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }} className="lg:col-span-1">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }} className="md:col-span-1 lg:col-span-1">
             <ClockInWidget />
           </motion.div>
           <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-4">
