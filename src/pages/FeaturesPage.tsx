@@ -6,7 +6,9 @@ import Footer from "@/components/landing/Footer";
 import { Button } from "@/components/ui/button";
 import {
   Clock, CheckSquare, MessageSquare, BarChart3, FileText,
-  Shield, Briefcase, DollarSign, ArrowRight
+  Shield, Briefcase, DollarSign, ArrowRight, Target, Video,
+  Megaphone, Activity, Brain, Crown, Workflow, Users, Ticket,
+  ShieldCheck, Settings
 } from "lucide-react";
 
 import featureAttendance from "@/assets/feature-attendance.jpg";
@@ -35,6 +37,21 @@ const features = [
     align: "right" as const,
   },
   {
+    id: "job-planning",
+    icon: Target,
+    title: "Job Planning & KPI Targets",
+    headline: "Set goals. Track progress. Hit targets.",
+    description: "Define structured job plans for every role with measurable targets tied to weekly, monthly, or quarterly periods. Employees track progress against KPIs in real-time, while managers monitor completion rates and intervene early when targets are at risk. Automatic reminders ensure nothing falls through the cracks.",
+    bullets: [
+      "Role-based job plan creation with descriptions",
+      "Measurable targets with progress tracking",
+      "Period-based goals: weekly, monthly, quarterly",
+      "Automated reminders and due date alerts",
+    ],
+    image: featureExecution,
+    align: "left" as const,
+  },
+  {
     id: "execution",
     icon: CheckSquare,
     title: "Project Execution Engine",
@@ -47,7 +64,7 @@ const features = [
       "Project-level progress tracking and reporting",
     ],
     image: featureExecution,
-    align: "left" as const,
+    align: "right" as const,
   },
   {
     id: "communication",
@@ -62,22 +79,52 @@ const features = [
       "Searchable message history across all channels",
     ],
     image: featureCommunication,
+    align: "left" as const,
+  },
+  {
+    id: "meetings",
+    icon: Video,
+    title: "Virtual Meetings & Video Conferencing",
+    headline: "Face-to-face collaboration, anywhere.",
+    description: "Launch video meetings directly from the platform with integrated audio/video conferencing powered by LiveKit. Schedule meetings, invite participants, and collaborate in real-time without switching to third-party tools. Perfect for distributed teams who need reliable, low-latency communication.",
+    bullets: [
+      "One-click video meeting creation",
+      "HD audio and video with screen sharing",
+      "Integrated with team channels and projects",
+      "No external app installation required",
+    ],
+    image: featureCommunication,
     align: "right" as const,
   },
   {
-    id: "intelligence",
-    icon: BarChart3,
-    title: "Executive Intelligence Layer",
-    headline: "Data-driven decisions at executive speed.",
-    description: "Comprehensive KPI dashboards that aggregate data from every module — attendance rates, task completion, budget utilization, and team performance — into a single executive view. AI-powered insights automatically detect anomalies, flag risks, and surface trends that would take hours to find manually.",
+    id: "announcements",
+    icon: Megaphone,
+    title: "Organization-Wide Announcements",
+    headline: "Important updates that never get missed.",
+    description: "Broadcast critical information across your entire organization or target specific departments. Announcements support priority levels, mandatory acknowledgement, and read receipts so you always know who has seen your message. Draft, schedule, and publish with full editorial control.",
     bullets: [
-      "Organization health score with trend analysis",
-      "Department-level performance comparisons",
-      "AI-generated anomaly detection and alerts",
-      "Custom KPI creation with target tracking",
+      "Priority-based announcements (low, medium, high, critical)",
+      "Mandatory acknowledgement with tracking",
+      "Department-targeted or organization-wide delivery",
+      "Draft, schedule, and publish workflows",
+    ],
+    image: featureCommunication,
+    align: "left" as const,
+  },
+  {
+    id: "activity",
+    icon: Activity,
+    title: "Activity Logs & Audit Trail",
+    headline: "Complete visibility into every action.",
+    description: "Every action on the platform is automatically logged — from task updates and document uploads to attendance changes and approval decisions. Filter by user, entity type, or date range to investigate issues, ensure compliance, and maintain a complete organizational audit trail.",
+    bullets: [
+      "Automatic logging of all platform actions",
+      "Filter by user, entity type, and date range",
+      "Exportable audit trail for compliance",
+      "Real-time activity feed for managers",
     ],
     image: featureIntelligence,
-    align: "left" as const,
+    align: "right" as const,
   },
   {
     id: "documents",
@@ -92,7 +139,67 @@ const features = [
       "Full-text search across all documents",
     ],
     image: featureDocuments,
+    align: "left" as const,
+  },
+  {
+    id: "intelligence",
+    icon: BarChart3,
+    title: "Executive Intelligence & KPI Dashboards",
+    headline: "Data-driven decisions at executive speed.",
+    description: "Comprehensive KPI dashboards that aggregate data from every module — attendance rates, task completion, budget utilization, and team performance — into a single executive view. Create custom KPIs with target values, track trends over time, and compare department-level performance at a glance.",
+    bullets: [
+      "Organization health score with trend analysis",
+      "Department-level performance comparisons",
+      "Custom KPI creation with target tracking",
+      "Period-based reporting with visual charts",
+    ],
+    image: featureIntelligence,
     align: "right" as const,
+  },
+  {
+    id: "ai-insights",
+    icon: Brain,
+    title: "AI-Powered Insights",
+    headline: "Intelligent analysis, automatically generated.",
+    description: "Leverage AI to automatically detect anomalies, flag risks, and surface trends that would take hours to find manually. AI-generated briefs summarize organizational health, highlight underperforming areas, and recommend actions — giving executives and managers a strategic advantage.",
+    bullets: [
+      "AI-generated anomaly detection and alerts",
+      "Automated organizational health briefs",
+      "Risk flagging with severity classification",
+      "Actionable recommendations for improvement",
+    ],
+    image: featureIntelligence,
+    align: "left" as const,
+  },
+  {
+    id: "executive",
+    icon: Crown,
+    title: "Executive Dashboard",
+    headline: "The CEO's command center.",
+    description: "A high-level executive view consolidating the most critical metrics from across the platform. See staff count, active projects, pending approvals, and financial summaries in one unified dashboard designed for C-suite decision-making. Drill down into any area for deeper analysis.",
+    bullets: [
+      "Consolidated C-suite metrics overview",
+      "Staff and department performance summary",
+      "Pending approvals and escalation tracking",
+      "One-click drill-down into any module",
+    ],
+    image: featureIntelligence,
+    align: "right" as const,
+  },
+  {
+    id: "workflows",
+    icon: Workflow,
+    title: "Automated Workflows",
+    headline: "Automate repetitive processes across your org.",
+    description: "Design multi-step workflows with configurable triggers, approval chains, and escalation rules. Automate leave approvals, document sign-offs, onboarding checklists, and more. Each workflow instance is tracked with full step-by-step logs showing who acted, when, and what happened.",
+    bullets: [
+      "Visual workflow builder with step configuration",
+      "Trigger-based automation (manual, scheduled, event)",
+      "Multi-level approval chains with escalation",
+      "Complete instance tracking with step logs",
+    ],
+    image: featureExecution,
+    align: "left" as const,
   },
   {
     id: "hr",
@@ -107,7 +214,7 @@ const features = [
       "Employee onboarding checklists and termination workflows",
     ],
     image: featureHr,
-    align: "left" as const,
+    align: "right" as const,
   },
   {
     id: "finance",
@@ -122,6 +229,51 @@ const features = [
       "Period-based financial reporting and exports",
     ],
     image: featureFinance,
+    align: "left" as const,
+  },
+  {
+    id: "team",
+    icon: Users,
+    title: "Team Management",
+    headline: "See your people. Manage your structure.",
+    description: "View your entire organizational roster with department assignments, job titles, and contact details. Invite new members via email, manage department structures, and maintain an up-to-date directory. Team data feeds into every other module for seamless cross-platform integration.",
+    bullets: [
+      "Organization-wide team directory",
+      "Department-based team structure",
+      "Email invitation system with role assignment",
+      "Profile management with job titles and contact info",
+    ],
+    image: featureHr,
+    align: "right" as const,
+  },
+  {
+    id: "support",
+    icon: Ticket,
+    title: "Support Ticketing System",
+    headline: "Get help fast. Resolve issues faster.",
+    description: "A built-in help desk where employees can submit support tickets with priority levels, track status updates, and communicate with admins through threaded replies. Admins see all tickets in a unified queue, can assign, escalate, and resolve issues efficiently with full conversation history.",
+    bullets: [
+      "Ticket creation with priority and description",
+      "Threaded conversation between users and admins",
+      "Status tracking: open, in-progress, resolved, closed",
+      "Admin queue with filtering and assignment",
+    ],
+    image: featureDocuments,
+    align: "left" as const,
+  },
+  {
+    id: "admin",
+    icon: ShieldCheck,
+    title: "Admin Dashboard & User Management",
+    headline: "Full control over your organization.",
+    description: "A comprehensive admin panel with organization-wide metrics, user role management, and operational oversight. View active staff counts, project statistics, and task completion rates. Manage user roles (owner, executive, manager, staff, contractor, auditor) and ensure the right people have the right access.",
+    bullets: [
+      "Organization-wide metrics and health overview",
+      "Role-based user management with 6 role levels",
+      "Real-time notification system for admins",
+      "Audit trail access and compliance monitoring",
+    ],
+    image: featureIntelligence,
     align: "right" as const,
   },
   {
@@ -139,6 +291,21 @@ const features = [
     image: featureSecurity,
     align: "left" as const,
   },
+  {
+    id: "settings",
+    icon: Settings,
+    title: "Organization Settings & Branding",
+    headline: "Make Soteria yours.",
+    description: "Customize your organization's identity with logo uploads, brand taglines, mission statements, and core values. Every aspect of your workspace reflects your brand. Settings are managed by organization owners and propagate across the entire platform instantly.",
+    bullets: [
+      "Logo upload with instant preview",
+      "Brand tagline and mission statement",
+      "Core values management",
+      "Organization-wide branding propagation",
+    ],
+    image: featureSecurity,
+    align: "right" as const,
+  },
 ];
 
 const FeatureBlock = ({ feature, index }: { feature: typeof features[0]; index: number }) => {
@@ -153,7 +320,6 @@ const FeatureBlock = ({ feature, index }: { feature: typeof features[0]; index: 
     >
       <div className="container mx-auto px-4 md:px-8">
         <div className={`flex flex-col ${isLeft ? "lg:flex-row" : "lg:flex-row-reverse"} items-center gap-8 lg:gap-16`}>
-          {/* Text */}
           <motion.div
             initial={{ opacity: 0, x: isLeft ? -40 : 40 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
@@ -188,7 +354,6 @@ const FeatureBlock = ({ feature, index }: { feature: typeof features[0]; index: 
             </ul>
           </motion.div>
 
-          {/* Screenshot */}
           <motion.div
             initial={{ opacity: 0, x: isLeft ? 40 : -40, y: 20 }}
             animate={inView ? { opacity: 1, x: 0, y: 0 } : {}}
@@ -219,7 +384,6 @@ const FeaturesPage = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <main>
-        {/* Hero */}
         <section ref={heroRef} className="pt-28 pb-16 md:pt-36 md:pb-24 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-4 md:px-8 text-center">
             <motion.div
@@ -235,6 +399,9 @@ const FeaturesPage = () => {
               <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
                 From attendance tracking to executive analytics, Soteria replaces 12+ separate tools with one unified platform designed for African businesses.
               </p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {features.length} powerful modules — zero app-switching.
+              </p>
               <div className="mt-8 flex flex-wrap justify-center gap-3">
                 <Link to="/signup">
                   <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold gap-2">
@@ -249,12 +416,10 @@ const FeaturesPage = () => {
           </div>
         </section>
 
-        {/* Feature Sections */}
         {features.map((f, i) => (
           <FeatureBlock key={f.id} feature={f} index={i} />
         ))}
 
-        {/* CTA */}
         <section className="py-20 md:py-28 bg-primary text-primary-foreground">
           <div className="container mx-auto px-4 md:px-8 text-center">
             <h2 className="text-2xl md:text-4xl font-bold mb-4">Ready to transform your workplace?</h2>
