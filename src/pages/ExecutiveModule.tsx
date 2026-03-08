@@ -126,9 +126,9 @@ const ExecutiveModule = () => {
   return (
     <AppLayout title="Executive Center">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2"><Crown className="w-7 h-7 text-accent" /> Executive Control Center</h1>
-          <p className="text-muted-foreground mt-1">Live organizational health dashboard</p>
+         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2"><Crown className="w-6 sm:w-7 h-6 sm:h-7 text-accent" /> Executive Control Center</h1>
+          <p className="text-muted-foreground text-sm mt-1">Live organizational health dashboard</p>
         </motion.div>
 
         {/* Health Score + KPI cards */}
