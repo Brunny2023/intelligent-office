@@ -132,7 +132,7 @@ const Dashboard = () => {
           <PerformanceWidget />
         </motion.div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           <div className="lg:col-span-2">
             <h2 className="text-lg font-semibold text-foreground mb-4">Modules</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
