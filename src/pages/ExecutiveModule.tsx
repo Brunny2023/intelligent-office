@@ -187,7 +187,7 @@ const ExecutiveModule = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.25 } }} className="glass-card-strong rounded-xl p-5">
             <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2"><CheckSquare className="w-4 h-4 text-accent" /> Task Distribution</h3>
             {metrics.statusDist.length > 0 ? (
-              <div className="flex items-center">
+              <div className="flex flex-col sm:flex-row items-center gap-4">
                 <ResponsiveContainer width="60%" height={200}>
                   <PieChart>
                     <Pie data={metrics.statusDist} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value">
