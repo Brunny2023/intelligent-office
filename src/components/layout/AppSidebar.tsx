@@ -8,7 +8,7 @@ import {
   FileText, LogOut, Building2, Activity, Video,
   ChevronLeft, Home, Briefcase, DollarSign,
   Megaphone, Brain, Crown, Workflow, Users, Target, Lock,
-  ShieldCheck, Ticket
+  ShieldCheck, Ticket, Settings
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
