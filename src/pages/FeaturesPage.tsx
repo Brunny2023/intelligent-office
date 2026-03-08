@@ -224,7 +224,7 @@ const features = [
       "Performance review system with auto-populated metrics",
       "Employee onboarding checklists and termination workflows",
     ],
-    image: featureHr,
+    image: featureTeam,
     align: "right" as const,
   },
   {
