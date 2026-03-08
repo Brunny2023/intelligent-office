@@ -123,7 +123,7 @@ const FeaturesShowcase = () => {
           <div className="mt-8 grid grid-cols-3 gap-4">
             {current.stats.map((stat) => (
               <div key={stat.label} className="bg-muted/50 rounded-xl p-4 text-center">
-                <p className="text-2xl md:text-3xl font-bold text-foreground">{stat.value}</p>
+                <p className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">{stat.value}</p>
                 <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
               </div>
             ))}
