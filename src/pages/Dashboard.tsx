@@ -61,7 +61,7 @@ const Dashboard = () => {
 
   return (
     <AppLayout title="Dashboard">
-      <div className="p-6 md:p-8 space-y-8">
+      <div className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8">
         {/* Org branding header */}
         {org && (org.brand_tagline || org.mission || (org.core_values && org.core_values.length > 0)) && (
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
