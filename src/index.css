@@ -157,6 +157,25 @@
     padding-bottom: env(safe-area-inset-bottom, 8px);
   }
 
+  /* Touch feedback for mobile */
+  @media (hover: none) {
+    .glass-card, .glass-card-strong {
+      -webkit-tap-highlight-color: transparent;
+    }
+  }
+
+  /* Prevent horizontal overflow */
+  .overflow-x-guard {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Responsive text utility */
+  .text-responsive-heading {
+    @apply text-xl sm:text-2xl md:text-3xl;
+  }
+
   /* Smooth scrollbar */
   .overflow-y-auto::-webkit-scrollbar {
     width: 4px;
@@ -170,5 +189,14 @@
   }
   .overflow-y-auto::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--muted-foreground) / 0.3);
+  }
+
+  /* Hide scrollbar on mobile for horizontal scroll */
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }

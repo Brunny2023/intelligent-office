@@ -61,7 +61,7 @@ const Dashboard = () => {
 
   return (
     <AppLayout title="Dashboard">
-      <div className="p-6 md:p-8 space-y-8">
+      <div className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8">
         {/* Org branding header */}
         {org && (org.brand_tagline || org.mission || (org.core_values && org.core_values.length > 0)) && (
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
@@ -69,11 +69,11 @@ const Dashboard = () => {
           >
             <div className="flex items-start gap-4">
               {org.logo_url && (
-                <img src={org.logo_url} alt={org.name} className="w-12 h-12 rounded-xl object-cover shrink-0" />
+                <img src={org.logo_url} alt={org.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover shrink-0" />
               )}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <h2 className="font-bold text-foreground text-lg">{org.name}</h2>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
+                  <h2 className="font-bold text-foreground text-base sm:text-lg">{org.name}</h2>
                   {org.brand_tagline && (
                     <span className="text-xs text-accent flex items-center gap-1">
                       <Sparkles className="w-3 h-3" /> {org.brand_tagline}
@@ -101,17 +101,17 @@ const Dashboard = () => {
         )}
 
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
             Welcome back, {profile?.full_name?.split(" ")[0] || "there"} 👋
           </h1>
-          <p className="text-muted-foreground mt-1">Here's your digital headquarters overview</p>
+          <p className="text-muted-foreground text-sm mt-1">Here's your digital headquarters overview</p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }} className="lg:col-span-1">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }} className="md:col-span-1 lg:col-span-1">
             <ClockInWidget />
           </motion.div>
-          <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="md:col-span-1 lg:col-span-2 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
             {quickStats.map((stat, i) => (
               <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.15 + i * 0.05 } }}
                 whileHover={{ y: -4, boxShadow: "0 8px 24px hsl(var(--svo-navy) / 0.1)", transition: { type: "spring", stiffness: 400, damping: 20 } }}
@@ -132,24 +132,24 @@ const Dashboard = () => {
           <PerformanceWidget />
         </motion.div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="md:col-span-1 lg:col-span-2">
             <h2 className="text-lg font-semibold text-foreground mb-4">Modules</h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
               {modules.map((mod, i) => (
                 <motion.button key={mod.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.2 + i * 0.03 } }}
                   whileHover={{ y: -6, boxShadow: "0 12px 32px hsl(var(--svo-navy) / 0.12)", transition: { type: "spring", stiffness: 400, damping: 20 } }}
                   whileTap={{ scale: 0.96 }}
-                  onClick={() => navigate(mod.path)} className="glass-card-strong rounded-xl p-5 text-left transition-all group"
+                  onClick={() => navigate(mod.path)} className="glass-card-strong rounded-xl p-4 md:p-5 text-left transition-all group"
                 >
                   <motion.div
                     whileHover={{ rotate: [0, -10, 10, 0], transition: { duration: 0.5 } }}
-                    className={`w-10 h-10 rounded-xl ${mod.color} flex items-center justify-center mb-3`}
+                    className={`w-8 h-8 md:w-10 md:h-10 rounded-xl ${mod.color} flex items-center justify-center mb-2 md:mb-3`}
                   >
-                    <mod.icon className="w-5 h-5" />
+                    <mod.icon className="w-4 h-4 md:w-5 md:h-5" />
                   </motion.div>
-                  <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors">{mod.label}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{mod.description}</p>
+                  <h3 className="font-semibold text-foreground text-sm md:text-base group-hover:text-accent transition-colors">{mod.label}</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground mt-0.5 md:mt-1 line-clamp-2">{mod.description}</p>
                 </motion.button>
               ))}
             </div>

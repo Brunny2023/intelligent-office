@@ -126,13 +126,13 @@ const ExecutiveModule = () => {
   return (
     <AppLayout title="Executive Center">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2"><Crown className="w-7 h-7 text-accent" /> Executive Control Center</h1>
-          <p className="text-muted-foreground mt-1">Live organizational health dashboard</p>
+         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2"><Crown className="w-6 sm:w-7 h-6 sm:h-7 text-accent" /> Executive Control Center</h1>
+          <p className="text-muted-foreground text-sm mt-1">Live organizational health dashboard</p>
         </motion.div>
 
         {/* Health Score + KPI cards */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
           {[
             { label: "Health Score", value: `${metrics.healthScore}%`, icon: TrendingUp, color: metrics.healthScore >= 70 ? "text-green-600" : metrics.healthScore >= 40 ? "text-svo-gold" : "text-destructive" },
             { label: "Present Today", value: `${metrics.presentToday}/${metrics.totalStaff}`, icon: Users, color: "text-svo-blue" },
@@ -187,8 +187,8 @@ const ExecutiveModule = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.25 } }} className="glass-card-strong rounded-xl p-5">
             <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2"><CheckSquare className="w-4 h-4 text-accent" /> Task Distribution</h3>
             {metrics.statusDist.length > 0 ? (
-              <div className="flex items-center">
-                <ResponsiveContainer width="60%" height={200}>
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <ResponsiveContainer width="100%" height={200}>
                   <PieChart>
                     <Pie data={metrics.statusDist} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value">
                       {metrics.statusDist.map((_: any, i: number) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
@@ -196,7 +196,7 @@ const ExecutiveModule = () => {
                     <Tooltip />
                   </PieChart>
                 </ResponsiveContainer>
-                <div className="flex-1 space-y-2">
+                <div className="flex flex-wrap sm:flex-col gap-2 justify-center sm:justify-start">
                   {metrics.statusDist.map((s: any, i: number) => (
                     <div key={s.name} className="flex items-center gap-2 text-xs">
                       <div className="w-3 h-3 rounded-sm" style={{ background: CHART_COLORS[i % CHART_COLORS.length] }} />

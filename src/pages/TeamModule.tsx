@@ -103,14 +103,14 @@ const TeamModule = () => {
   return (
     <AppLayout title="Team">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between">
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2"><Users className="w-7 h-7 text-accent" /> Team Management</h1>
-            <p className="text-muted-foreground mt-1">Manage members & send invitations</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2"><Users className="w-6 sm:w-7 h-6 sm:h-7 text-accent" /> Team Management</h1>
+            <p className="text-muted-foreground text-sm mt-1">Manage members & send invitations</p>
           </div>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="rounded-xl bg-accent text-accent-foreground"><UserPlus className="w-4 h-4 mr-1" /> Invite Member</Button>
+              <Button className="rounded-xl bg-accent text-accent-foreground w-full sm:w-auto"><UserPlus className="w-4 h-4 mr-1" /> Invite Member</Button>
             </DialogTrigger>
             <DialogContent className="rounded-2xl">
               <DialogHeader><DialogTitle>Invite Team Member</DialogTitle></DialogHeader>
@@ -147,7 +147,7 @@ const TeamModule = () => {
         </motion.div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
             { label: "Team Members", value: members.length, icon: Users },
             { label: "Pending Invites", value: invitations.filter(i => i.status === "pending").length, icon: Mail },
@@ -200,12 +200,12 @@ const TeamModule = () => {
               </div>
             ) : invitations.map((inv, i) => (
               <motion.div key={inv.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: i * 0.03 } }}
-                className="glass-card-strong rounded-xl p-4 flex items-center justify-between"
+                className="glass-card-strong rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
               >
-                <div>
-                  <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-muted-foreground" />
-                    <span className="font-medium text-foreground">{inv.email}</span>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Mail className="w-4 h-4 text-muted-foreground shrink-0" />
+                    <span className="font-medium text-foreground text-sm truncate">{inv.email}</span>
                     <Badge variant="outline" className={`text-[10px] ${roleColors[inv.role] || ""}`}>{roleLabels[inv.role] || inv.role}</Badge>
                     <Badge variant="outline" className={inv.status === "pending" ? "bg-svo-gold/10 text-svo-gold" : inv.status === "accepted" ? "bg-green-500/10 text-green-600" : "bg-muted text-muted-foreground"}>
                       {inv.status}
@@ -216,7 +216,7 @@ const TeamModule = () => {
                     {inv.status === "pending" && ` · Expires ${formatDistanceToNow(new Date(inv.expires_at), { addSuffix: true })}`}
                   </p>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 shrink-0">
                   {inv.status === "pending" && (
                     <>
                       <Button size="sm" variant="ghost" className="h-7 rounded-lg" onClick={() => copyInviteLink(inv.token)}><Copy className="w-3 h-3" /></Button>
