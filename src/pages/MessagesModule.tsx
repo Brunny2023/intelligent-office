@@ -4,7 +4,7 @@ import AppLayout from "@/components/layout/AppLayout";
 import ChannelList from "@/components/communication/ChannelList";
 import MessageThread from "@/components/communication/MessageThread";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, ArrowLeft, Hash } from "lucide-react";
 
 const MessagesModule = () => {
   const { loading } = useOrganization();
@@ -22,9 +22,9 @@ const MessagesModule = () => {
 
   return (
     <AppLayout title="Messages">
-      <div className="flex h-screen">
-        {/* Sidebar */}
-        <div className="w-64 border-r border-border bg-card/50 p-4 shrink-0 overflow-y-auto">
+      <div className="flex h-[calc(100vh-env(safe-area-inset-bottom,0px))] md:h-screen relative">
+        {/* Sidebar — hidden on mobile when a channel is selected */}
+        <div className={`${selectedChannel ? "hidden md:block" : "block"} w-full md:w-64 border-r border-border bg-card/50 p-4 shrink-0 overflow-y-auto`}>
           <motion.h2
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -38,8 +38,8 @@ const MessagesModule = () => {
           />
         </div>
 
-        {/* Main content */}
-        <div className="flex-1">
+        {/* Main content — full width on mobile */}
+        <div className={`${selectedChannel ? "block" : "hidden md:block"} flex-1`}>
           <AnimatePresence mode="wait">
             {selectedChannel ? (
               <motion.div
@@ -47,18 +47,31 @@ const MessagesModule = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="h-full"
+                className="h-full flex flex-col"
               >
-                <MessageThread
-                  channelId={selectedChannel.id}
-                  channelName={selectedChannel.name}
-                />
+                {/* Mobile back button */}
+                <div className="md:hidden flex items-center gap-2 p-3 border-b border-border bg-card/50">
+                  <button
+                    onClick={() => setSelectedChannel(null)}
+                    className="p-1.5 rounded-lg hover:bg-muted transition-colors"
+                  >
+                    <ArrowLeft className="w-5 h-5 text-muted-foreground" />
+                  </button>
+                  <Hash className="w-4 h-4 text-muted-foreground" />
+                  <span className="font-semibold text-foreground text-sm">{selectedChannel.name}</span>
+                </div>
+                <div className="flex-1">
+                  <MessageThread
+                    channelId={selectedChannel.id}
+                    channelName={selectedChannel.name}
+                  />
+                </div>
               </motion.div>
             ) : (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="h-full flex flex-col items-center justify-center text-center"
+                className="h-full flex flex-col items-center justify-center text-center p-6"
               >
                 <MessageSquare className="w-16 h-16 text-muted-foreground/20 mb-4" />
                 <h3 className="text-lg font-semibold text-foreground">Select a channel</h3>
