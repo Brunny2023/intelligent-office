@@ -45,37 +45,27 @@ const Onboarding = () => {
     }
     setLoading(true);
 
-    const { data: org, error: orgError } = await supabase
-      .from("organizations")
-      .insert({
-        name: form.orgName,
-        slug: form.slug,
-        mission: form.mission || null,
-        brand_tagline: form.tagline || null,
-        core_values: form.coreValues,
-        logo_url: form.logoUrl || null,
-      } as any)
-      .select()
-      .single();
+    const { data, error } = await supabase.rpc("complete_onboarding", {
+      _name: form.orgName,
+      _slug: form.slug,
+      _mission: form.mission || null,
+      _brand_tagline: form.tagline || null,
+      _core_values: form.coreValues,
+      _logo_url: form.logoUrl || null,
+    });
 
-    if (orgError) {
+    if (error) {
       setLoading(false);
-      toast.error(orgError.message.includes("duplicate") ? "This slug is already taken" : orgError.message);
+      toast.error(error.message);
       return;
     }
 
-    const { error: profileError } = await supabase
-      .from("profiles")
-      .update({ organization_id: org.id })
-      .eq("id", user.id);
-
-    if (profileError) { setLoading(false); toast.error(profileError.message); return; }
-
-    const { error: roleError } = await supabase
-      .from("user_roles")
-      .insert({ user_id: user.id, organization_id: org.id, role: "owner" });
-
-    if (roleError) { setLoading(false); toast.error(roleError.message); return; }
+    const result = data as any;
+    if (result?.error) {
+      setLoading(false);
+      toast.error(result.error);
+      return;
+    }
 
     setLoading(false);
     toast.success("Organization created!");

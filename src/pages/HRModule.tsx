@@ -210,7 +210,7 @@ const CandidatesTab = () => {
       </div>
 
       {/* Pipeline summary */}
-      <div className="grid grid-cols-6 gap-2">
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
         {Object.keys(stageColors).map(stage => (
           <div key={stage} className={`rounded-lg p-2 text-center ${stageColors[stage]}`}>
             <p className="text-lg font-bold">{candidates.filter(c => c.stage === stage).length}</p>
