@@ -197,7 +197,19 @@ const MessageThread = ({ channelId, channelName }: MessageThreadProps) => {
 
       {/* Input */}
       <div className="border-t border-border p-4 shrink-0">
+        {selectedFile && (
+          <div className="flex items-center gap-2 mb-2 text-xs text-muted-foreground bg-muted rounded-lg px-3 py-1.5">
+            <Paperclip className="w-3 h-3" /> {selectedFile.name}
+            <button onClick={() => setSelectedFile(null)} className="ml-auto text-destructive">×</button>
+          </div>
+        )}
         <div className="flex gap-2">
+          <label className="shrink-0 self-end">
+            <input type="file" className="hidden" onChange={e => setSelectedFile(e.target.files?.[0] || null)} />
+            <div className="h-10 w-10 rounded-xl border border-border flex items-center justify-center hover:bg-muted cursor-pointer transition-colors">
+              <Paperclip className="w-4 h-4 text-muted-foreground" />
+            </div>
+          </label>
           <Textarea
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
@@ -214,7 +226,7 @@ const MessageThread = ({ channelId, channelName }: MessageThreadProps) => {
           <Button
             size="icon"
             onClick={sendMessage}
-            disabled={sending || !newMessage.trim()}
+            disabled={sending || (!newMessage.trim() && !selectedFile)}
             className="rounded-xl bg-accent text-accent-foreground shrink-0 self-end h-10 w-10"
           >
             <Send className="w-4 h-4" />
