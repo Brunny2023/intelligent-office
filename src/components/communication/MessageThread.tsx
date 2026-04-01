@@ -14,6 +14,8 @@ interface Message {
   content: string;
   created_at: string;
   parent_message_id: string | null;
+  attachment_url?: string | null;
+  attachment_name?: string | null;
 }
 
 interface MessageThreadProps {
