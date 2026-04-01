@@ -33,6 +33,7 @@ import SupportModule from "./pages/SupportModule";
 import SupportTicketDetail from "./pages/SupportTicketDetail";
 import SettingsModule from "./pages/SettingsModule";
 import FeaturesPage from "./pages/FeaturesPage";
+import InterOrgModule from "./pages/InterOrgModule";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
