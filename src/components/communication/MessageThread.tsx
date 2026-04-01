@@ -92,20 +92,44 @@ const MessageThread = ({ channelId, channelName }: MessageThreadProps) => {
   }, [messages]);
 
   const sendMessage = async () => {
-    if (!user || !newMessage.trim()) return;
+    if (!user || (!newMessage.trim() && !selectedFile)) return;
     setSending(true);
+
+    let attachmentUrl = null;
+    let attachmentName = null;
+
+    if (selectedFile) {
+      const filePath = `chat/${channelId}/${Date.now()}-${selectedFile.name}`;
+      const { error: upErr } = await supabase.storage.from("documents").upload(filePath, selectedFile);
+      if (upErr) { toast.error("File upload failed"); setSending(false); return; }
+      attachmentUrl = filePath;
+      attachmentName = selectedFile.name;
+    }
 
     const { error } = await supabase.from("messages").insert({
       channel_id: channelId,
       user_id: user.id,
-      content: newMessage.trim(),
-    });
+      content: newMessage.trim() || `Shared file: ${attachmentName}`,
+      attachment_url: attachmentUrl,
+      attachment_name: attachmentName,
+    } as any);
 
     if (error) {
       toast.error("Failed to send message");
     }
     setNewMessage("");
+    setSelectedFile(null);
     setSending(false);
+  };
+
+  const downloadAttachment = async (url: string, name: string) => {
+    const { data, error } = await supabase.storage.from("documents").download(url);
+    if (error || !data) { toast.error("Download failed"); return; }
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(data);
+    link.download = name;
+    link.click();
+    URL.revokeObjectURL(link.href);
   };
 
   const formatTimestamp = (date: Date) => {
