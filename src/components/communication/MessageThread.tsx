@@ -180,6 +180,14 @@ const MessageThread = ({ channelId, channelName }: MessageThreadProps) => {
                     </span>
                   </div>
                   <p className="text-sm text-foreground/90 leading-relaxed">{msg.content}</p>
+                  {msg.attachment_url && msg.attachment_name && (
+                    <button
+                      onClick={() => downloadAttachment(msg.attachment_url!, msg.attachment_name!)}
+                      className="flex items-center gap-1 mt-1 text-xs text-accent hover:underline"
+                    >
+                      <Paperclip className="w-3 h-3" /> {msg.attachment_name}
+                    </button>
+                  )}
                 </motion.div>
               );
             })}
