@@ -27,6 +27,7 @@ const moreItems = [
   { icon: Users, label: "Team", path: "/team" },
   { icon: Shield, label: "Security", path: "/security" },
   { icon: Ticket, label: "Support", path: "/support" },
+  { icon: Globe, label: "Partner Connect", path: "/partner-connect" },
   { icon: ShieldCheck, label: "Admin", path: "/admin" },
   { icon: Settings, label: "Settings", path: "/settings" },
 ];
