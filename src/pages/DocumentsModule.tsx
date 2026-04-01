@@ -125,6 +125,22 @@ const DocumentsModule = () => {
           <p className="text-muted-foreground mt-1">Organization files, SOPs, policies & templates</p>
         </motion.div>
 
+        <Tabs defaultValue="files" className="space-y-4">
+          <TabsList className="bg-muted/50 rounded-xl p-1">
+            <TabsTrigger value="files" className="rounded-lg data-[state=active]:bg-card text-xs sm:text-sm">
+              <FolderOpen className="w-3.5 h-3.5 mr-1" /> Files
+            </TabsTrigger>
+            <TabsTrigger value="memos" className="rounded-lg data-[state=active]:bg-card text-xs sm:text-sm">
+              <FileText className="w-3.5 h-3.5 mr-1" /> Internal Memos
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="memos">
+            <InternalMemos />
+          </TabsContent>
+
+          <TabsContent value="files">
+
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card rounded-xl p-4">
