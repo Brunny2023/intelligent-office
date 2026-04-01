@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { motion, AnimatePresence } from "framer-motion";
 import { FileText, Plus, Download, Search, FolderOpen, File, FileImage, FileSpreadsheet, Upload, Eye, Trash2 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import InternalMemos from "@/components/documents/InternalMemos";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
