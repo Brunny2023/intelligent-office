@@ -591,6 +591,63 @@ export type Database = {
           },
         ]
       }
+      internal_memos: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string
+          id: string
+          organization_id: string
+          published_at: string | null
+          recipients: string[] | null
+          signature_id: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by: string
+          id?: string
+          organization_id: string
+          published_at?: string | null
+          recipients?: string[] | null
+          signature_id?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          organization_id?: string
+          published_at?: string | null
+          recipients?: string[] | null
+          signature_id?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "internal_memos_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "internal_memos_signature_id_fkey"
+            columns: ["signature_id"]
+            isOneToOne: false
+            referencedRelation: "user_signatures"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invitations: {
         Row: {
           accepted_at: string | null
@@ -940,6 +997,8 @@ export type Database = {
       }
       messages: {
         Row: {
+          attachment_name: string | null
+          attachment_url: string | null
           channel_id: string
           content: string
           created_at: string
@@ -949,6 +1008,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          attachment_name?: string | null
+          attachment_url?: string | null
           channel_id: string
           content: string
           created_at?: string
@@ -958,6 +1019,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          attachment_name?: string | null
+          attachment_url?: string | null
           channel_id?: string
           content?: string
           created_at?: string
@@ -1021,6 +1084,99 @@ export type Database = {
           {
             foreignKeyName: "notifications_organization_id_fkey"
             columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      org_conversations: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          org_a_id: string
+          org_b_id: string
+          subject: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          id?: string
+          org_a_id: string
+          org_b_id: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          org_a_id?: string
+          org_b_id?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "org_conversations_org_a_id_fkey"
+            columns: ["org_a_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "org_conversations_org_b_id_fkey"
+            columns: ["org_b_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      org_messages: {
+        Row: {
+          attachment_name: string | null
+          attachment_url: string | null
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          sender_id: string
+          sender_org_id: string
+        }
+        Insert: {
+          attachment_name?: string | null
+          attachment_url?: string | null
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          sender_id: string
+          sender_org_id: string
+        }
+        Update: {
+          attachment_name?: string | null
+          attachment_url?: string | null
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          sender_id?: string
+          sender_org_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "org_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "org_conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "org_messages_sender_org_id_fkey"
+            columns: ["sender_org_id"]
             isOneToOne: false
             referencedRelation: "organizations"
             referencedColumns: ["id"]
@@ -1567,6 +1723,30 @@ export type Database = {
           },
         ]
       }
+      user_signatures: {
+        Row: {
+          created_at: string
+          id: string
+          signature_data: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          signature_data: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          signature_data?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       workflow_instances: {
         Row: {
           completed_at: string | null
@@ -1753,6 +1933,17 @@ export type Database = {
     }
     Functions: {
       accept_invitation: { Args: { _token: string }; Returns: Json }
+      complete_onboarding: {
+        Args: {
+          _brand_tagline?: string
+          _core_values?: string[]
+          _logo_url?: string
+          _mission?: string
+          _name: string
+          _slug: string
+        }
+        Returns: Json
+      }
       get_user_org_id: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
