@@ -273,6 +273,8 @@ const DocumentsModule = () => {
             </AnimatePresence>
           </div>
         )}
+          </TabsContent>
+        </Tabs>
       </div>
     </AppLayout>
   );

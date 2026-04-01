@@ -74,6 +74,7 @@ const App = () => (
             <Route path="/settings" element={<ProtectedRoute><SettingsModule /></ProtectedRoute>} />
             <Route path="/support" element={<ProtectedRoute><SupportModule /></ProtectedRoute>} />
             <Route path="/support/:id" element={<ProtectedRoute><SupportTicketDetail /></ProtectedRoute>} />
+            <Route path="/partner-connect" element={<ProtectedRoute><InterOrgModule /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
