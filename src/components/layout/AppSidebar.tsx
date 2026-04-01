@@ -8,7 +8,7 @@ import {
   FileText, LogOut, Building2, Activity, Video,
   ChevronLeft, Home, Briefcase, DollarSign,
   Megaphone, Brain, Crown, Workflow, Users, Target, Lock,
-  ShieldCheck, Ticket, Settings
+  ShieldCheck, Ticket, Settings, Globe
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -32,6 +32,7 @@ const navItems = [
   { icon: DollarSign, label: "Finance", path: "/finance" },
   { icon: Users, label: "Team", path: "/team" },
   { icon: Lock, label: "Security", path: "/security" },
+  { icon: Globe, label: "Partner Connect", path: "/partner-connect" },
   { icon: Ticket, label: "Support", path: "/support" },
   { icon: Settings, label: "Settings", path: "/settings" },
 ];

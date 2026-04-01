@@ -210,7 +210,7 @@ const CandidatesTab = () => {
       </div>
 
       {/* Pipeline summary */}
-      <div className="grid grid-cols-6 gap-2">
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
         {Object.keys(stageColors).map(stage => (
           <div key={stage} className={`rounded-lg p-2 text-center ${stageColors[stage]}`}>
             <p className="text-lg font-bold">{candidates.filter(c => c.stage === stage).length}</p>
@@ -564,12 +564,12 @@ const HRModule = () => {
         </motion.div>
 
         <Tabs defaultValue="postings" className="space-y-4">
-          <TabsList className="bg-muted/50 rounded-xl p-1 flex-wrap">
-            <TabsTrigger value="postings" className="rounded-lg data-[state=active]:bg-card"><Briefcase className="w-4 h-4 mr-1.5" />Postings</TabsTrigger>
-            <TabsTrigger value="candidates" className="rounded-lg data-[state=active]:bg-card"><UserPlus className="w-4 h-4 mr-1.5" />Candidates</TabsTrigger>
-            <TabsTrigger value="staff" className="rounded-lg data-[state=active]:bg-card"><TrendingUp className="w-4 h-4 mr-1.5" />Staff Metrics</TabsTrigger>
-            <TabsTrigger value="reviews" className="rounded-lg data-[state=active]:bg-card"><ClipboardCheck className="w-4 h-4 mr-1.5" />Reviews</TabsTrigger>
-            <TabsTrigger value="terminations" className="rounded-lg data-[state=active]:bg-card"><UserMinus className="w-4 h-4 mr-1.5" />Offboarding</TabsTrigger>
+          <TabsList className="bg-muted/50 rounded-xl p-1 w-full grid grid-cols-3 sm:grid-cols-5 gap-1 h-auto">
+            <TabsTrigger value="postings" className="rounded-lg data-[state=active]:bg-card text-xs sm:text-sm px-2 py-1.5"><Briefcase className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="truncate">Postings</span></TabsTrigger>
+            <TabsTrigger value="candidates" className="rounded-lg data-[state=active]:bg-card text-xs sm:text-sm px-2 py-1.5"><UserPlus className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="truncate">Candidates</span></TabsTrigger>
+            <TabsTrigger value="staff" className="rounded-lg data-[state=active]:bg-card text-xs sm:text-sm px-2 py-1.5"><TrendingUp className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="truncate">Staff</span></TabsTrigger>
+            <TabsTrigger value="reviews" className="rounded-lg data-[state=active]:bg-card text-xs sm:text-sm px-2 py-1.5"><ClipboardCheck className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="truncate">Reviews</span></TabsTrigger>
+            <TabsTrigger value="terminations" className="rounded-lg data-[state=active]:bg-card text-xs sm:text-sm px-2 py-1.5"><UserMinus className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="truncate">Offboarding</span></TabsTrigger>
           </TabsList>
           <TabsContent value="postings"><JobPostingsTab /></TabsContent>
           <TabsContent value="candidates"><CandidatesTab /></TabsContent>

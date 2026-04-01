@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Hash } from "lucide-react";
+import { Send, Hash, Paperclip, Download } from "lucide-react";
 import { toast } from "sonner";
 import { format, isToday, isYesterday } from "date-fns";
 
@@ -14,6 +14,8 @@ interface Message {
   content: string;
   created_at: string;
   parent_message_id: string | null;
+  attachment_url?: string | null;
+  attachment_name?: string | null;
 }
 
 interface MessageThreadProps {
@@ -29,6 +31,7 @@ const MessageThread = ({ channelId, channelName }: MessageThreadProps) => {
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [profiles, setProfiles] = useState<Record<string, string>>({});
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const fetchMessages = async () => {
     const { data } = await supabase
@@ -89,20 +92,44 @@ const MessageThread = ({ channelId, channelName }: MessageThreadProps) => {
   }, [messages]);
 
   const sendMessage = async () => {
-    if (!user || !newMessage.trim()) return;
+    if (!user || (!newMessage.trim() && !selectedFile)) return;
     setSending(true);
+
+    let attachmentUrl = null;
+    let attachmentName = null;
+
+    if (selectedFile) {
+      const filePath = `chat/${channelId}/${Date.now()}-${selectedFile.name}`;
+      const { error: upErr } = await supabase.storage.from("documents").upload(filePath, selectedFile);
+      if (upErr) { toast.error("File upload failed"); setSending(false); return; }
+      attachmentUrl = filePath;
+      attachmentName = selectedFile.name;
+    }
 
     const { error } = await supabase.from("messages").insert({
       channel_id: channelId,
       user_id: user.id,
-      content: newMessage.trim(),
-    });
+      content: newMessage.trim() || `Shared file: ${attachmentName}`,
+      attachment_url: attachmentUrl,
+      attachment_name: attachmentName,
+    } as any);
 
     if (error) {
       toast.error("Failed to send message");
     }
     setNewMessage("");
+    setSelectedFile(null);
     setSending(false);
+  };
+
+  const downloadAttachment = async (url: string, name: string) => {
+    const { data, error } = await supabase.storage.from("documents").download(url);
+    if (error || !data) { toast.error("Download failed"); return; }
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(data);
+    link.download = name;
+    link.click();
+    URL.revokeObjectURL(link.href);
   };
 
   const formatTimestamp = (date: Date) => {
@@ -153,6 +180,14 @@ const MessageThread = ({ channelId, channelName }: MessageThreadProps) => {
                     </span>
                   </div>
                   <p className="text-sm text-foreground/90 leading-relaxed">{msg.content}</p>
+                  {msg.attachment_url && msg.attachment_name && (
+                    <button
+                      onClick={() => downloadAttachment(msg.attachment_url!, msg.attachment_name!)}
+                      className="flex items-center gap-1 mt-1 text-xs text-accent hover:underline"
+                    >
+                      <Paperclip className="w-3 h-3" /> {msg.attachment_name}
+                    </button>
+                  )}
                 </motion.div>
               );
             })}
@@ -162,7 +197,19 @@ const MessageThread = ({ channelId, channelName }: MessageThreadProps) => {
 
       {/* Input */}
       <div className="border-t border-border p-4 shrink-0">
+        {selectedFile && (
+          <div className="flex items-center gap-2 mb-2 text-xs text-muted-foreground bg-muted rounded-lg px-3 py-1.5">
+            <Paperclip className="w-3 h-3" /> {selectedFile.name}
+            <button onClick={() => setSelectedFile(null)} className="ml-auto text-destructive">×</button>
+          </div>
+        )}
         <div className="flex gap-2">
+          <label className="shrink-0 self-end">
+            <input type="file" className="hidden" onChange={e => setSelectedFile(e.target.files?.[0] || null)} />
+            <div className="h-10 w-10 rounded-xl border border-border flex items-center justify-center hover:bg-muted cursor-pointer transition-colors">
+              <Paperclip className="w-4 h-4 text-muted-foreground" />
+            </div>
+          </label>
           <Textarea
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
@@ -179,7 +226,7 @@ const MessageThread = ({ channelId, channelName }: MessageThreadProps) => {
           <Button
             size="icon"
             onClick={sendMessage}
-            disabled={sending || !newMessage.trim()}
+            disabled={sending || (!newMessage.trim() && !selectedFile)}
             className="rounded-xl bg-accent text-accent-foreground shrink-0 self-end h-10 w-10"
           >
             <Send className="w-4 h-4" />

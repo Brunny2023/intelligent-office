@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { motion, AnimatePresence } from "framer-motion";
 import { FileText, Plus, Download, Search, FolderOpen, File, FileImage, FileSpreadsheet, Upload, Eye, Trash2 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import InternalMemos from "@/components/documents/InternalMemos";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
@@ -122,6 +124,22 @@ const DocumentsModule = () => {
           <h1 className="text-2xl font-bold text-foreground">Documents & Knowledge Base</h1>
           <p className="text-muted-foreground mt-1">Organization files, SOPs, policies & templates</p>
         </motion.div>
+
+        <Tabs defaultValue="files" className="space-y-4">
+          <TabsList className="bg-muted/50 rounded-xl p-1">
+            <TabsTrigger value="files" className="rounded-lg data-[state=active]:bg-card text-xs sm:text-sm">
+              <FolderOpen className="w-3.5 h-3.5 mr-1" /> Files
+            </TabsTrigger>
+            <TabsTrigger value="memos" className="rounded-lg data-[state=active]:bg-card text-xs sm:text-sm">
+              <FileText className="w-3.5 h-3.5 mr-1" /> Internal Memos
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="memos">
+            <InternalMemos />
+          </TabsContent>
+
+          <TabsContent value="files">
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4">
@@ -255,6 +273,8 @@ const DocumentsModule = () => {
             </AnimatePresence>
           </div>
         )}
+          </TabsContent>
+        </Tabs>
       </div>
     </AppLayout>
   );
