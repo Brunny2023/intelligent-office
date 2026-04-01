@@ -31,6 +31,7 @@ const MessageThread = ({ channelId, channelName }: MessageThreadProps) => {
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [profiles, setProfiles] = useState<Record<string, string>>({});
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const fetchMessages = async () => {
     const { data } = await supabase
