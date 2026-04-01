@@ -32,6 +32,7 @@ const navItems = [
   { icon: DollarSign, label: "Finance", path: "/finance" },
   { icon: Users, label: "Team", path: "/team" },
   { icon: Lock, label: "Security", path: "/security" },
+  { icon: Globe, label: "Partner Connect", path: "/partner-connect" },
   { icon: Ticket, label: "Support", path: "/support" },
   { icon: Settings, label: "Settings", path: "/settings" },
 ];
