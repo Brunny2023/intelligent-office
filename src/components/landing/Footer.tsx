@@ -7,7 +7,7 @@ const Footer = () => (
         <div className="flex items-center gap-2">
           <img src="/myoffice-logo.png" alt="My Office" className="w-7 h-7 object-contain" />
           <span className="text-sm font-bold text-primary-foreground/80 font-['Space_Grotesk']">
-            Soteria<span className="text-svo-gold">.</span>
+            My Office<span className="text-svo-gold">.</span>
           </span>
         </div>
         <div className="flex items-center gap-6 text-xs text-primary-foreground/40">
@@ -18,7 +18,7 @@ const Footer = () => (
         </div>
         <div className="flex flex-col items-center md:items-end gap-1">
           <p className="text-xs text-primary-foreground/30">
-            © 2026 Virtual Office. All rights reserved.
+            © 2026 Soteria AI Technologies. All rights reserved.
           </p>
           <p className="text-xs text-primary-foreground/25">
             Powered by Soteria AI Technologies Limited.
