@@ -28,4 +28,4 @@ Disallow: /team
 Disallow: /security
 Disallow: /onboarding
 
-Sitemap: https://soteria.app/sitemap.xml
+Sitemap: https://myoffice.app/sitemap.xml

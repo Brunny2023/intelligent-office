@@ -137,7 +137,7 @@ const Onboarding = () => {
                 <div className="space-y-2">
                   <Label htmlFor="slug" className="text-foreground">Workspace URL</Label>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground whitespace-nowrap">soteria.app/</span>
+                    <span className="text-sm text-muted-foreground whitespace-nowrap">myoffice.app/</span>
                     <Input
                       id="slug"
                       placeholder="acme-corp"

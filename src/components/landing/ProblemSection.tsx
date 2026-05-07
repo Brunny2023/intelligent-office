@@ -46,7 +46,7 @@ const ProblemSection = () => {
               <div className="w-8 h-8 rounded-full bg-destructive/10 flex items-center justify-center">
                 <X className="w-4 h-4 text-destructive" />
               </div>
-              <span className="text-sm font-semibold text-destructive uppercase tracking-wide">Before Soteria</span>
+              <span className="text-sm font-semibold text-destructive uppercase tracking-wide">Before My Office</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {scattered.map((item) => (
@@ -71,7 +71,7 @@ const ProblemSection = () => {
               <div className="w-8 h-8 rounded-full bg-svo-gold/10 flex items-center justify-center">
                 <Check className="w-4 h-4 text-svo-gold" />
               </div>
-              <span className="text-sm font-semibold text-svo-gold uppercase tracking-wide">With Soteria</span>
+              <span className="text-sm font-semibold text-svo-gold uppercase tracking-wide">With My Office</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {unified.map((item) => (
