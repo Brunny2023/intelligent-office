@@ -24,7 +24,7 @@ const Navbar = () => {
         <a href="#" className="flex items-center gap-2">
           <img src="/myoffice-logo.png" alt="My Office" className="w-8 h-8 object-contain" />
           <span className="text-lg font-bold font-['Space_Grotesk'] text-foreground tracking-tight">
-            Soteria<span className="text-svo-gold">.</span>
+            My Office<span className="text-svo-gold">.</span>
           </span>
         </a>
 
