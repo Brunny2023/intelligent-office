@@ -11,6 +11,7 @@ import { Building2, ArrowRight, ArrowLeft, Plus, X, Sparkles } from "lucide-reac
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import LogoUpload from "@/components/LogoUpload";
+import { buildTenantUrl, TENANT_ROOT_DOMAIN, getTenantSlug } from "@/lib/tenant";
 
 const Onboarding = () => {
   const { user } = useAuth();
@@ -69,7 +70,15 @@ const Onboarding = () => {
 
     setLoading(false);
     toast.success("Organization created!");
-    navigate("/dashboard");
+
+    // If we're already on a tenant subdomain (or local dev), just go to dashboard.
+    // Otherwise redirect to the new org's subdomain so the URL reflects the tenant.
+    const currentTenant = getTenantSlug();
+    if (currentTenant || window.location.hostname.endsWith(".lovable.app") || window.location.hostname === "localhost") {
+      navigate("/dashboard");
+    } else {
+      window.location.href = `${buildTenantUrl(form.slug)}/dashboard`;
+    }
   };
 
   const slideVariants = {
@@ -136,16 +145,21 @@ const Onboarding = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="slug" className="text-foreground">Workspace URL</Label>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground whitespace-nowrap">myoffice.app/</span>
+                  <div className="flex items-center gap-1">
                     <Input
                       id="slug"
                       placeholder="acme-corp"
                       value={form.slug}
-                      onChange={e => setForm(f => ({ ...f, slug: e.target.value }))}
-                      className="h-11 rounded-xl"
+                      onChange={e => setForm(f => ({ ...f, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") }))}
+                      className="h-11 rounded-xl text-right"
                     />
+                    <span className="text-sm text-muted-foreground whitespace-nowrap">.{TENANT_ROOT_DOMAIN}</span>
                   </div>
+                  {form.slug && (
+                    <p className="text-xs text-muted-foreground">
+                      Your workspace will live at <span className="text-accent font-medium">{form.slug}.{TENANT_ROOT_DOMAIN}</span>
+                    </p>
+                  )}
                 </div>
                 <Button
                   type="button"
