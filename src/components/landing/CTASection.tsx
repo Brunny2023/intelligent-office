@@ -30,7 +30,7 @@ const CTASection = () => {
             <span className="gradient-text">Intelligence</span>
           </h2>
           <p className="mt-6 text-lg text-primary-foreground/60 max-w-xl mx-auto">
-            Join forward-thinking organizations already operating their entire company through My Office.
+            Join forward-thinking organizations already operating their entire company through Global Office.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link to="/signup">

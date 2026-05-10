@@ -13,19 +13,19 @@ const faqs = [
     a: "Most organizations are fully onboarded within 24 hours. Simply create your account, invite your team, and configure departments. No complex setup or IT involvement needed.",
   },
   {
-    q: "Is My Office suitable for remote and hybrid teams?",
-    a: "Absolutely. My Office was designed specifically for distributed teams. Daily check-ins, real-time presence tracking, and communication tools ensure your team stays connected regardless of location or timezone.",
+    q: "Is Global Office suitable for remote and hybrid teams?",
+    a: "Absolutely. Global Office was designed specifically for distributed teams. Daily check-ins, real-time presence tracking, and communication tools ensure your team stays connected regardless of location or timezone.",
   },
   {
     q: "How does the attendance system work?",
     a: "Team members check in daily through a simple 'Report for Duty' action. The system records timestamps, tracks presence throughout the day, and provides managers with real-time attendance dashboards and analytics.",
   },
   {
-    q: "Can we white-label My Office for our organization?",
+    q: "Can we white-label Global Office for our organization?",
     a: "Yes — our Enterprise plan includes full white-label capabilities with custom branding, logo, domain, and color schemes to make the platform truly yours.",
   },
   {
-    q: "What security standards does My Office meet?",
+    q: "What security standards does Global Office meet?",
     a: "We implement end-to-end encryption, role-based access control, complete data isolation between organizations, and full audit trails. We support GDPR and NDPR compliance requirements.",
   },
   {

@@ -306,7 +306,7 @@ const features = [
     id: "settings",
     icon: Settings,
     title: "Organization Settings & Branding",
-    headline: "Make My Office yours.",
+    headline: "Make Global Office yours.",
     description: "Customize your organization's identity with logo uploads, brand taglines, mission statements, and core values. Every aspect of your workspace reflects your brand. Settings are managed by organization owners and propagate across the entire platform instantly.",
     bullets: [
       "Logo upload with instant preview",
@@ -408,7 +408,7 @@ const FeaturesPage = () => {
                 <span className="text-accent">Digitally.</span>
               </h1>
               <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-                From attendance tracking to executive analytics, My Office replaces 12+ separate tools with one unified platform designed for African businesses.
+                From attendance tracking to executive analytics, Global Office replaces 12+ separate tools with one unified platform designed for African businesses.
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
                 {features.length} powerful modules — zero app-switching.
@@ -435,7 +435,7 @@ const FeaturesPage = () => {
           <div className="container mx-auto px-4 md:px-8 text-center">
             <h2 className="text-2xl md:text-4xl font-bold mb-4">Ready to transform your workplace?</h2>
             <p className="text-primary-foreground/70 max-w-xl mx-auto mb-8">
-              Join hundreds of organizations already using My Office to streamline operations.
+              Join hundreds of organizations already using Global Office to streamline operations.
             </p>
             <Link to="/signup">
               <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold gap-2">

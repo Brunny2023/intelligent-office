@@ -5,9 +5,9 @@ const Footer = () => (
     <div className="container mx-auto px-4 md:px-8">
       <div className="flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-2">
-          <img src="/myoffice-logo.png" alt="My Office" className="w-7 h-7 object-contain" />
+          <img src="/globaloffice-logo.png" alt="Global Office" className="w-7 h-7 object-contain" />
           <span className="text-sm font-bold text-primary-foreground/80 font-['Space_Grotesk']">
-            My Office<span className="text-svo-gold">.</span>
+            Global Office<span className="text-svo-gold">.</span>
           </span>
         </div>
         <div className="flex items-center gap-6 text-xs text-primary-foreground/40">
