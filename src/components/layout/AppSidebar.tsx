@@ -79,7 +79,7 @@ const AppSidebar = () => {
                 className="ml-3 overflow-hidden whitespace-nowrap"
               >
                 <p className="text-sm font-bold font-['Space_Grotesk'] text-sidebar-foreground">
-                  {org?.name || <>My Office<span className="text-sidebar-primary">.</span></>}
+                  {org?.name || <>Global Office<span className="text-sidebar-primary">.</span></>}
                 </p>
                 {org && <p className="text-[10px] text-sidebar-foreground/60 flex items-center gap-1"><Building2 className="w-2.5 h-2.5" /> {org.brand_tagline || org.slug}</p>}
               </motion.div>

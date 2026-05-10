@@ -28,4 +28,4 @@ Disallow: /team
 Disallow: /security
 Disallow: /onboarding
 
-Sitemap: https://myoffice.app/sitemap.xml
+Sitemap: https://globaloffice.cloud/sitemap.xml

@@ -12,7 +12,7 @@ const floatingCards = [
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden gradient-hero-bg pt-16">
+    <section className="relative min-h-[calc(100vh-4rem)] flex items-start md:items-center justify-center overflow-hidden gradient-hero-bg pt-16">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
@@ -38,7 +38,7 @@ const HeroSection = () => {
         }}
       />
 
-      <div className="container relative z-10 mx-auto px-4 md:px-8 py-20 md:py-32">
+      <div className="container relative z-10 mx-auto px-4 md:px-8 py-8 md:py-16">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
