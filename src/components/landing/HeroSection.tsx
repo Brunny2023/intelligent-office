@@ -2,6 +2,8 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Users, BarChart3, MessageSquare, Brain, Clock } from "lucide-react";
+import { useState } from "react";
+import DemoModal from "./DemoModal";
 
 const floatingCards = [
   { icon: Users, label: "12 Online", sub: "3 departments active", x: "5%", y: "20%", delay: 0.8 },
@@ -11,6 +13,7 @@ const floatingCards = [
 ];
 
 const HeroSection = () => {
+  const [demoOpen, setDemoOpen] = useState(false);
   return (
     <section className="relative min-h-[calc(100vh-4rem)] flex items-start md:items-center justify-center overflow-hidden gradient-hero-bg pt-16">
       {/* Animated background elements */}
@@ -92,6 +95,7 @@ const HeroSection = () => {
               variant="ghost"
               size="lg"
               className="text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/5 font-medium text-base h-12 rounded-xl"
+              onClick={() => setDemoOpen(true)}
             >
               <Play className="w-4 h-4 mr-2" />
               Watch Demo
@@ -134,6 +138,7 @@ const HeroSection = () => {
           ))}
         </div>
       </div>
+      <DemoModal open={demoOpen} onOpenChange={setDemoOpen} />
     </section>
   );
 };
