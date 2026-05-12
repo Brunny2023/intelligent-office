@@ -34,6 +34,7 @@ import SupportTicketDetail from "./pages/SupportTicketDetail";
 import SettingsModule from "./pages/SettingsModule";
 import FeaturesPage from "./pages/FeaturesPage";
 import InterOrgModule from "./pages/InterOrgModule";
+import Demo from "./pages/Demo";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,6 +49,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/features" element={<FeaturesPage />} />
+            <Route path="/demo" element={<Demo />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
