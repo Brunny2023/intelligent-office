@@ -5,6 +5,7 @@ import { useOrganization } from "@/hooks/useOrganization";
 import ClockInWidget from "@/components/attendance/ClockInWidget";
 import ActivityFeed from "@/components/activity/ActivityFeed";
 import PerformanceWidget from "@/components/dashboard/PerformanceWidget";
+import AIInsightWidget from "@/components/dashboard/AIInsightWidget";
 import AppLayout from "@/components/layout/AppLayout";
 import { motion } from "framer-motion";
 import {
@@ -156,8 +157,13 @@ const Dashboard = () => {
           </div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}>
-            <h2 className="text-lg font-semibold text-foreground mb-4">Recent Activity</h2>
-            <ActivityFeed scope="organization" limit={10} />
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-lg font-semibold text-foreground mb-4">Team Activity</h2>
+                <ActivityFeed scope="organization" limit={8} />
+              </div>
+              <AIInsightWidget />
+            </div>
           </motion.div>
         </div>
       </div>

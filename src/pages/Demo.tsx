@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Shield, Clock, CheckSquare, MessageSquare, BarChart3,
   Home, Users, Megaphone, Brain, Crown, Send, Plus,
-  TrendingUp, AlertTriangle, Sparkles, ArrowLeft, Search, Bell
+  TrendingUp, AlertTriangle, Sparkles, ArrowLeft, Search, Bell,
+  Play, Pause, MousePointer2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -61,18 +62,69 @@ const NAV = [
 
 type View = typeof NAV[number]["v"];
 
+const TOUR_SEQUENCE: View[] = ["dashboard", "attendance", "tasks", "messages", "team", "ai", "exec", "announcements"];
+const STEP_MS = 4500;
+
 const Demo = () => {
   const [view, setView] = useState<View>("dashboard");
+  const [autoplay, setAutoplay] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const [cursor, setCursor] = useState<{ x: number; y: number; click: boolean }>({ x: 50, y: 50, click: false });
+  const navRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const stageRef = useRef<HTMLDivElement | null>(null);
+
+  // Auto-cycle views
+  useEffect(() => {
+    if (!autoplay) return;
+    const start = Date.now();
+    const tick = setInterval(() => {
+      const elapsed = Date.now() - start;
+      setProgress(Math.min(100, (elapsed / STEP_MS) * 100));
+    }, 50);
+    const next = setTimeout(() => {
+      const idx = TOUR_SEQUENCE.indexOf(view);
+      const nextView = TOUR_SEQUENCE[(idx + 1) % TOUR_SEQUENCE.length];
+      setView(nextView);
+      setProgress(0);
+    }, STEP_MS);
+    return () => { clearInterval(tick); clearTimeout(next); };
+  }, [view, autoplay]);
+
+  // Animate cursor toward the active nav item, then "click"
+  useEffect(() => {
+    if (!autoplay) return;
+    const target = navRefs.current[view];
+    const stage = stageRef.current;
+    if (!target || !stage) return;
+    const t = target.getBoundingClientRect();
+    const s = stage.getBoundingClientRect();
+    const x = ((t.left + t.width / 2 - s.left) / s.width) * 100;
+    const y = ((t.top + t.height / 2 - s.top) / s.height) * 100;
+    setCursor({ x, y, click: false });
+    const id = setTimeout(() => setCursor((c) => ({ ...c, click: true })), 600);
+    const id2 = setTimeout(() => setCursor((c) => ({ ...c, click: false })), 1000);
+    return () => { clearTimeout(id); clearTimeout(id2); };
+  }, [view, autoplay]);
+
+  const onManual = (v: View) => { setAutoplay(false); setView(v); };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col" ref={stageRef}>
       {/* Demo banner */}
       <div className="bg-svo-gold text-svo-navy px-4 py-2 flex items-center justify-between text-sm flex-wrap gap-2">
         <div className="flex items-center gap-2 font-medium">
           <Sparkles className="w-4 h-4" />
-          You're viewing a live, read-only demo of Global Office with sample data.
+          Live animated demo of Global Office — auto-tour playing with sample data.
         </div>
         <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setAutoplay((a) => !a)}
+            className="h-8 text-svo-navy hover:bg-svo-navy/10"
+          >
+            {autoplay ? <><Pause className="w-3 h-3 mr-1" /> Pause tour</> : <><Play className="w-3 h-3 mr-1" /> Play tour</>}
+          </Button>
           <Link to="/">
             <Button size="sm" variant="ghost" className="h-8 text-svo-navy hover:bg-svo-navy/10">
               <ArrowLeft className="w-3 h-3 mr-1" /> Back to site
@@ -85,6 +137,16 @@ const Demo = () => {
           </Link>
         </div>
       </div>
+      {/* Tour progress bar */}
+      {autoplay && (
+        <div className="h-0.5 bg-svo-gold/20 relative">
+          <motion.div
+            className="absolute left-0 top-0 h-full bg-svo-gold"
+            style={{ width: `${progress}%` }}
+            transition={{ ease: "linear" }}
+          />
+        </div>
+      )}
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
@@ -102,7 +164,8 @@ const Demo = () => {
             {NAV.map((item) => (
               <button
                 key={item.v}
-                onClick={() => setView(item.v)}
+                ref={(el) => (navRefs.current[item.v] = el)}
+                onClick={() => onManual(item.v)}
                 className={cn(
                   "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors",
                   view === item.v
@@ -143,7 +206,7 @@ const Demo = () => {
             {NAV.map((item) => (
               <button
                 key={item.v}
-                onClick={() => setView(item.v)}
+                onClick={() => onManual(item.v)}
                 className={cn(
                   "shrink-0 px-3 py-1.5 rounded-full text-xs flex items-center gap-1.5",
                   view === item.v ? "bg-svo-gold text-svo-navy font-semibold" : "bg-muted text-muted-foreground"
@@ -176,6 +239,28 @@ const Demo = () => {
           </AnimatePresence>
         </main>
       </div>
+
+      {/* Animated cursor overlay */}
+      {autoplay && (
+        <motion.div
+          className="pointer-events-none fixed z-50 hidden md:block"
+          animate={{ left: `${cursor.x}%`, top: `${cursor.y}%` }}
+          transition={{ type: "spring", stiffness: 80, damping: 18 }}
+          style={{ transform: "translate(-50%, -50%)" }}
+        >
+          <div className="relative">
+            <MousePointer2 className="w-5 h-5 text-svo-navy fill-svo-gold drop-shadow-md" />
+            {cursor.click && (
+              <motion.div
+                initial={{ scale: 0, opacity: 0.6 }}
+                animate={{ scale: 2.5, opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="absolute inset-0 rounded-full bg-svo-gold"
+              />
+            )}
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 };
