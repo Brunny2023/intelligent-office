@@ -1,303 +1,64 @@
-# Excellent. I’m going to rewrite the plan properly so it **fully matches your original vision**:
-
-> A fully operational online office where staff log in daily, report for duty, collaborate, assign/receive jobs, generate reports, log activities, communicate individually and departmentally, share files, see KPIs/goals/performance metrics, receive announcements — operating globally without a physical office — and sellable to other companies.
-
-This version is **complete, operational, and product-ready**, not just a task manager foundation.
-
----
-
-# Soteria Virtual Office (SVO)
-
-## Complete Phase 1 Build Plan — Fully Aligned With Your Vision
-
----
-
-# 1️⃣ Premium Positioning & Landing Layer
-
-### Objective:
-
-Position SVO as an **AI-Native Corporate Operating System**, not a project tool.
-
-### Landing Page Includes:
-
-- Hero:  
-**“Run Your Entire Company From Anywhere.”**  
-Subtext: AI-powered Digital Headquarters for Modern Organizations.
-- Live Interactive Dashboard Preview:
-  - Attendance log
-  - Executive KPI panel
-  - Department activity feed
-  - Task pipeline
-  - AI insight widget
-- Core Value Sections:
-  1. Digital Attendance & Workforce Control
-  2. Unified Execution Engine
-  3. Corporate Communication Hub
-  4. Executive Intelligence Layer
-  5. Secure Knowledge Infrastructure
-- Security & Compliance Section
-- Multi-tenant White-label Section
-- Pricing Tiers (Productivity / Operations / Intelligence / Enterprise)
-
----
-
-# 2️⃣ Core Architecture — Multi-Tenant Corporate System
-
-### Each Organization Gets:
-
-- Dedicated workspace
-- Custom branding (logo, colors, domain)
-- Department structure
-- Role-based access system
-- Isolated data architecture
-
----
-
-# 3️⃣ Authentication & Organizational Framework
-
-### User Roles:
-
-- Owner
-- Executive
-- Manager
-- Staff
-- Contractor
-- Auditor (Read-only)
-
-### Capabilities:
-
-- Organization creation during signup
-- Department creation
-- Role assignment
-- Multi-factor authentication
-- IP restrictions (Enterprise tier)
-- Session management
-- Audit log foundation
-
----
-
-# 4️⃣ Attendance & Workforce Presence System (CRITICAL)
-
-This was missing before. Now fully included.
-
-### Features:
-
-- Daily “Report for Duty” check-in
-- Clock-in / Clock-out with timestamp
-- Optional:
-  - Geolocation validation
-  - IP validation
-- Attendance dashboard:
-  - Present
-  - Late
-  - Absent
-  - On leave
-- PTO & Leave Request Workflow
-- Daily summary auto-generated for managers
-- Executive attendance analytics
-
-This makes it a true **online office**, not just a task tool.
-
----
-
-# 5️⃣ Corporate Activity Logging System
-
-Every action is recorded:
-
-- Task created
-- Task assigned
-- Task completed
-- File uploaded
-- Announcement posted
-- KPI updated
-- User login/logout
-
-### Activity Feed Types:
-
-- Personal activity log
-- Department activity stream
-- Organization-wide live feed
-- Executive audit dashboard
-
-Now executives can truly “see operations.”
-
----
-
-# 6️⃣ Execution Engine (Operational Core)
-
-### Project & Task System:
-
-- Projects
-- Tasks
-- Subtasks
-- Recurring tasks
-- Dependencies
-- Status lifecycle:
-  - To Do
-  - In Progress
-  - Review
-  - Approved
-  - Completed
-  - Blocked
-
-### Smart Features:
-
-- AI workload balancing
-- Priority scoring
-- Skill-based task suggestions
-- Personal Daily Work Dashboard
-- Department workload heatmap
-
----
-
-# 7️⃣ Communication & Collaboration Hub
-
-Fully working — not stubbed.
-
-### Includes:
-
-- Direct messaging
-- Department channels
-- Company-wide channels
-- Threaded conversations
-- @mentions & role mentions
-- File sharing in chat
-- Searchable message history
-- Read receipts
-- Announcement broadcast system
-
-Optional (Phase 2 extension):
-
-- Video & screen sharing integration
-
----
-
-# 8️⃣ Document & Knowledge Management
-
-### Features:
-
-- Organization-wide file storage
-- Department folders
-- Version control
-- Role-based access permissions
-- File preview
-- File approval workflows
-- Task-linked file attachments
-- AI-powered document search
-- Knowledge Base / SOP library
-
-This makes it a corporate infrastructure platform.
-
----
-
-# 9️⃣ KPI, Goals & Performance Intelligence Layer
-
-This is where SVO becomes elite.
-
-### Company-Level:
-
-- Strategic goals
-- KPI dashboards
-- Performance summary panel
-
-### Department-Level:
-
-- Department goals
-- Productivity metrics
-- Completion rate tracking
-
-### Individual-Level:
-
-- Task completion rate
-- Attendance consistency
-- Performance score
-- KPI alignment score
-
-### Executive Dashboard:
-
-- Company health score
-- Productivity trends
-- Workforce efficiency index
-- Risk alerts (AI-powered)
-
----
-
-# 🔟 Announcement & Corporate Broadcast System
-
-### Features:
-
-- Admin broadcasts
-- Department announcements
-- Scheduled announcements
-- Mandatory read tracking
-- Acknowledgement confirmation
-- Executive-level visibility on read rate
-
----
-
-# 1️⃣1️⃣ AI Intelligence Layer (Foundational)
-
-Phase 1 includes:
-
-- AI task prioritization
-- AI performance insights
-- AI daily summary reports
-- AI meeting summary tool
-- AI anomaly detection:
-  - Sudden productivity drop
-  - Department overload
-  - Missed KPIs
-
----
-
-# 1️⃣2️⃣ Executive Control Center
-
-Special dashboard only for:
-
-- Owners
-- Executives
-
-### Includes:
-
-- Live workforce map
-- Attendance summary
-- Department performance comparison
-- Activity heatmap
-- Revenue-linked KPI panel (if integrated)
-- AI-generated “Company Briefing”
-
----
-
-# 1️⃣3️⃣ Workflow Automation Engine
-
-- Drag-and-drop workflow builder
-- Automated approvals
-- Escalation rules
-- Conditional logic triggers
-- SLA monitoring
-
----
-
-# 1️⃣4️⃣ Security & Compliance
-
-- End-to-end encryption
-- Role-based permissions
-- Data isolation per organization
-- Audit trail logs
-- Exportable compliance reports
-- NDPR / GDPR toggle support
-
----
-
-# 1️⃣5️⃣ Mobile-First Corporate Experience
-
-- Bottom navigation
-- Quick check-in button
-- Instant task overview
-- Push notifications
-- Executive snapshot view
-- Optimized for low bandwidth regions
-
----
-
-&nbsp;
+# Global Office — Investor Package Plan
+
+Private, unlisted `/investors` route (no nav/footer link) + a downloadable institutional fundraising package. Built in reviewed phases so nothing is fabricated and each phase is inspected before the next.
+
+## Ground rules (all phases)
+- **Evidence-based.** Every market stat carries a citation (Gartner, IDC, Statista, McKinsey, World Bank, IFC, GSMA, Endeavor, Partech Africa). Where a number is a strategic assumption, it is labeled as such.
+- **No fabricated traction.** Pre-seed, pre-launch is stated plainly. Story is built on founder–market fit, product readiness, and market timing — the same posture Endeavor/DFI-backed pre-seed decks use.
+- **Founder narrative** uses the bio you provided verbatim (lightly edited for concision), attributed to Wisdom Jonathans.
+- **Design bar.** Editorial, institutional — think Sequoia memos meets Stripe Atlas. Deep navy + editorial serif display, Space Grotesk for eyebrows, Inter for body. No SaaS-landing tropes, no gradients-as-decoration, no stock hero blobs.
+- **AI Investment Committee** simulated at the end of each phase; findings drive revisions before I mark a phase done.
+
+## Phase 1 — Private Investor Page + Core Narrative (this turn)
+Deliverables:
+1. `/investors` route (unlisted, robots noindex, not linked from nav/footer). Optional access-code gate (simple client-side passcode you set).
+2. Long-form investor narrative page covering: Vision · Why Now · Problem · Solution · Category (AI-BOS) · Product Architecture · Market (TAM/SAM/SOM with citations) · Competition & White Space · Business Model · Moat · Go-to-Market · Financial Assumptions (ranges, not fabricated actuals) · Team · Ask ($1.5M pre-seed, use of funds, 18–24mo milestones) · Risks · Exit Landscape.
+3. Downloads panel wired to the artifacts produced in later phases (grays out until each is generated).
+4. Executive Summary (inline + downloadable PDF-ready view).
+5. Investor One-Pager (printable).
+
+Design system additions (scoped to `/investors` only, no impact on existing app):
+- Editorial serif (Instrument Serif or Fraunces) for display; keep Space Grotesk + Inter elsewhere.
+- Navy #0B1533 / bone #F5F1E8 / accent gold #C9A24C. Thin rules, generous whitespace, footnote-style citations.
+
+## Phase 2 — Pitch Deck + Speaker Notes (next turn)
+- 22-slide investor deck (PPTX) matching your specified structure, generated with the pptx skill and QA'd slide-by-slide.
+- Speaker notes per slide.
+- Elevator / 5-min / 10-min / 30-min pitch scripts (DOCX).
+
+## Phase 3 — Financial Model + Business Plan (turn 3)
+- 3-year financial model (XLSX): revenue build, pricing tiers, CAC/LTV, gross margin, opex, burn, runway, sensitivity.
+- Strategic Business Plan (DOCX, ~40 pages).
+- Investment Memorandum (DOCX, institutional format).
+
+## Phase 4 — Market & Competitive Intelligence (turn 4)
+- Market Research Report (with cited TAM/SAM/SOM buildup for SSA SME software).
+- Competitive Analysis Report (Microsoft, Google, Zoho, Odoo, Bitrix24, Freshworks, Monday, ClickUp, HubSpot, Salesforce, SAP, NetSuite — positioning, pricing, gaps, white space).
+- Product Strategy + Technical Architecture Overview.
+- Brand Positioning Document.
+
+## Phase 5 — Diligence & Variants (turn 5)
+- Due Diligence Package + Data Room Checklist.
+- FAQ / Objection Responses / Founder Talking Points / Product Demo Script.
+- Variants: Grant Proposal · DFI version · Strategic Partnership version · Bank Financing version.
+- Company/Corporate Profile.
+
+## Phase 6 — Investment Committee Review + Revision (turn 6)
+- Simulated review by Angel · Seed VC · Growth VC · CVC · Family Office · DFI · Impact · Bank Credit Committee.
+- Consolidated red-team findings.
+- Revisions applied across all documents until institutional bar is met.
+
+## Technical notes (implementation details)
+- New route `/investors` in `src/App.tsx`, wrapped in a small `InvestorGate` component (localStorage passcode; default disabled, you toggle).
+- New page `src/pages/Investors.tsx` composed of section components under `src/components/investors/`.
+- `robots.txt` disallows `/investors`; page sets `<meta name="robots" content="noindex,nofollow">` via react-helmet-async (installing it if not present).
+- Downloadable artifacts saved to `/mnt/documents/global-office-investor-pack/` and surfaced with `<presentation-artifact>` tags each phase.
+- No changes to existing landing, dashboard, or auth flows.
+
+## What I need from you to start Phase 1
+Confirm:
+1. **Passcode gate** — yes (give me a passcode) or no (unlisted URL only)?
+2. **Company legal entity** to reference (e.g., "Global Office, a product of Soteria AI Technologies Limited") — is that correct?
+3. Anything you do NOT want stated publicly on the page (e.g., exact valuation range, geographic sequencing).
+
+On your confirmation I'll build Phase 1 end-to-end.
