@@ -93,7 +93,9 @@ const TOC = [
 ];
 
 const Downloads = [
-  { name: "Investor Pitch Deck (PDF/PPTX)", status: "in-progress", phase: "Phase 2" },
+  { name: "Investor Pitch Deck (PPTX, 22 slides)", status: "ready", phase: "Phase 2", href: "/investor-pack/Global-Office-Investor-Deck.pptx" },
+  { name: "Deck Speaker Notes (DOCX)", status: "ready", phase: "Phase 2", href: "/investor-pack/Global-Office-Investor-Deck-Speaker-Notes.docx" },
+  { name: "Pitch Scripts — Elevator / 5 / 10 / 30-min (DOCX)", status: "ready", phase: "Phase 2", href: "/investor-pack/Global-Office-Pitch-Scripts.docx" },
   { name: "Executive Summary", status: "in-progress", phase: "Phase 1" },
   { name: "Investor One-Pager", status: "in-progress", phase: "Phase 1" },
   { name: "Investment Memorandum", status: "queued", phase: "Phase 3" },
@@ -105,9 +107,8 @@ const Downloads = [
   { name: "Brand Positioning Document", status: "queued", phase: "Phase 4" },
   { name: "Due Diligence Package & Data Room Checklist", status: "queued", phase: "Phase 5" },
   { name: "Investor FAQ & Objection Handling", status: "queued", phase: "Phase 5" },
-  { name: "Elevator / 5-min / 10-min / 30-min Pitch Scripts", status: "queued", phase: "Phase 2" },
   { name: "Grant, DFI, Strategic-Partnership, Bank Financing Variants", status: "queued", phase: "Phase 5" },
-];
+] as { name: string; status: "ready" | "in-progress" | "queued"; phase: string; href?: string }[];
 
 const Investors = () => {
   useEffect(() => {
@@ -541,11 +542,15 @@ const Investors = () => {
               <tbody>
                 {Downloads.map((d) => (
                   <tr key={d.name} style={{ borderTop: `1px solid ${NAVY}22` }}>
-                    <td className="py-3 px-4" style={{ color: NAVY }}>{d.name}</td>
+                    <td className="py-3 px-4" style={{ color: NAVY }}>
+                      {d.href ? (
+                        <a href={d.href} download className="underline hover:no-underline" style={{ color: NAVY }}>{d.name}</a>
+                      ) : d.name}
+                    </td>
                     <td className="py-3 px-4 text-xs" style={{ color: `${NAVY}99` }}>{d.phase}</td>
                     <td className="py-3 px-4 text-right">
-                      <span className="text-[10px] tracking-[0.2em] uppercase px-2 py-1 border" style={{ borderColor: d.status === "in-progress" ? GOLD : `${NAVY}44`, color: d.status === "in-progress" ? GOLD : `${NAVY}77`, fontFamily: "'Space Grotesk', sans-serif" }}>
-                        {d.status === "in-progress" ? "In assembly" : "Queued"}
+                      <span className="text-[10px] tracking-[0.2em] uppercase px-2 py-1 border" style={{ borderColor: d.status === "ready" ? GOLD : d.status === "in-progress" ? GOLD : `${NAVY}44`, color: d.status === "ready" ? GOLD : d.status === "in-progress" ? GOLD : `${NAVY}77`, fontFamily: "'Space Grotesk', sans-serif", background: d.status === "ready" ? `${GOLD}15` : "transparent" }}>
+                        {d.status === "ready" ? "Download" : d.status === "in-progress" ? "In assembly" : "Queued"}
                       </span>
                     </td>
                   </tr>
