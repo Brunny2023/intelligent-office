@@ -104,9 +104,11 @@ const Downloads = [
   { name: "Competitive Analysis Report (DOCX)", status: "ready", phase: "Phase 4", href: "/investor-pack/Global-Office-Competitive-Analysis.docx" },
   { name: "Product Strategy & Technical Architecture (DOCX)", status: "ready", phase: "Phase 4", href: "/investor-pack/Global-Office-Product-Strategy.docx" },
   { name: "Brand Positioning Document (DOCX)", status: "ready", phase: "Phase 4", href: "/investor-pack/Global-Office-Brand-Positioning.docx" },
-  { name: "Due Diligence Package & Data Room Checklist", status: "queued", phase: "Phase 5" },
-  { name: "Investor FAQ & Objection Handling", status: "queued", phase: "Phase 5" },
-  { name: "Grant, DFI, Strategic-Partnership, Bank Financing Variants", status: "queued", phase: "Phase 5" },
+  { name: "Due Diligence Package & Data Room Checklist (DOCX)", status: "ready", phase: "Phase 5", href: "/investor-pack/Global-Office-Due-Diligence-Package.docx" },
+  { name: "Investor FAQ, Objections & Founder Talking Points (DOCX)", status: "ready", phase: "Phase 5", href: "/investor-pack/Global-Office-Investor-FAQ.docx" },
+  { name: "Package Variants — Grant · DFI · Strategic · Bank (DOCX)", status: "ready", phase: "Phase 5", href: "/investor-pack/Global-Office-Package-Variants.docx" },
+  { name: "Corporate Profile (DOCX)", status: "ready", phase: "Phase 5", href: "/investor-pack/Global-Office-Corporate-Profile.docx" },
+  { name: "Product Demo Script (DOCX)", status: "ready", phase: "Phase 5", href: "/investor-pack/Global-Office-Product-Demo-Script.docx" },
 ] as { name: string; status: "ready" | "in-progress" | "queued"; phase: string; href?: string }[];
 
 const Investors = () => {
@@ -548,9 +550,15 @@ const Investors = () => {
                     </td>
                     <td className="py-3 px-4 text-xs" style={{ color: `${NAVY}99` }}>{d.phase}</td>
                     <td className="py-3 px-4 text-right">
-                      <span className="text-[10px] tracking-[0.2em] uppercase px-2 py-1 border" style={{ borderColor: d.status === "ready" ? GOLD : d.status === "in-progress" ? GOLD : `${NAVY}44`, color: d.status === "ready" ? GOLD : d.status === "in-progress" ? GOLD : `${NAVY}77`, fontFamily: "'Space Grotesk', sans-serif", background: d.status === "ready" ? `${GOLD}15` : "transparent" }}>
-                        {d.status === "ready" ? "Download" : d.status === "in-progress" ? "In assembly" : "Queued"}
-                      </span>
+                      {d.status === "ready" && d.href ? (
+                        <a href={d.href} download className="inline-flex items-center gap-1 text-[10px] tracking-[0.2em] uppercase px-2 py-1 border no-underline hover:opacity-80 transition-opacity" style={{ borderColor: GOLD, color: GOLD, fontFamily: "'Space Grotesk', sans-serif", background: `${GOLD}15` }}>
+                          <Download className="w-3 h-3" /> Download
+                        </a>
+                      ) : (
+                        <span className="text-[10px] tracking-[0.2em] uppercase px-2 py-1 border" style={{ borderColor: d.status === "in-progress" ? GOLD : `${NAVY}44`, color: d.status === "in-progress" ? GOLD : `${NAVY}77`, fontFamily: "'Space Grotesk', sans-serif" }}>
+                          {d.status === "in-progress" ? "In assembly" : "Queued"}
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))}
