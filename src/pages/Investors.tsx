@@ -548,9 +548,15 @@ const Investors = () => {
                     </td>
                     <td className="py-3 px-4 text-xs" style={{ color: `${NAVY}99` }}>{d.phase}</td>
                     <td className="py-3 px-4 text-right">
-                      <span className="text-[10px] tracking-[0.2em] uppercase px-2 py-1 border" style={{ borderColor: d.status === "ready" ? GOLD : d.status === "in-progress" ? GOLD : `${NAVY}44`, color: d.status === "ready" ? GOLD : d.status === "in-progress" ? GOLD : `${NAVY}77`, fontFamily: "'Space Grotesk', sans-serif", background: d.status === "ready" ? `${GOLD}15` : "transparent" }}>
-                        {d.status === "ready" ? "Download" : d.status === "in-progress" ? "In assembly" : "Queued"}
-                      </span>
+                      {d.status === "ready" && d.href ? (
+                        <a href={d.href} download className="inline-flex items-center gap-1 text-[10px] tracking-[0.2em] uppercase px-2 py-1 border no-underline hover:opacity-80 transition-opacity" style={{ borderColor: GOLD, color: GOLD, fontFamily: "'Space Grotesk', sans-serif", background: `${GOLD}15` }}>
+                          <Download className="w-3 h-3" /> Download
+                        </a>
+                      ) : (
+                        <span className="text-[10px] tracking-[0.2em] uppercase px-2 py-1 border" style={{ borderColor: d.status === "in-progress" ? GOLD : `${NAVY}44`, color: d.status === "in-progress" ? GOLD : `${NAVY}77`, fontFamily: "'Space Grotesk', sans-serif" }}>
+                          {d.status === "in-progress" ? "In assembly" : "Queued"}
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))}
