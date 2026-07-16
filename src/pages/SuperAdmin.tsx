@@ -46,7 +46,7 @@ const SuperAdmin = () => {
         supabase.rpc("get_platform_tenants"),
         supabase.from("activity_logs").select("*").order("created_at", { ascending: false }).limit(200),
       ]);
-      if (statsRes.data && !(statsRes.data as any).error) setStats(statsRes.data as PlatformStats);
+      if (statsRes.data && !(statsRes.data as any).error) setStats(statsRes.data as unknown as PlatformStats);
       if (tenantsRes.data) setTenants(tenantsRes.data as Tenant[]);
       if (activityRes.data) setActivity(activityRes.data);
 
