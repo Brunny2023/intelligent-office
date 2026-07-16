@@ -2,6 +2,11 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Download, Lock, Printer } from "lucide-react";
+import {
+  InvestorBrief, IntelligenceStack, MoatFlywheel, IncumbentGrid,
+  ProductProof, DemoVideoBlock, PositioningMatrix, ValidationCards,
+  RoadmapTimeline, ConfidenceCards, ClosingStatement,
+} from "@/components/investors/InvestorSections";
 
 // ---------------------------------------------------------------------------
 // Global Office — Private Investor Brief
@@ -73,23 +78,33 @@ const Stat = ({ figure, label, note }: { figure: string; label: string; note?: s
 );
 
 const TOC = [
-  { id: "thesis", label: "01 — Thesis" },
-  { id: "why-now", label: "02 — Why Now" },
-  { id: "problem", label: "03 — Problem" },
-  { id: "solution", label: "04 — Solution" },
-  { id: "category", label: "05 — Category" },
-  { id: "product", label: "06 — Product & Architecture" },
-  { id: "market", label: "07 — Market" },
-  { id: "competition", label: "08 — Competition" },
-  { id: "model", label: "09 — Business Model" },
-  { id: "gtm", label: "10 — Go-to-Market" },
-  { id: "moat", label: "11 — Defensibility" },
-  { id: "financials", label: "12 — Financial Framework" },
-  { id: "team", label: "13 — Team" },
-  { id: "ask", label: "14 — The Ask" },
-  { id: "risks", label: "15 — Risks" },
-  { id: "exit", label: "16 — Exit Landscape" },
-  { id: "downloads", label: "17 — Materials" },
+  { id: "brief", label: "01 — 5-Min Brief" },
+  { id: "thesis", label: "02 — Thesis" },
+  { id: "missing-layer", label: "03 — The Missing Layer" },
+  { id: "flywheel", label: "04 — Compounding Moat" },
+  { id: "incumbents", label: "05 — Why Incumbents Can't Copy" },
+  { id: "why-now", label: "06 — Why Now" },
+  { id: "problem", label: "07 — Problem" },
+  { id: "solution", label: "08 — Solution" },
+  { id: "product-proof", label: "09 — Product Proof" },
+  { id: "demo-video", label: "10 — Product Walkthrough" },
+  { id: "category", label: "11 — Category" },
+  { id: "product", label: "12 — Architecture" },
+  { id: "market", label: "13 — Market" },
+  { id: "positioning", label: "14 — Positioning" },
+  { id: "competition", label: "15 — Competition" },
+  { id: "model", label: "16 — Business Model" },
+  { id: "gtm", label: "17 — Go-to-Market" },
+  { id: "moat", label: "18 — Defensibility" },
+  { id: "validation", label: "19 — Traction" },
+  { id: "roadmap", label: "20 — Roadmap" },
+  { id: "confidence", label: "21 — At a Glance" },
+  { id: "financials", label: "22 — Financials" },
+  { id: "team", label: "23 — Team" },
+  { id: "ask", label: "24 — The Ask" },
+  { id: "risks", label: "25 — Risks" },
+  { id: "exit", label: "26 — Exit Landscape" },
+  { id: "downloads", label: "27 — Materials" },
 ];
 
 const Downloads = [
@@ -132,7 +147,7 @@ const Investors = () => {
     };
 
     const undoRobots = setMeta("robots", "noindex,nofollow,noarchive,nosnippet");
-    const undoDesc = setMeta("description", "Confidential investor brief for Global Office — the AI Business Operating System for modern organizations.");
+    const undoDesc = setMeta("description", "Confidential investor brief for Global Office — the Organizational Intelligence Layer for the modern enterprise.");
 
     // Load editorial serif for this page only
     const link = document.createElement("link");
@@ -164,10 +179,10 @@ const Investors = () => {
               Global Office · Investor Brief · MMXXVI
             </p>
             <h1 className="mt-6 text-5xl md:text-7xl lg:text-8xl leading-[0.95] max-w-5xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontWeight: 400, letterSpacing: "-0.02em" }}>
-              The operating system for the intelligent enterprise.
+              The Organizational Intelligence Layer for the modern enterprise.
             </h1>
             <p className="mt-8 max-w-2xl text-lg md:text-xl leading-[1.6]" style={{ color: `${NAVY}CC` }}>
-              A private brief on Global Office — a product of Soteria AI Technologies Limited — and the case for building the AI Business Operating System from the emerging world outward.
+              Microsoft owns documents. Google owns communication. Salesforce owns customers. SAP owns resources. Notion owns knowledge. <strong style={{ color: NAVY }}>Global Office owns organizational intelligence</strong> — delivered as an AI Business Operating System.
             </p>
           </div>
           <div className="flex flex-col gap-2 print:hidden">
@@ -207,22 +222,28 @@ const Investors = () => {
       </nav>
 
       <main className="max-w-7xl mx-auto px-6 md:px-12">
-        <Section id="thesis" eyebrow="01 — Investment Thesis" title="Every organization on earth needs an operating system. Global Office is building it.">
+        <InvestorBrief />
+
+        <Section id="thesis" eyebrow="02 — Investment Thesis" title="Organizations have data. They do not have intelligence. Global Office builds the layer that turns one into the other.">
           <p>
             Modern businesses run on ten to thirty disconnected tools — email, chat, spreadsheets, project trackers, HR platforms, finance systems, CRMs, storage drives, video meetings, and ad-hoc AI assistants. The result is not productivity. It is coordination overhead. Work fragments across surfaces. Context is lost. Decisions are made without evidence. AI, in this environment, is an add-on to chaos rather than an amplifier of order.
           </p>
           <p>
-            Global Office collapses this fragmentation into a single AI-native operating system for the enterprise — a persistent, intelligent surface where attendance, execution, communication, knowledge, finance, and executive intelligence live together, learn from every action, and act on the organization's behalf.
+            Global Office collapses this fragmentation into the <strong>Organizational Intelligence Layer</strong> — a persistent, graph-native substrate where every action, artifact, and decision is a first-class citizen. The AI Business Operating System is how customers experience it. The intelligence layer is what compounds.
           </p>
           <p>
-            The wedge is deliberate: small and medium-sized businesses in Sub-Saharan Africa — where 90% of employment sits inside SMEs<Cite ns={[5]}/>, where mobile-first infrastructure has leapfrogged legacy IT<Cite ns={[8]}/>, and where no incumbent has built a category-defining operating layer. From this base, Global Office expands across EMEA, the UK, and North America along the same trajectory that produced Shopify, MercadoLibre, and Nubank — category creators born outside Silicon Valley.
+            The ICP is global-first — SMEs and mid-market organizations across the United States, United Kingdom, European Union, and other developed economies where AI-native operating layers command the strongest willingness to pay, followed by an emerging-markets expansion motion. Traditional software manages functions. Global Office manages organizational intelligence.
           </p>
           <p className="mt-8 pl-6 border-l-2 italic text-lg" style={{ borderColor: GOLD, fontFamily: "'Instrument Serif', Georgia, serif" }}>
-            The next trillion-dollar software company will not be a better CRM, a better ERP, or a better collaboration tool. It will be the operating system those categories become obsolete inside of.
+            The next trillion-dollar software company will not be a better CRM, ERP, or collaboration tool. It will be the intelligence layer those categories become obsolete inside of.
           </p>
         </Section>
 
-        <Section id="why-now" eyebrow="02 — Why Now" title="Three forces have converged for the first time.">
+        <IntelligenceStack />
+        <MoatFlywheel />
+        <IncumbentGrid />
+
+        <Section id="why-now" eyebrow="06 — Why Now" title="Three forces have converged for the first time.">
           <ol className="space-y-6 list-none pl-0">
             <li>
               <span className="block text-sm tracking-[0.2em] uppercase mb-1" style={{ color: GOLD }}>i. Generative AI has crossed the utility threshold</span>
@@ -251,7 +272,7 @@ const Investors = () => {
           </p>
         </Section>
 
-        <Section id="solution" eyebrow="04 — The Solution" title="One system. One graph. One intelligence layer.">
+        <Section id="solution" eyebrow="08 — The Solution" title="One graph. One intelligence layer. One system.">
           <p>
             Global Office replaces the disconnected stack with a single, AI-native operating system organized around how work actually happens: people, tasks, conversations, documents, decisions, and outcomes — all bound into one knowledge graph, all observed by one intelligence layer, all extensible through one workflow engine.
           </p>
@@ -272,7 +293,10 @@ const Investors = () => {
           </div>
         </Section>
 
-        <Section id="category" eyebrow="05 — Category Definition" title="Global Office is not office software. It is the AI Business Operating System.">
+        <ProductProof />
+        <DemoVideoBlock />
+
+        <Section id="category" eyebrow="11 — Category Definition" title="Global Office is not office software. It is the Organizational Intelligence Layer.">
           <p>
             Every prior category — ERP, CRM, collaboration, project management, HRIS, BI — was a surface for a function. Global Office is a substrate for the organization itself. The distinction is architectural, not marketing.
           </p>
@@ -290,7 +314,7 @@ const Investors = () => {
           </ol>
         </Section>
 
-        <Section id="product" eyebrow="06 — Product & Architecture" title="Built as an ecosystem, not a feature list.">
+        <Section id="product" eyebrow="12 — Product & Architecture" title="Built as an ecosystem, not a feature list.">
           <div className="not-prose grid md:grid-cols-2 gap-10 mt-4">
             <div>
               <div className="text-xs tracking-[0.22em] uppercase mb-3" style={{ color: GOLD }}>Modules Shipped</div>
@@ -327,7 +351,7 @@ const Investors = () => {
           </p>
         </Section>
 
-        <Section id="market" eyebrow="07 — Market Opportunity" title="A $1T+ software market, an underserved emerging-world entry point.">
+        <Section id="market" eyebrow="13 — Market Opportunity" title="A $1T+ software market with a developed-market lead motion.">
           <div className="not-prose grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
             <div className="p-6 border" style={{ borderColor: NAVY }}>
               <div className="text-xs tracking-[0.22em] uppercase" style={{ color: GOLD }}>TAM</div>
@@ -353,7 +377,9 @@ const Investors = () => {
           </p>
         </Section>
 
-        <Section id="competition" eyebrow="08 — Competition & White Space" title="No competitor occupies the AI-BOS position. Every incumbent is optimized against retrofitting into it.">
+        <PositioningMatrix />
+
+        <Section id="competition" eyebrow="15 — Competition & White Space" title="No competitor occupies the intelligence-layer position. Every incumbent is optimized against retrofitting into it.">
           <div className="not-prose overflow-x-auto -mx-6 md:mx-0">
             <table className="w-full text-sm min-w-[720px]" style={{ borderCollapse: "collapse" }}>
               <thead>
@@ -389,7 +415,7 @@ const Investors = () => {
           </p>
         </Section>
 
-        <Section id="model" eyebrow="09 — Business Model" title="Per-seat subscription, tiered by capability, with AI usage metering.">
+        <Section id="model" eyebrow="16 — Business Model" title="Per-seat subscription, tiered by capability, with AI usage metering.">
           <ul className="list-none pl-0 space-y-3">
             <li><strong style={{ color: NAVY }}>Starter.</strong> Core modules for teams up to 25. Priced for local affordability in launch markets.</li>
             <li><strong style={{ color: NAVY }}>Business.</strong> Full suite for 25–250 employees. Workflow engine, executive control, AI credits included.</li>
@@ -401,7 +427,7 @@ const Investors = () => {
           </p>
         </Section>
 
-        <Section id="gtm" eyebrow="10 — Go-to-Market" title="Product-led at the base, partner-led at the top, ecosystem-led at scale.">
+        <Section id="gtm" eyebrow="17 — Go-to-Market" title="Product-led at the base, partner-led at the top, ecosystem-led at scale.">
           <ol className="list-decimal pl-6 space-y-3">
             <li><strong style={{ color: NAVY }}>Product-led entry.</strong> Self-serve signup and org creation. Free tier for teams under 10. Time-to-value under 15 minutes.</li>
             <li><strong style={{ color: NAVY }}>Design-partner cohort.</strong> 20–30 SMEs across NG, KE, ZA, GH — deep engagement, product co-creation, reference stories.</li>
@@ -411,7 +437,7 @@ const Investors = () => {
           </ol>
         </Section>
 
-        <Section id="moat" eyebrow="11 — Defensibility" title="The moat compounds every time a customer uses the product.">
+        <Section id="moat" eyebrow="18 — Defensibility" title="The moat compounds every time a customer uses the product.">
           <div className="not-prose grid md:grid-cols-2 gap-8 mt-4">
             {[
               ["Data & Graph Moat", "Every action enriches the org's knowledge graph. Switching means abandoning institutional memory."],
@@ -429,7 +455,11 @@ const Investors = () => {
           </div>
         </Section>
 
-        <Section id="financials" eyebrow="12 — Financial Framework" title="Framework, not fabricated actuals. The full model is a Phase-3 deliverable.">
+        <ValidationCards />
+        <RoadmapTimeline />
+        <ConfidenceCards />
+
+        <Section id="financials" eyebrow="22 — Financial Framework" title="Framework, not fabricated actuals. The full model is a Phase-3 deliverable.">
           <p>
             The company is pre-revenue at the time of this brief. The framework below reflects the operating assumptions that drive the 18–24 month plan and the seed-round milestones. Every number will be built up bottom-up in the accompanying Financial Model (XLSX), stress-tested across three scenarios (base, downside, upside), and made auditable cell-by-cell.
           </p>
@@ -464,7 +494,7 @@ const Investors = () => {
           <p className="mt-8 text-sm italic" style={{ color: `${NAVY}99` }}>All figures are strategic assumptions for a pre-launch venture, disclosed as such. Not forward-looking guidance.</p>
         </Section>
 
-        <Section id="team" eyebrow="13 — Team" title="Founded by an operator building AI systems for organizational scale.">
+        <Section id="team" eyebrow="23 — Team" title="Founded by an operator building AI systems for organizational scale.">
           <p>
             <strong style={{ color: NAVY }}>Wisdom Jonathans — Founder &amp; CEO.</strong> Nigerian entrepreneur and AI systems strategist. Founder and CEO of Soteria AI Technologies Limited, developing AI-powered products for business operations, decision-making, capital access, education, and public safety. Publisher of <em>The Strategic Signal</em>, a newsletter on strategy, AI, and the future of organizations.
           </p>
@@ -476,7 +506,7 @@ const Investors = () => {
           </p>
         </Section>
 
-        <Section id="ask" eyebrow="14 — The Ask" title="$1.5M Pre-Seed. 18–24 month runway. Seed-ready at close of period.">
+        <Section id="ask" eyebrow="24 — The Ask" title="$1.5M Pre-Seed. 18–24 month runway. Seed-ready at close of period.">
           <div className="not-prose grid md:grid-cols-2 gap-10 mt-4">
             <div>
               <div className="text-xs tracking-[0.22em] uppercase mb-3" style={{ color: GOLD }}>Use of Funds (indicative)</div>
@@ -506,7 +536,7 @@ const Investors = () => {
           </p>
         </Section>
 
-        <Section id="risks" eyebrow="15 — Risk Register" title="What could go wrong — and how we plan to respond.">
+        <Section id="risks" eyebrow="25 — Risk Register" title="What could go wrong — and how we plan to respond.">
           <div className="not-prose grid md:grid-cols-2 gap-6">
             {[
               ["Adoption risk", "SMEs are slow to change tooling. Mitigation: free tier, PLG onboarding under 15 minutes, channel partners, migration playbooks."],
@@ -526,7 +556,7 @@ const Investors = () => {
           </div>
         </Section>
 
-        <Section id="exit" eyebrow="16 — Exit Landscape" title="Multiple credible paths to institutional-grade outcomes.">
+        <Section id="exit" eyebrow="26 — Exit Landscape" title="Multiple credible paths to institutional-grade outcomes.">
           <p>
             Business-software M&amp;A remains the most active category of enterprise-tech consolidation<Cite ns={[11]}/>. Category-defining SaaS companies exit through strategic acquisition, PE-led buyout, or IPO on the back of durable ARR.
           </p>
@@ -537,7 +567,7 @@ const Investors = () => {
           </ul>
         </Section>
 
-        <Section id="downloads" eyebrow="17 — Materials & Data Room" title="Institutional package under active assembly.">
+        <Section id="downloads" eyebrow="27 — Materials & Data Room" title="Institutional package under active assembly.">
           <div className="not-prose border" style={{ borderColor: NAVY }}>
             <table className="w-full text-sm">
               <tbody>
@@ -569,6 +599,8 @@ const Investors = () => {
             Downloadable files will be attached to this page as each phase is completed. Full data room access is available to qualified investors under NDA — contact the founder directly.
           </p>
         </Section>
+
+        <ClosingStatement />
 
         {/* Citations */}
         <section className="py-16 border-t" style={{ borderColor: NAVY }}>

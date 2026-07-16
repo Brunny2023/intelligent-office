@@ -2,13 +2,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useOrganization } from "@/hooks/useOrganization";
 import { useUserRole } from "@/hooks/useUserRole";
+import { usePlatformAdmin } from "@/hooks/usePlatformAdmin";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Shield, Clock, CheckSquare, MessageSquare, BarChart3,
   FileText, LogOut, Building2, Activity, Video,
   ChevronLeft, Home, Briefcase, DollarSign,
   Megaphone, Brain, Crown, Workflow, Users, Target, Lock,
-  ShieldCheck, Ticket, Settings, Globe
+  ShieldCheck, Ticket, Settings, Globe, Sparkles
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -41,13 +42,16 @@ const AppSidebar = () => {
   const { signOut } = useAuth();
   const { profile, org } = useOrganization();
   const { isAdmin } = useUserRole();
+  const { isPlatformAdmin } = usePlatformAdmin();
   const navigate = useNavigate();
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
 
-  const allItems = isAdmin
-    ? [{ icon: ShieldCheck, label: "Admin", path: "/admin" }, ...navItems]
-    : navItems;
+  const allItems = [
+    ...(isPlatformAdmin ? [{ icon: Sparkles, label: "Super Admin", path: "/super-admin" }] : []),
+    ...(isAdmin ? [{ icon: ShieldCheck, label: "Admin", path: "/admin" }] : []),
+    ...navItems,
+  ];
 
   return (
     <motion.aside
