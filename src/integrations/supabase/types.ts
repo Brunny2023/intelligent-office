@@ -1352,6 +1352,27 @@ export type Database = {
           },
         ]
       }
+      platform_admins: {
+        Row: {
+          created_at: string
+          email: string | null
+          notes: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          notes?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          notes?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1944,6 +1965,20 @@ export type Database = {
         }
         Returns: Json
       }
+      get_platform_stats: { Args: never; Returns: Json }
+      get_platform_tenants: {
+        Args: never
+        Returns: {
+          created_at: string
+          id: string
+          last_activity: string
+          member_count: number
+          name: string
+          slug: string
+          task_count: number
+          ticket_count: number
+        }[]
+      }
       get_user_org_id: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
@@ -1952,6 +1987,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_platform_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role:
