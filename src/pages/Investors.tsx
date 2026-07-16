@@ -2,6 +2,11 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Download, Lock, Printer } from "lucide-react";
+import {
+  InvestorBrief, IntelligenceStack, MoatFlywheel, IncumbentGrid,
+  ProductProof, DemoVideoBlock, PositioningMatrix, ValidationCards,
+  RoadmapTimeline, ConfidenceCards, ClosingStatement,
+} from "@/components/investors/InvestorSections";
 
 // ---------------------------------------------------------------------------
 // Global Office — Private Investor Brief
@@ -73,23 +78,33 @@ const Stat = ({ figure, label, note }: { figure: string; label: string; note?: s
 );
 
 const TOC = [
-  { id: "thesis", label: "01 — Thesis" },
-  { id: "why-now", label: "02 — Why Now" },
-  { id: "problem", label: "03 — Problem" },
-  { id: "solution", label: "04 — Solution" },
-  { id: "category", label: "05 — Category" },
-  { id: "product", label: "06 — Product & Architecture" },
-  { id: "market", label: "07 — Market" },
-  { id: "competition", label: "08 — Competition" },
-  { id: "model", label: "09 — Business Model" },
-  { id: "gtm", label: "10 — Go-to-Market" },
-  { id: "moat", label: "11 — Defensibility" },
-  { id: "financials", label: "12 — Financial Framework" },
-  { id: "team", label: "13 — Team" },
-  { id: "ask", label: "14 — The Ask" },
-  { id: "risks", label: "15 — Risks" },
-  { id: "exit", label: "16 — Exit Landscape" },
-  { id: "downloads", label: "17 — Materials" },
+  { id: "brief", label: "01 — 5-Min Brief" },
+  { id: "thesis", label: "02 — Thesis" },
+  { id: "missing-layer", label: "03 — The Missing Layer" },
+  { id: "flywheel", label: "04 — Compounding Moat" },
+  { id: "incumbents", label: "05 — Why Incumbents Can't Copy" },
+  { id: "why-now", label: "06 — Why Now" },
+  { id: "problem", label: "07 — Problem" },
+  { id: "solution", label: "08 — Solution" },
+  { id: "product-proof", label: "09 — Product Proof" },
+  { id: "demo-video", label: "10 — Product Walkthrough" },
+  { id: "category", label: "11 — Category" },
+  { id: "product", label: "12 — Architecture" },
+  { id: "market", label: "13 — Market" },
+  { id: "positioning", label: "14 — Positioning" },
+  { id: "competition", label: "15 — Competition" },
+  { id: "model", label: "16 — Business Model" },
+  { id: "gtm", label: "17 — Go-to-Market" },
+  { id: "moat", label: "18 — Defensibility" },
+  { id: "validation", label: "19 — Traction" },
+  { id: "roadmap", label: "20 — Roadmap" },
+  { id: "confidence", label: "21 — At a Glance" },
+  { id: "financials", label: "22 — Financials" },
+  { id: "team", label: "23 — Team" },
+  { id: "ask", label: "24 — The Ask" },
+  { id: "risks", label: "25 — Risks" },
+  { id: "exit", label: "26 — Exit Landscape" },
+  { id: "downloads", label: "27 — Materials" },
 ];
 
 const Downloads = [
@@ -132,7 +147,7 @@ const Investors = () => {
     };
 
     const undoRobots = setMeta("robots", "noindex,nofollow,noarchive,nosnippet");
-    const undoDesc = setMeta("description", "Confidential investor brief for Global Office — the AI Business Operating System for modern organizations.");
+    const undoDesc = setMeta("description", "Confidential investor brief for Global Office — the Organizational Intelligence Layer for the modern enterprise.");
 
     // Load editorial serif for this page only
     const link = document.createElement("link");
@@ -164,10 +179,10 @@ const Investors = () => {
               Global Office · Investor Brief · MMXXVI
             </p>
             <h1 className="mt-6 text-5xl md:text-7xl lg:text-8xl leading-[0.95] max-w-5xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontWeight: 400, letterSpacing: "-0.02em" }}>
-              The operating system for the intelligent enterprise.
+              The Organizational Intelligence Layer for the modern enterprise.
             </h1>
             <p className="mt-8 max-w-2xl text-lg md:text-xl leading-[1.6]" style={{ color: `${NAVY}CC` }}>
-              A private brief on Global Office — a product of Soteria AI Technologies Limited — and the case for building the AI Business Operating System from the emerging world outward.
+              Microsoft owns documents. Google owns communication. Salesforce owns customers. SAP owns resources. Notion owns knowledge. <strong style={{ color: NAVY }}>Global Office owns organizational intelligence</strong> — delivered as an AI Business Operating System.
             </p>
           </div>
           <div className="flex flex-col gap-2 print:hidden">
@@ -207,22 +222,28 @@ const Investors = () => {
       </nav>
 
       <main className="max-w-7xl mx-auto px-6 md:px-12">
-        <Section id="thesis" eyebrow="01 — Investment Thesis" title="Every organization on earth needs an operating system. Global Office is building it.">
+        <InvestorBrief />
+
+        <Section id="thesis" eyebrow="02 — Investment Thesis" title="Organizations have data. They do not have intelligence. Global Office builds the layer that turns one into the other.">
           <p>
             Modern businesses run on ten to thirty disconnected tools — email, chat, spreadsheets, project trackers, HR platforms, finance systems, CRMs, storage drives, video meetings, and ad-hoc AI assistants. The result is not productivity. It is coordination overhead. Work fragments across surfaces. Context is lost. Decisions are made without evidence. AI, in this environment, is an add-on to chaos rather than an amplifier of order.
           </p>
           <p>
-            Global Office collapses this fragmentation into a single AI-native operating system for the enterprise — a persistent, intelligent surface where attendance, execution, communication, knowledge, finance, and executive intelligence live together, learn from every action, and act on the organization's behalf.
+            Global Office collapses this fragmentation into the <strong>Organizational Intelligence Layer</strong> — a persistent, graph-native substrate where every action, artifact, and decision is a first-class citizen. The AI Business Operating System is how customers experience it. The intelligence layer is what compounds.
           </p>
           <p>
-            The wedge is deliberate: small and medium-sized businesses in Sub-Saharan Africa — where 90% of employment sits inside SMEs<Cite ns={[5]}/>, where mobile-first infrastructure has leapfrogged legacy IT<Cite ns={[8]}/>, and where no incumbent has built a category-defining operating layer. From this base, Global Office expands across EMEA, the UK, and North America along the same trajectory that produced Shopify, MercadoLibre, and Nubank — category creators born outside Silicon Valley.
+            The ICP is global-first — SMEs and mid-market organizations across the United States, United Kingdom, European Union, and other developed economies where AI-native operating layers command the strongest willingness to pay, followed by an emerging-markets expansion motion. Traditional software manages functions. Global Office manages organizational intelligence.
           </p>
           <p className="mt-8 pl-6 border-l-2 italic text-lg" style={{ borderColor: GOLD, fontFamily: "'Instrument Serif', Georgia, serif" }}>
-            The next trillion-dollar software company will not be a better CRM, a better ERP, or a better collaboration tool. It will be the operating system those categories become obsolete inside of.
+            The next trillion-dollar software company will not be a better CRM, ERP, or collaboration tool. It will be the intelligence layer those categories become obsolete inside of.
           </p>
         </Section>
 
-        <Section id="why-now" eyebrow="02 — Why Now" title="Three forces have converged for the first time.">
+        <IntelligenceStack />
+        <MoatFlywheel />
+        <IncumbentGrid />
+
+        <Section id="why-now" eyebrow="06 — Why Now" title="Three forces have converged for the first time.">
           <ol className="space-y-6 list-none pl-0">
             <li>
               <span className="block text-sm tracking-[0.2em] uppercase mb-1" style={{ color: GOLD }}>i. Generative AI has crossed the utility threshold</span>
