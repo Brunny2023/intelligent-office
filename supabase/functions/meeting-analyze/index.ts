@@ -134,6 +134,31 @@ ${(transcript.full_text ?? "").slice(0, 12000)}`;
       return json({ created: created?.length ?? 0, tasks: created });
     }
 
+    if (mode === "translate") {
+      const target = (body.target_lang ?? "en").toString().slice(0, 20);
+      const { data: summary } = await admin.from("meeting_summaries").select("*")
+        .eq("recording_id", recordingId).order("created_at",{ascending:false}).limit(1).maybeSingle();
+      if (!summary) return json({ error: "no_summary" }, 404);
+      const prompt = `Translate the following meeting summary, key decisions and action items into ${target}. Return strict JSON {"summary":"...","key_decisions":[...],"action_items":[...]}.\n\nSOURCE:\n${JSON.stringify({summary:summary.summary,key_decisions:summary.key_decisions,action_items:summary.action_items}).slice(0,10000)}`;
+      const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}` },
+        body: JSON.stringify({
+          model: "openai/gpt-5.6-sol", reasoning_effort: "none",
+          messages: [{ role: "user", content: prompt }],
+          response_format: { type: "json_object" },
+        }),
+      });
+      const aiJson: any = await aiRes.json().catch(() => ({}));
+      if (!aiRes.ok) return json({ error: "translate_failed", detail: aiJson }, 500);
+      let parsed: any = {};
+      try { parsed = JSON.parse(aiJson?.choices?.[0]?.message?.content ?? "{}"); } catch { /* noop */ }
+      const existing = (summary.translated_summary as any) ?? {};
+      existing[target] = parsed;
+      await admin.from("meeting_summaries").update({ translated_summary: existing }).eq("id", summary.id);
+      return json({ translated: parsed, lang: target });
+    }
+
     return json({ error: "unknown_mode" }, 400);
   } catch (e) {
     return json({ error: (e as Error).message }, 500);
