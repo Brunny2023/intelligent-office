@@ -2469,6 +2469,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_share_consent: {
+        Args: { _owner_org: string; _resource_id: string; _share_type: string }
+        Returns: boolean
+      }
       intelligence_isolation_probe: { Args: never; Returns: Json }
       is_platform_admin: { Args: { _user_id: string }; Returns: boolean }
       retention_purge: { Args: never; Returns: Json }
