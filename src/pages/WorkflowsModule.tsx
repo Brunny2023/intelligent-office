@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion, AnimatePresence } from "framer-motion";
-import { Workflow, Plus, Play, Pause, Settings, ArrowRight, CheckCircle, Clock, AlertTriangle, Trash2, UserPlus, Zap } from "lucide-react";
+import { Workflow, Plus, Play, Pause, Settings, ArrowRight, CheckCircle, Clock, AlertTriangle, Trash2, UserPlus, Zap, ThumbsUp, ThumbsDown, Sparkles, ScrollText } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 
@@ -48,6 +48,11 @@ const WorkflowsModule = () => {
   const [stepsDialog, setStepsDialog] = useState(false);
   const [form, setForm] = useState({ name: "", description: "", triggerType: "manual" });
   const [steps, setSteps] = useState<Array<{ action_type: string; assignee_id: string; timeout_hours: number }>>([]);
+  const [logsFor, setLogsFor] = useState<string | null>(null);
+  const [logs, setLogs] = useState<any[]>([]);
+  const [suggestOpen, setSuggestOpen] = useState(false);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [suggesting, setSuggesting] = useState(false);
 
   const fetchData = async () => {
     if (!org) return;
@@ -120,6 +125,47 @@ const WorkflowsModule = () => {
     fetchData();
   };
 
+  const decide = async (instanceId: string, mode: "approve" | "reject") => {
+    const { error } = await supabase.functions.invoke("workflow-run", { body: { mode, instance_id: instanceId } });
+    if (error) { toast.error(error.message); return; }
+    toast.success(mode === "approve" ? "Approved & advanced" : "Rejected");
+    fetchData();
+  };
+
+  const viewLogs = async (instanceId: string) => {
+    setLogsFor(instanceId);
+    const { data } = await supabase.from("workflow_step_logs").select("*")
+      .eq("instance_id", instanceId).order("performed_at", { ascending: true });
+    setLogs(data || []);
+  };
+
+  const runSuggest = async () => {
+    setSuggesting(true); setSuggestOpen(true);
+    const { data, error } = await supabase.functions.invoke("workflow-run", { body: { mode: "suggest" } });
+    setSuggesting(false);
+    if (error) { toast.error(error.message); return; }
+    setSuggestions((data as any)?.suggestions ?? []);
+  };
+
+  const createFromSuggestion = async (s: any) => {
+    if (!user || !org) return;
+    const { data: wf, error } = await supabase.from("workflows").insert({
+      organization_id: org.id, name: s.name, description: s.why,
+      trigger_type: s.trigger ?? "manual", created_by: user.id, is_active: true,
+    }).select().single();
+    if (error) { toast.error(error.message); return; }
+    if (Array.isArray(s.steps) && s.steps.length) {
+      await supabase.from("workflow_steps").insert(s.steps.map((st: any, i: number) => ({
+        workflow_id: wf.id, step_order: i,
+        action_type: st.action_type ?? "notification",
+        assignee_id: null, timeout_hours: 24,
+      })));
+    }
+    toast.success(`Created "${s.name}"`);
+    setSuggestOpen(false);
+    fetchData();
+  };
+
   const viewSteps = async (workflow: any) => {
     const { data } = await supabase.from("workflow_steps").select("*").eq("workflow_id", workflow.id).order("step_order");
     setSelectedWorkflow({ ...workflow, steps: data || [] });
@@ -144,6 +190,7 @@ const WorkflowsModule = () => {
           <div className="flex items-center gap-2">
             <Button variant="outline" className="rounded-xl" onClick={() => runEngine("process_org")}><Zap className="w-4 h-4 mr-1" /> Advance engine</Button>
             <Button variant="outline" className="rounded-xl" onClick={() => runEngine("escalate")}><AlertTriangle className="w-4 h-4 mr-1" /> Escalate stale</Button>
+            <Button variant="outline" className="rounded-xl" onClick={runSuggest}><Sparkles className="w-4 h-4 mr-1" /> AI Suggest</Button>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button className="rounded-xl bg-accent text-accent-foreground"><Plus className="w-4 h-4 mr-1" /> Create Workflow</Button>
@@ -268,12 +315,26 @@ const WorkflowsModule = () => {
                   <Button size="sm" variant="outline" className="rounded-lg h-8" onClick={() => advanceInstance(inst.id)}>
                     <Zap className="w-3 h-3 mr-1" /> Advance
                   </Button>
+                  <Button size="sm" variant="outline" className="rounded-lg h-8 text-green-600" onClick={() => decide(inst.id, "approve")}>
+                    <ThumbsUp className="w-3 h-3 mr-1" /> Approve
+                  </Button>
+                  <Button size="sm" variant="outline" className="rounded-lg h-8 text-destructive" onClick={() => decide(inst.id, "reject")}>
+                    <ThumbsDown className="w-3 h-3 mr-1" /> Reject
+                  </Button>
+                  <Button size="sm" variant="outline" className="rounded-lg h-8" onClick={() => viewLogs(inst.id)}>
+                    <ScrollText className="w-3 h-3 mr-1" /> Logs
+                  </Button>
                   <Button size="sm" variant="outline" className="rounded-lg h-8" onClick={async () => {
                     await supabase.from("workflow_instances").update({ status: "completed", completed_at: new Date().toISOString() }).eq("id", inst.id);
                     toast.success("Marked complete");
                     fetchData();
                   }}><CheckCircle className="w-3 h-3 mr-1" /> Complete</Button>
                   </div>
+                )}
+                {inst.status !== "active" && (
+                  <Button size="sm" variant="outline" className="rounded-lg h-8" onClick={() => viewLogs(inst.id)}>
+                    <ScrollText className="w-3 h-3 mr-1" /> Logs
+                  </Button>
                 )}
               </motion.div>
             ))}
@@ -298,6 +359,58 @@ const WorkflowsModule = () => {
                 ))}
               </div>
             ) : <p className="text-muted-foreground text-sm">No steps configured</p>}
+          </DialogContent>
+        </Dialog>
+
+        {/* Logs dialog */}
+        <Dialog open={!!logsFor} onOpenChange={(v) => !v && setLogsFor(null)}>
+          <DialogContent className="rounded-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader><DialogTitle>Execution Log</DialogTitle></DialogHeader>
+            {logs.length === 0 ? <p className="text-sm text-muted-foreground">No steps executed yet.</p> : (
+              <div className="space-y-2">
+                {logs.map((l) => (
+                  <div key={l.id} className="glass-card rounded-lg p-3 text-sm">
+                    <div className="flex items-center justify-between">
+                      <Badge variant="outline" className="text-[10px]">Step {l.step_order + 1} · {l.action}</Badge>
+                      <span className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(l.performed_at), { addSuffix: true })}</span>
+                    </div>
+                    {l.notes && <p className="text-xs text-muted-foreground mt-1">{l.notes}</p>}
+                  </div>
+                ))}
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Suggestions dialog */}
+        <Dialog open={suggestOpen} onOpenChange={setSuggestOpen}>
+          <DialogContent className="rounded-2xl max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader><DialogTitle>AI-Suggested Workflows</DialogTitle></DialogHeader>
+            {suggesting ? (
+              <div className="py-8 text-center text-sm text-muted-foreground">Analyzing organizational signals…</div>
+            ) : suggestions.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No suggestions right now — try again after more activity.</p>
+            ) : (
+              <div className="space-y-3">
+                {suggestions.map((s, i) => (
+                  <div key={i} className="glass-card rounded-xl p-4 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-semibold text-foreground">{s.name}</h4>
+                      <Button size="sm" className="rounded-lg h-8 bg-accent text-accent-foreground" onClick={() => createFromSuggestion(s)}>
+                        <Plus className="w-3 h-3 mr-1" /> Create
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{s.why}</p>
+                    <div className="flex flex-wrap gap-1">
+                      <Badge variant="outline" className="text-[10px]">trigger: {s.trigger}</Badge>
+                      {(s.steps ?? []).map((st: any, j: number) => (
+                        <Badge key={j} variant="outline" className="text-[10px]">{j+1}. {st.action_type}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </DialogContent>
         </Dialog>
       </div>
