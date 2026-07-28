@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Building2, Plus, Send, ArrowLeft, Paperclip, Download, Share2, Shield, Trash2 } from "lucide-react";
 import ShareConsentDialog from "@/components/interorg/ShareConsentDialog";
 import SharedWithUsPanel from "@/components/interorg/SharedWithUsPanel";
+import DocumentShareDialog from "@/components/documents/DocumentShareDialog";
 import { toast } from "sonner";
 import { format, isToday, isYesterday } from "date-fns";
 
@@ -258,6 +259,7 @@ const InterOrgModule = () => {
                 <div className="ml-auto flex items-center gap-2">
                   <SharedWithUsPanel myOrgId={org!.id} partnerOrgId={getPartnerOrgId(selected)} />
                   <ShareConsentDialog ownerOrgId={org!.id} partnerOrgId={getPartnerOrgId(selected)} userId={user!.id} />
+                  <DocumentShareDialog ownerOrgId={org!.id} partnerOrgId={getPartnerOrgId(selected)} userId={user!.id} />
                 </div>
               </div>
               <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-2">
