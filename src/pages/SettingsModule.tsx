@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Settings, Save, X, Plus, Building2 } from "lucide-react";
 import NotificationPreferences from "@/components/settings/NotificationPreferences";
+import EgressSettings from "@/components/settings/EgressSettings";
 
 const SettingsModule = () => {
   const { user } = useAuth();
@@ -89,6 +90,12 @@ const SettingsModule = () => {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.05 } }}>
           <NotificationPreferences />
         </motion.div>
+
+        {role === "owner" && org && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.08 } }}>
+            <EgressSettings organizationId={org.id} />
+          </motion.div>
+        )}
 
         {role === "owner" && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }}>
