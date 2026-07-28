@@ -93,6 +93,7 @@ async function scanOrg(admin: any, orgId: string) {
     .select("assigned_to")
     .eq("organization_id", orgId)
     .neq("status", "completed")
+    .not("assigned_to", "is", null)
     .lt("due_date", today);
   const clusters: Record<string, number> = {};
   for (const t of overdue ?? []) if (t.assigned_to) clusters[t.assigned_to] = (clusters[t.assigned_to] ?? 0) + 1;
