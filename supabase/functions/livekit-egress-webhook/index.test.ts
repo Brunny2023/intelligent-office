@@ -12,7 +12,7 @@ type Row = Record<string, unknown>;
 
 function makeMockAdmin(seed: Row[]) {
   const state = {
-    recordings: [...seed] as Row[],
+    meeting_recordings: [...seed] as Row[],
     egress_events: [] as Row[],
     ai_insights: [] as Row[],
     updates: [] as Row[],
@@ -90,7 +90,7 @@ Deno.test("egress_ended payload records duration + audio artifact after client d
   assertEquals(result.ok, true);
   assertEquals(result.recording_id, "rec-1");
 
-  const rec = admin.__state.recordings[0] as Row;
+  const rec = admin.__state.meeting_recordings[0] as Row;
   assertEquals(rec.egress_status, "complete");
   assertEquals(rec.status, "ready");
   assertEquals(rec.duration_seconds, 42 * 60); // 2520 seconds
@@ -119,7 +119,7 @@ Deno.test("egress_failed payload marks recording failed and raises alert", async
   const result = await handleEgressPayload(payload, admin, async () => {});
   assertEquals(result.ok, true);
 
-  const rec = admin.__state.recordings[0] as Row;
+  const rec = admin.__state.meeting_recordings[0] as Row;
   assertEquals(rec.egress_status, "failed");
   assertEquals(rec.status, "failed");
   assertEquals(rec.egress_error, "upload to s3 failed: access denied");
