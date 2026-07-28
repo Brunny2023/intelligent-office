@@ -233,6 +233,7 @@ const SuperAdmin = () => {
           </TabsContent>
 
           <TabsContent value="audit">
+            {/* audit tab below */}
             <Card>
               <CardHeader><CardTitle className="text-base flex items-center gap-2"><Activity className="w-4 h-4" /> Recent Cross-Tenant Activity ({activity.length})</CardTitle></CardHeader>
               <CardContent>
