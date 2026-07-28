@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { motion, AnimatePresence } from "framer-motion";
 import { Building2, Plus, Send, ArrowLeft, Paperclip, Download, Share2, Shield, Trash2 } from "lucide-react";
 import ShareConsentDialog from "@/components/interorg/ShareConsentDialog";
+import SharedWithUsPanel from "@/components/interorg/SharedWithUsPanel";
 import { toast } from "sonner";
 import { format, isToday, isYesterday } from "date-fns";
 
@@ -254,7 +255,8 @@ const InterOrgModule = () => {
                   <h3 className="font-semibold text-foreground text-sm">{getOrgName(getPartnerOrgId(selected))}</h3>
                   {selected.subject && <p className="text-[10px] text-muted-foreground">{selected.subject}</p>}
                 </div>
-                <div className="ml-auto">
+                <div className="ml-auto flex items-center gap-2">
+                  <SharedWithUsPanel myOrgId={org!.id} partnerOrgId={getPartnerOrgId(selected)} />
                   <ShareConsentDialog ownerOrgId={org!.id} partnerOrgId={getPartnerOrgId(selected)} userId={user!.id} />
                 </div>
               </div>
