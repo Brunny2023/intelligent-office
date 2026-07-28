@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
 import { Building2, Plus, Send, ArrowLeft, Paperclip, Download, Share2, Shield, Trash2 } from "lucide-react";
+import ShareConsentDialog from "@/components/interorg/ShareConsentDialog";
 import { toast } from "sonner";
 import { format, isToday, isYesterday } from "date-fns";
 
