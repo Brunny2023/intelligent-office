@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Shield, Lock, ScrollText, Users, Server, KeyRound, FileCheck, ArrowLeft, Clock, Fingerprint, GitBranch } from "lucide-react";
-import Navigation from "@/components/landing/Navigation";
+import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 
 const pillars = [
@@ -50,7 +50,7 @@ const pillars = [
 export default function TrustCenter() {
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
+      <Navbar />
       <main className="pt-24 pb-16">
         <div className="max-w-6xl mx-auto px-6">
           <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6">
