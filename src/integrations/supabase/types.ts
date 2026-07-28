@@ -614,6 +614,57 @@ export type Database = {
           },
         ]
       }
+      egress_events: {
+        Row: {
+          created_at: string
+          egress_id: string | null
+          error: string | null
+          event_type: string
+          id: string
+          organization_id: string | null
+          payload: Json
+          recording_id: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string
+          egress_id?: string | null
+          error?: string | null
+          event_type: string
+          id?: string
+          organization_id?: string | null
+          payload?: Json
+          recording_id?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string
+          egress_id?: string | null
+          error?: string | null
+          event_type?: string
+          id?: string
+          organization_id?: string | null
+          payload?: Json
+          recording_id?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "egress_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "egress_events_recording_id_fkey"
+            columns: ["recording_id"]
+            isOneToOne: false
+            referencedRelation: "meeting_recordings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       expense_reports: {
         Row: {
           amount: number
@@ -1308,11 +1359,17 @@ export type Database = {
         Row: {
           created_at: string
           duration_seconds: number | null
+          egress_ended_at: string | null
+          egress_error: string | null
+          egress_id: string | null
+          egress_started_at: string | null
+          egress_status: string | null
           file_size: number | null
           id: string
           mime_type: string | null
           organization_id: string
           room_id: string | null
+          source: string
           status: string
           storage_path: string
           uploaded_by: string
@@ -1320,11 +1377,17 @@ export type Database = {
         Insert: {
           created_at?: string
           duration_seconds?: number | null
+          egress_ended_at?: string | null
+          egress_error?: string | null
+          egress_id?: string | null
+          egress_started_at?: string | null
+          egress_status?: string | null
           file_size?: number | null
           id?: string
           mime_type?: string | null
           organization_id: string
           room_id?: string | null
+          source?: string
           status?: string
           storage_path: string
           uploaded_by: string
@@ -1332,11 +1395,17 @@ export type Database = {
         Update: {
           created_at?: string
           duration_seconds?: number | null
+          egress_ended_at?: string | null
+          egress_error?: string | null
+          egress_id?: string | null
+          egress_started_at?: string | null
+          egress_status?: string | null
           file_size?: number | null
           id?: string
           mime_type?: string | null
           organization_id?: string
           room_id?: string | null
+          source?: string
           status?: string
           storage_path?: string
           uploaded_by?: string
@@ -1761,6 +1830,8 @@ export type Database = {
           brand_tagline: string | null
           core_values: string[] | null
           created_at: string
+          egress_enabled: boolean
+          egress_mode: string
           favicon_url: string | null
           id: string
           logo_url: string | null
@@ -1774,6 +1845,8 @@ export type Database = {
           brand_tagline?: string | null
           core_values?: string[] | null
           created_at?: string
+          egress_enabled?: boolean
+          egress_mode?: string
           favicon_url?: string | null
           id?: string
           logo_url?: string | null
@@ -1787,6 +1860,8 @@ export type Database = {
           brand_tagline?: string | null
           core_values?: string[] | null
           created_at?: string
+          egress_enabled?: boolean
+          egress_mode?: string
           favicon_url?: string | null
           id?: string
           logo_url?: string | null
@@ -2589,6 +2664,7 @@ export type Database = {
         }
         Returns: Json
       }
+      detect_stuck_egress: { Args: never; Returns: Json }
       end_stale_meeting_rooms: { Args: never; Returns: number }
       escalate_alerts: { Args: never; Returns: Json }
       get_platform_stats: { Args: never; Returns: Json }

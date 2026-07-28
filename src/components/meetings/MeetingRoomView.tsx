@@ -1,13 +1,14 @@
 import { useRef } from "react";
 import { LiveKitRoom, VideoConference, RoomAudioRenderer, useRoomContext } from "@livekit/components-react";
 import { motion } from "framer-motion";
-import { Circle, Square, PhoneOff, Link as LinkIcon } from "lucide-react";
+import { Circle, Square, PhoneOff, Link as LinkIcon, Cloud } from "lucide-react";
 import type { Room } from "livekit-client";
 
 interface Props {
   token: string;
   serverUrl: string;
   recording: boolean;
+  egressActive?: boolean;
   onStartRecording: (getRoom: () => Room | null) => void | Promise<void>;
   onStopRecording: () => void | Promise<void>;
   onLeave: () => void | Promise<void>;
@@ -15,8 +16,9 @@ interface Props {
 }
 
 // Inner overlay so we can read the LiveKit Room via context for full-room mixing
-function Overlay({ recording, onStart, onStop, onLeave, onCopyInvite }: {
+function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvite }: {
   recording: boolean;
+  egressActive?: boolean;
   onStart: (getRoom: () => Room | null) => void | Promise<void>;
   onStop: () => void | Promise<void>;
   onLeave: () => void | Promise<void>;
@@ -28,12 +30,19 @@ function Overlay({ recording, onStart, onStop, onLeave, onCopyInvite }: {
 
   return (
     <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
+      {egressActive && (
+        <div className="bg-svo-blue text-white rounded-full px-3 py-2 shadow-lg flex items-center gap-2 text-xs font-medium">
+          <Cloud className="w-3.5 h-3.5" />
+          <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
+          Cloud recording
+        </div>
+      )}
       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
         onClick={onCopyInvite}
         className="bg-background/80 backdrop-blur border border-border text-foreground rounded-full px-3 py-2 shadow-lg flex items-center gap-2 text-xs font-medium">
         <LinkIcon className="w-3.5 h-3.5" /> Invite
       </motion.button>
-      {!recording ? (
+      {egressActive ? null : !recording ? (
         <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
           onClick={() => onStart(() => roomRef.current)}
           className="bg-svo-blue text-white rounded-full px-4 py-2 shadow-lg flex items-center gap-2 text-sm font-medium">
@@ -55,7 +64,7 @@ function Overlay({ recording, onStart, onStop, onLeave, onCopyInvite }: {
   );
 }
 
-export default function MeetingRoomView({ token, serverUrl, recording, onStartRecording, onStopRecording, onLeave, onCopyInvite }: Props) {
+export default function MeetingRoomView({ token, serverUrl, recording, egressActive, onStartRecording, onStopRecording, onLeave, onCopyInvite }: Props) {
   return (
     <div className="relative h-[calc(100vh-4rem)]">
       <LiveKitRoom
@@ -70,6 +79,7 @@ export default function MeetingRoomView({ token, serverUrl, recording, onStartRe
         <RoomAudioRenderer />
         <Overlay
           recording={recording}
+          egressActive={egressActive}
           onStart={onStartRecording}
           onStop={onStopRecording}
           onLeave={onLeave}

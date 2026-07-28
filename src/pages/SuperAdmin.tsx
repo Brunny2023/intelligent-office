@@ -11,8 +11,9 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   ShieldCheck, Building2, Users, CheckSquare, MessageSquare, Brain,
-  Activity, Ticket, BarChart3, HeartPulse, Search, TrendingUp, AlertCircle, CheckCircle2
+  Activity, Ticket, BarChart3, HeartPulse, Search, TrendingUp, AlertCircle, CheckCircle2, Video
 } from "lucide-react";
+import EgressHealthPanel from "@/components/superadmin/EgressHealthPanel";
 import { format, formatDistanceToNow } from "date-fns";
 
 interface PlatformStats {
@@ -131,6 +132,7 @@ const SuperAdmin = () => {
             <TabsTrigger value="tenants" className="gap-1.5"><Building2 className="w-4 h-4" /> Tenants</TabsTrigger>
             <TabsTrigger value="usage" className="gap-1.5"><BarChart3 className="w-4 h-4" /> Usage</TabsTrigger>
             <TabsTrigger value="health" className="gap-1.5"><HeartPulse className="w-4 h-4" /> System Health</TabsTrigger>
+            <TabsTrigger value="egress" className="gap-1.5"><Video className="w-4 h-4" /> Egress</TabsTrigger>
             <TabsTrigger value="audit" className="gap-1.5"><Activity className="w-4 h-4" /> Audit</TabsTrigger>
           </TabsList>
 
@@ -228,6 +230,10 @@ const SuperAdmin = () => {
                 ))}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="egress">
+            <EgressHealthPanel />
           </TabsContent>
 
           <TabsContent value="audit">

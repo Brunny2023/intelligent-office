@@ -1,1 +1,4 @@
 project_id = "sydqmpordfbtjmxuxjkc"
+
+[functions.livekit-egress-webhook]
+verify_jwt = false
