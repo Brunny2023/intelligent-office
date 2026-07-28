@@ -58,10 +58,17 @@ async function scanOrg(admin: any, orgId: string) {
   const soon = new Date(now + 48 * 3600_000).toISOString().slice(0, 10);
   const today = new Date(now).toISOString().slice(0, 10);
 
+  // Pre-fetch org owners/execs/managers for fallback routing.
+  const { data: roleRows } = await admin
+    .from("user_roles").select("user_id, role").eq("organization_id", orgId)
+    .in("role", ["owner", "executive", "manager"]);
+  const managers: string[] = (roleRows ?? []).map((r: any) => r.user_id);
+  const routeFallback = () => managers[0];
+
   // 1. Slipping tasks: due within 48h, not completed, no activity in last 24h.
   const { data: slipping } = await admin
     .from("tasks")
-    .select("id, title, assigned_to, due_date, status, updated_at, priority")
+    .select("id, title, assigned_to, created_by, project_id, due_date, status, updated_at, priority")
     .eq("organization_id", orgId)
     .neq("status", "completed")
     .gte("due_date", today)
@@ -71,17 +78,28 @@ async function scanOrg(admin: any, orgId: string) {
 
   for (const t of slipping ?? []) {
     const fp = `slip:${t.id}`;
+    const evidence = {
+      fingerprint: fp, task_id: t.id, due_date: t.due_date,
+      assignee: t.assigned_to, created_by: t.created_by, project_id: t.project_id,
+      hours_since_activity: Math.round((now - new Date(t.updated_at).getTime()) / 3600_000),
+      link: `/execution?task=${t.id}`,
+    };
     const created = await upsertInsight(admin, orgId, fp, {
       insight_type: "predictive_slip",
       severity: t.priority === "urgent" || t.priority === "high" ? "high" : "medium",
       title: `Task at risk: "${t.title}"`,
       content: `Due ${t.due_date} with no activity in 24h. Status: ${t.status}. Intervene before the deadline slips.`,
-      metadata: { fingerprint: fp, task_id: t.id, due_date: t.due_date, assignee: t.assigned_to },
+      metadata: evidence,
+      reason: evidence,
     });
     if (created) {
       insights++;
-      if (t.assigned_to) {
-        notifs += await notify(admin, orgId, t.assigned_to, "Task at risk of slipping",
+      const targets = new Set<string>();
+      if (t.assigned_to) targets.add(t.assigned_to);
+      if (t.created_by && targets.size === 0) targets.add(t.created_by);
+      if (targets.size === 0 && routeFallback()) targets.add(routeFallback()!);
+      for (const uid of targets) {
+        notifs += await notify(admin, orgId, uid, "Task at risk of slipping",
           `"${t.title}" is due ${t.due_date} and has had no activity for 24h.`, `/execution?task=${t.id}`);
       }
     }
@@ -118,7 +136,7 @@ async function scanOrg(admin: any, orgId: string) {
   const cutoff = new Date(now - 24 * 3600_000).toISOString();
   const { data: active } = await admin
     .from("workflow_instances")
-    .select("id, workflow_id, started_by, started_at, current_step, workflows(name)")
+    .select("id, workflow_id, started_by, started_at, current_step, workflows(name, created_by)")
     .eq("organization_id", orgId).eq("status", "active")
     .lt("started_at", cutoff);
 
@@ -128,19 +146,82 @@ async function scanOrg(admin: any, orgId: string) {
     if ((recent ?? []).length > 0) continue;
     const fp = `wf_stalled:${inst.id}`;
     const name = inst.workflows?.name ?? "Workflow";
+    const evidence = {
+      fingerprint: fp, instance_id: inst.id, workflow_id: inst.workflow_id,
+      step: inst.current_step, hours_stalled: Math.round((now - new Date(inst.started_at).getTime()) / 3600_000),
+      link: `/workflows?instance=${inst.id}`,
+    };
     const created = await upsertInsight(admin, orgId, fp, {
       insight_type: "predictive_workflow_stall",
       severity: "high",
       title: `Stalled workflow: ${name}`,
       content: `Workflow instance stuck on step ${inst.current_step} for >24h with no activity. Advance or escalate.`,
-      metadata: { fingerprint: fp, instance_id: inst.id, step: inst.current_step },
+      metadata: evidence, reason: evidence,
     });
     if (created) {
       insights++;
-      if (inst.started_by) {
-        notifs += await notify(admin, orgId, inst.started_by, "Workflow stalled",
-          `${name} has been stalled on step ${inst.current_step} for 24h+.`, `/workflows`);
-      }
+      const target = inst.started_by || inst.workflows?.created_by || routeFallback();
+      if (target) notifs += await notify(admin, orgId, target, "Workflow stalled",
+        `${name} has been stalled on step ${inst.current_step} for 24h+.`, `/workflows`);
+    }
+  }
+
+  // 4. KPI drift: past mid-period with less than 50% attainment.
+  const { data: kpis } = await admin
+    .from("kpis")
+    .select("id, title, current_value, target_value, period_start, period_end, owner_id")
+    .eq("organization_id", orgId)
+    .not("target_value", "is", null);
+  for (const k of kpis ?? []) {
+    if (!k.period_start || !k.period_end || !k.target_value) continue;
+    const start = new Date(k.period_start).getTime();
+    const end = new Date(k.period_end).getTime();
+    if (Date.now() < start + (end - start) * 0.5) continue;
+    const attain = Number(k.current_value ?? 0) / Number(k.target_value);
+    if (attain >= 0.5) continue;
+    const fp = `kpi_drift:${k.id}:${today.slice(0, 7)}`;
+    const evidence = { fingerprint: fp, kpi_id: k.id, attainment_pct: Math.round(attain * 100), link: `/intelligence?kpi=${k.id}` };
+    const created = await upsertInsight(admin, orgId, fp, {
+      insight_type: "predictive_kpi_drift",
+      severity: attain < 0.25 ? "critical" : "high",
+      title: `KPI drifting off target: "${k.title}"`,
+      content: `Only ${Math.round(attain * 100)}% attained past the period midpoint. Action needed to close the gap.`,
+      metadata: evidence, reason: evidence,
+    });
+    if (created) {
+      insights++;
+      const target = k.owner_id || routeFallback();
+      if (target) notifs += await notify(admin, orgId, target, "KPI drifting off target",
+        `"${k.title}" is at ${Math.round(attain * 100)}% past midpoint.`, `/intelligence?kpi=${k.id}`);
+    }
+  }
+
+  // 5. Aging approvals: workflow steps of type 'approval' whose instance is older than step timeout_hours.
+  const { data: aging } = await admin
+    .from("workflow_instances")
+    .select("id, workflow_id, current_step, started_at, started_by, workflows(name)")
+    .eq("organization_id", orgId).eq("status", "active");
+  for (const inst of aging ?? []) {
+    const { data: step } = await admin.from("workflow_steps")
+      .select("action_type, timeout_hours, assignee_id")
+      .eq("workflow_id", inst.workflow_id).eq("step_order", inst.current_step).maybeSingle();
+    if (!step || step.action_type !== "approval") continue;
+    const timeout = Number(step.timeout_hours || 48);
+    if (Date.now() - new Date(inst.started_at).getTime() < timeout * 3600_000) continue;
+    const fp = `approval_aging:${inst.id}`;
+    const evidence = { fingerprint: fp, instance_id: inst.id, step: inst.current_step, timeout_hours: timeout, link: `/workflows?instance=${inst.id}` };
+    const created = await upsertInsight(admin, orgId, fp, {
+      insight_type: "predictive_approval_aging",
+      severity: "high",
+      title: `Approval overdue: ${inst.workflows?.name ?? "Workflow"}`,
+      content: `Step ${inst.current_step} has been awaiting approval past its ${timeout}h SLA.`,
+      metadata: evidence, reason: evidence,
+    });
+    if (created) {
+      insights++;
+      const target = step.assignee_id || inst.started_by || routeFallback();
+      if (target) notifs += await notify(admin, orgId, target, "Approval overdue",
+        `A workflow approval has passed its ${timeout}h SLA.`, `/workflows`);
     }
   }
 

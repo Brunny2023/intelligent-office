@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Settings, Save, X, Plus, Building2 } from "lucide-react";
+import NotificationPreferences from "@/components/settings/NotificationPreferences";
 
 const SettingsModule = () => {
   const { user } = useAuth();
@@ -31,7 +32,6 @@ const SettingsModule = () => {
 
   useEffect(() => {
     if (!orgLoading && !roleLoading) {
-      if (role !== "owner") { navigate("/dashboard"); return; }
       if (org) {
         setName(org.name);
         setMission(org.mission || "");
@@ -86,6 +86,11 @@ const SettingsModule = () => {
           <p className="text-muted-foreground text-sm mt-1">Manage your organization's branding and identity</p>
         </motion.div>
 
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.05 } }}>
+          <NotificationPreferences />
+        </motion.div>
+
+        {role === "owner" && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }}>
           <Card>
             <CardHeader>
@@ -155,6 +160,7 @@ const SettingsModule = () => {
             </CardContent>
           </Card>
         </motion.div>
+        )}
       </div>
     </AppLayout>
   );

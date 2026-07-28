@@ -14,6 +14,8 @@ import { motion } from "framer-motion";
 import { Shield, Lock, Eye, FileText, AlertTriangle, Download, Clock, Users, Activity, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow, format } from "date-fns";
+import ComplianceReportButton from "@/components/security/ComplianceReportButton";
+import InterOrgAuditLog from "@/components/interorg/InterOrgAuditLog";
 
 const SecurityModule = () => {
   const { user } = useAuth();
@@ -131,8 +133,13 @@ const SecurityModule = () => {
           <TabsList className="bg-muted/50 rounded-xl p-1">
             <TabsTrigger value="compliance" className="rounded-lg data-[state=active]:bg-card"><Lock className="w-3.5 h-3.5 mr-1" />Compliance</TabsTrigger>
             <TabsTrigger value="audit" className="rounded-lg data-[state=active]:bg-card"><Eye className="w-3.5 h-3.5 mr-1" />Audit Trail</TabsTrigger>
+            <TabsTrigger value="interorg" className="rounded-lg data-[state=active]:bg-card"><Globe className="w-3.5 h-3.5 mr-1" />Inter-org</TabsTrigger>
             <TabsTrigger value="access" className="rounded-lg data-[state=active]:bg-card"><Users className="w-3.5 h-3.5 mr-1" />Access Control</TabsTrigger>
           </TabsList>
+
+          <div className="flex justify-end mt-3">
+            <ComplianceReportButton />
+          </div>
 
           <TabsContent value="compliance" className="mt-4 space-y-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="glass-card-strong rounded-xl p-6 space-y-6">
@@ -215,9 +222,11 @@ const SecurityModule = () => {
                 </Select>
                 <Badge variant="outline">{filteredLogs.length} events</Badge>
               </div>
-              <Button variant="outline" className="rounded-xl" onClick={exportAuditLog}>
-                <Download className="w-4 h-4 mr-1" /> Export CSV
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" className="rounded-xl" onClick={exportAuditLog}>
+                  <Download className="w-4 h-4 mr-1" /> Export CSV
+                </Button>
+              </div>
             </div>
 
             <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2">
@@ -245,6 +254,12 @@ const SecurityModule = () => {
                   </div>
                 </motion.div>
               ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="interorg" className="mt-4 space-y-4">
+            <div className="glass-card-strong rounded-xl p-6">
+              {org?.id && <InterOrgAuditLog orgId={org.id} />}
             </div>
           </TabsContent>
 

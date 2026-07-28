@@ -38,6 +38,7 @@ import FeaturesPage from "./pages/FeaturesPage";
 import InterOrgModule from "./pages/InterOrgModule";
 import Demo from "./pages/Demo";
 import Investors from "./pages/Investors";
+import TrustCenter from "./pages/TrustCenter";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -54,6 +55,7 @@ const App = () => (
             <Route path="/features" element={<FeaturesPage />} />
             <Route path="/demo" element={<Demo />} />
             <Route path="/investors" element={<Investors />} />
+            <Route path="/trust" element={<TrustCenter />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
