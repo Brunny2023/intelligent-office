@@ -28,6 +28,7 @@ import WorkflowsModule from "./pages/WorkflowsModule";
 import TeamModule from "./pages/TeamModule";
 import SecurityModule from "./pages/SecurityModule";
 import JobPlanningModule from "./pages/JobPlanningModule";
+import GraphExplorer from "./pages/GraphExplorer";
 import AdminDashboard from "./pages/AdminDashboard";
 import SuperAdmin from "./pages/SuperAdmin";
 import SupportModule from "./pages/SupportModule";
@@ -75,6 +76,7 @@ const App = () => (
             <Route path="/team" element={<ProtectedRoute><TeamModule /></ProtectedRoute>} />
             <Route path="/security" element={<ProtectedRoute><SecurityModule /></ProtectedRoute>} />
             <Route path="/job-planning" element={<ProtectedRoute><JobPlanningModule /></ProtectedRoute>} />
+            <Route path="/intelligence/graph" element={<ProtectedRoute><GraphExplorer /></ProtectedRoute>} />
             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             <Route path="/super-admin" element={<ProtectedRoute><SuperAdmin /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><SettingsModule /></ProtectedRoute>} />

@@ -9,7 +9,7 @@ import {
   FileText, LogOut, Building2, Activity, Video,
   ChevronLeft, Home, Briefcase, DollarSign,
   Megaphone, Brain, Crown, Workflow, Users, Target, Lock,
-  ShieldCheck, Ticket, Settings, Globe, Sparkles
+  ShieldCheck, Ticket, Settings, Globe, Sparkles, Network
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -26,6 +26,7 @@ const navItems = [
   { icon: Activity, label: "Activity", path: "/activity" },
   { icon: FileText, label: "Documents", path: "/documents" },
   { icon: BarChart3, label: "Intelligence", path: "/intelligence" },
+  { icon: Network, label: "Knowledge Graph", path: "/intelligence/graph" },
   { icon: Brain, label: "AI Insights", path: "/ai-insights" },
   { icon: Crown, label: "Executive", path: "/executive" },
   { icon: Workflow, label: "Workflows", path: "/workflows" },
