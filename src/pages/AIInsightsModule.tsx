@@ -6,10 +6,14 @@ import AppLayout from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
-import { Brain, Sparkles, AlertTriangle, TrendingUp, RefreshCw, Zap, BarChart3, Users, CheckCircle } from "lucide-react";
+import { Brain, Sparkles, AlertTriangle, TrendingUp, RefreshCw, Zap, BarChart3, Users, CheckCircle, Inbox, Filter, Search, ExternalLink, ShieldAlert, Bell } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 const severityColors: Record<string, string> = {
   info: "bg-svo-blue/10 text-svo-blue",
@@ -28,9 +32,14 @@ const severityIcons: Record<string, React.ElementType> = {
 const AIInsightsModule = () => {
   const { user } = useAuth();
   const { org, loading: orgLoading } = useOrganization();
+  const navigate = useNavigate();
   const [insights, setInsights] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>("open");
+  const [severityFilter, setSeverityFilter] = useState<string>("all");
+  const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState<any | null>(null);
 
   const fetchInsights = useCallback(async () => {
     if (!org) return;
@@ -47,6 +56,15 @@ const AIInsightsModule = () => {
   const markRead = async (id: string) => {
     await supabase.from("ai_insights").update({ is_read: true }).eq("id", id);
     setInsights(prev => prev.map(i => i.id === id ? { ...i, is_read: true } : i));
+  };
+
+  const setStatus = async (id: string, status: string) => {
+    const { error } = await supabase.from("ai_insights" as any)
+      .update({ status, is_read: true } as any).eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    setInsights(prev => prev.map(i => i.id === id ? { ...i, status, is_read: true } : i));
+    if (selected?.id === id) setSelected({ ...selected, status, is_read: true });
+    toast.success(`Marked ${status.replace("_", " ")}`);
   };
 
   const generateInsights = async () => {
@@ -111,8 +129,20 @@ const AIInsightsModule = () => {
     setGenerating(false);
   };
 
-  const filterByType = (type: string) => type === "all" ? insights : insights.filter(i => i.insight_type === type);
+  const applyFilters = (list: any[]) => list.filter(i => {
+    const st = (i as any).status ?? "open";
+    if (statusFilter !== "all" && st !== statusFilter) return false;
+    if (severityFilter !== "all" && i.severity !== severityFilter) return false;
+    if (query) {
+      const hay = `${i.title} ${i.content} ${i.insight_type}`.toLowerCase();
+      if (!hay.includes(query.toLowerCase())) return false;
+    }
+    return true;
+  });
+  const filterByType = (type: string) => applyFilters(type === "all" ? insights : insights.filter(i => i.insight_type === type));
   const unreadCount = insights.filter(i => !i.is_read).length;
+  const openCount = insights.filter(i => ((i as any).status ?? "open") === "open").length;
+  const escalatedCount = insights.filter(i => Number((i as any).escalation_level ?? 0) > 0).length;
 
   if (orgLoading) {
     return <AppLayout title="AI Intelligence"><div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" /></div></AppLayout>;
@@ -147,11 +177,11 @@ const AIInsightsModule = () => {
 
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {[
-            { label: "Total Insights", value: insights.length, icon: Brain, color: "text-accent" },
-            { label: "Unread", value: unreadCount, icon: Zap, color: "text-svo-gold" },
+            { label: "Open", value: openCount, icon: Inbox, color: "text-accent" },
+            { label: "Escalated", value: escalatedCount, icon: ShieldAlert, color: "text-destructive" },
             { label: "Anomalies", value: insights.filter(i => i.insight_type === "anomaly").length, icon: AlertTriangle, color: "text-destructive" },
             { label: "Performance", value: insights.filter(i => i.insight_type === "performance").length, icon: BarChart3, color: "text-svo-blue" },
-            { label: "Summaries", value: insights.filter(i => i.insight_type === "daily_summary").length, icon: Users, color: "text-green-600" },
+            { label: "Unread", value: unreadCount, icon: Bell, color: "text-svo-gold" },
           ].map((stat, i) => (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: i * 0.05 } }} className="glass-card rounded-xl p-4">
               <stat.icon className={`w-5 h-5 ${stat.color} mb-2`} />
@@ -161,20 +191,65 @@ const AIInsightsModule = () => {
           ))}
         </div>
 
+        {/* Inbox filters */}
+        <div className="glass-card rounded-xl p-3 flex flex-wrap items-center gap-2">
+          <Filter className="w-4 h-4 text-muted-foreground ml-1" />
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="h-9 rounded-xl w-36"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="open">Open</SelectItem>
+              <SelectItem value="acknowledged">Acknowledged</SelectItem>
+              <SelectItem value="resolved">Resolved</SelectItem>
+              <SelectItem value="dismissed">Dismissed</SelectItem>
+              <SelectItem value="all">All statuses</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={severityFilter} onValueChange={setSeverityFilter}>
+            <SelectTrigger className="h-9 rounded-xl w-36"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All severities</SelectItem>
+              <SelectItem value="critical">Critical</SelectItem>
+              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="warning">Warning</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="info">Info</SelectItem>
+              <SelectItem value="success">Success</SelectItem>
+            </SelectContent>
+          </Select>
+          <div className="relative flex-1 min-w-[180px]">
+            <Search className="w-3.5 h-3.5 absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search alerts..." className="h-9 rounded-xl pl-7" />
+          </div>
+        </div>
+
         <Tabs defaultValue="all" className="space-y-4">
           <TabsList className="bg-muted/50 rounded-xl p-1">
             <TabsTrigger value="all" className="rounded-lg data-[state=active]:bg-card">All</TabsTrigger>
             <TabsTrigger value="anomaly" className="rounded-lg data-[state=active]:bg-card"><AlertTriangle className="w-3.5 h-3.5 mr-1" />Anomalies</TabsTrigger>
+            <TabsTrigger value="predictive" className="rounded-lg data-[state=active]:bg-card"><TrendingUp className="w-3.5 h-3.5 mr-1" />Predictive</TabsTrigger>
             <TabsTrigger value="daily_summary" className="rounded-lg data-[state=active]:bg-card"><Zap className="w-3.5 h-3.5 mr-1" />Summaries</TabsTrigger>
             <TabsTrigger value="performance" className="rounded-lg data-[state=active]:bg-card"><BarChart3 className="w-3.5 h-3.5 mr-1" />Performance</TabsTrigger>
-            <TabsTrigger value="task_priority" className="rounded-lg data-[state=active]:bg-card"><TrendingUp className="w-3.5 h-3.5 mr-1" />Priority</TabsTrigger>
           </TabsList>
-          {["all", "anomaly", "daily_summary", "performance", "task_priority"].map(tab => (
+          {["all", "anomaly", "predictive", "daily_summary", "performance"].map(tab => (
             <TabsContent key={tab} value={tab}>
-              <InsightsList insights={filterByType(tab)} loading={loading} onMarkRead={markRead} />
+              <InsightsList
+                insights={tab === "predictive"
+                  ? applyFilters(insights.filter(i => (i.insight_type ?? "").startsWith("predictive_")))
+                  : filterByType(tab)}
+                loading={loading}
+                onMarkRead={markRead}
+                onOpen={(row) => { setSelected(row); if (!row.is_read) markRead(row.id); }}
+              />
             </TabsContent>
           ))}
         </Tabs>
+
+        <AlertDetailSheet
+          insight={selected}
+          onClose={() => setSelected(null)}
+          onStatus={setStatus}
+          onNavigate={(url) => { setSelected(null); navigate(url); }}
+        />
       </div>
     </AppLayout>
   );
@@ -196,12 +271,12 @@ function generateLocalInsights(allTasks: any[], completed: number, blocked: numb
   return newInsights;
 }
 
-const InsightsList = ({ insights, loading, onMarkRead }: { insights: any[]; loading: boolean; onMarkRead: (id: string) => void }) => {
+const InsightsList = ({ insights, loading, onMarkRead, onOpen }: { insights: any[]; loading: boolean; onMarkRead: (id: string) => void; onOpen: (row: any) => void }) => {
   if (loading) return <div className="space-y-4">{[1, 2, 3].map(i => <div key={i} className="h-24 bg-muted rounded-xl animate-pulse" />)}</div>;
   if (insights.length === 0) return (
     <div className="glass-card rounded-xl p-12 text-center">
       <Brain className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
-      <p className="text-muted-foreground">No insights yet. Click "Generate Insights" to analyze your organization.</p>
+      <p className="text-muted-foreground">No alerts match the current filters.</p>
     </div>
   );
   return (
@@ -209,10 +284,12 @@ const InsightsList = ({ insights, loading, onMarkRead }: { insights: any[]; load
       <AnimatePresence>
         {insights.map((insight, i) => {
           const Icon = severityIcons[insight.severity] || TrendingUp;
+          const escalated = Number(insight.escalation_level ?? 0) > 0;
+          const status = insight.status ?? "open";
           return (
             <motion.div key={insight.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: i * 0.03 } }} exit={{ opacity: 0 }}
-              className={`glass-card-strong rounded-xl p-5 space-y-2 ${!insight.is_read ? "border-l-4 border-l-accent" : ""}`}
-              onMouseEnter={() => !insight.is_read && onMarkRead(insight.id)}
+              className={`glass-card-strong rounded-xl p-5 space-y-2 cursor-pointer hover:border-accent/40 transition ${!insight.is_read ? "border-l-4 border-l-accent" : ""}`}
+              onClick={() => onOpen(insight)}
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-2">
@@ -225,6 +302,8 @@ const InsightsList = ({ insights, loading, onMarkRead }: { insights: any[]; load
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
+                  {escalated && <Badge className="bg-destructive/10 text-destructive text-[10px]">Escalated L{insight.escalation_level}</Badge>}
+                  <Badge variant="outline" className="text-[10px] capitalize">{String(status).replace("_", " ")}</Badge>
                   {insight.is_read && <CheckCircle className="w-3.5 h-3.5 text-green-500" />}
                   <Badge variant="outline" className={severityColors[insight.severity] || ""}>{insight.severity}</Badge>
                 </div>
@@ -237,5 +316,69 @@ const InsightsList = ({ insights, loading, onMarkRead }: { insights: any[]; load
     </div>
   );
 };
+
+function AlertDetailSheet({
+  insight, onClose, onStatus, onNavigate,
+}: {
+  insight: any | null;
+  onClose: () => void;
+  onStatus: (id: string, status: string) => void;
+  onNavigate: (url: string) => void;
+}) {
+  if (!insight) return null;
+  const reason = insight.reason ?? insight.metadata ?? {};
+  const link = reason?.link as string | undefined;
+  const entries = Object.entries(reason).filter(([k]) => k !== "link");
+
+  return (
+    <Sheet open={!!insight} onOpenChange={(v) => !v && onClose()}>
+      <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+        <SheetHeader>
+          <SheetTitle className="flex items-center gap-2">
+            <Brain className="w-4 h-4 text-accent" /> {insight.title}
+          </SheetTitle>
+        </SheetHeader>
+        <div className="mt-4 space-y-4">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Badge variant="outline" className="text-[10px] capitalize">{insight.insight_type}</Badge>
+            <Badge variant="outline" className={`text-[10px] ${severityColors[insight.severity] || ""}`}>{insight.severity}</Badge>
+            <Badge variant="outline" className="text-[10px] capitalize">{(insight.status ?? "open").replace("_"," ")}</Badge>
+            {Number(insight.escalation_level ?? 0) > 0 && (
+              <Badge className="bg-destructive/10 text-destructive text-[10px]">Escalated L{insight.escalation_level}</Badge>
+            )}
+          </div>
+          <p className="text-sm text-foreground leading-relaxed">{insight.content}</p>
+          <div className="glass-card rounded-xl p-3">
+            <p className="text-xs font-semibold text-foreground mb-2 flex items-center gap-1">
+              <Sparkles className="w-3.5 h-3.5 text-accent" /> Why this fired
+            </p>
+            {entries.length === 0 ? (
+              <p className="text-xs text-muted-foreground">No structured evidence attached.</p>
+            ) : (
+              <dl className="text-xs grid grid-cols-2 gap-y-1">
+                {entries.map(([k, v]) => (
+                  <div key={k} className="contents">
+                    <dt className="text-muted-foreground">{k}</dt>
+                    <dd className="text-foreground truncate">{String(v)}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2 pt-2">
+            {link && (
+              <Button size="sm" onClick={() => onNavigate(link)} className="rounded-xl bg-accent text-accent-foreground">
+                <ExternalLink className="w-3.5 h-3.5 mr-1" /> Open source
+              </Button>
+            )}
+            <Button size="sm" variant="outline" className="rounded-xl" onClick={() => onStatus(insight.id, "acknowledged")}>Acknowledge</Button>
+            <Button size="sm" variant="outline" className="rounded-xl" onClick={() => onStatus(insight.id, "resolved")}>Mark resolved</Button>
+            <Button size="sm" variant="ghost" className="rounded-xl text-muted-foreground" onClick={() => onStatus(insight.id, "dismissed")}>Dismiss</Button>
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
 
 export default AIInsightsModule;
