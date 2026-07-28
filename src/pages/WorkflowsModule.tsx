@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion, AnimatePresence } from "framer-motion";
-import { Workflow, Plus, Play, Pause, Settings, ArrowRight, CheckCircle, Clock, AlertTriangle, Trash2, UserPlus } from "lucide-react";
+import { Workflow, Plus, Play, Pause, Settings, ArrowRight, CheckCircle, Clock, AlertTriangle, Trash2, UserPlus, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 
@@ -106,6 +106,20 @@ const WorkflowsModule = () => {
     fetchData();
   };
 
+  const runEngine = async (mode: "process_org" | "escalate" = "process_org") => {
+    const { data, error } = await supabase.functions.invoke("workflow-run", { body: { mode } });
+    if (error) { toast.error(error.message); return; }
+    toast.success(`Engine ran: ${data?.processed ?? data?.escalated ?? 0} instances`);
+    fetchData();
+  };
+
+  const advanceInstance = async (instanceId: string) => {
+    const { error } = await supabase.functions.invoke("workflow-run", { body: { mode: "advance", instance_id: instanceId } });
+    if (error) { toast.error(error.message); return; }
+    toast.success("Advanced one step");
+    fetchData();
+  };
+
   const viewSteps = async (workflow: any) => {
     const { data } = await supabase.from("workflow_steps").select("*").eq("workflow_id", workflow.id).order("step_order");
     setSelectedWorkflow({ ...workflow, steps: data || [] });
@@ -127,6 +141,9 @@ const WorkflowsModule = () => {
             <h1 className="text-2xl font-bold text-foreground flex items-center gap-2"><Workflow className="w-7 h-7 text-accent" /> Workflow Automation</h1>
             <p className="text-muted-foreground mt-1">Automated approvals, escalations & conditional logic</p>
           </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" className="rounded-xl" onClick={() => runEngine("process_org")}><Zap className="w-4 h-4 mr-1" /> Advance engine</Button>
+            <Button variant="outline" className="rounded-xl" onClick={() => runEngine("escalate")}><AlertTriangle className="w-4 h-4 mr-1" /> Escalate stale</Button>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button className="rounded-xl bg-accent text-accent-foreground"><Plus className="w-4 h-4 mr-1" /> Create Workflow</Button>
@@ -174,6 +191,7 @@ const WorkflowsModule = () => {
               </form>
             </DialogContent>
           </Dialog>
+          </div>
         </motion.div>
 
         {/* Stats */}
@@ -246,11 +264,16 @@ const WorkflowsModule = () => {
                   <p className="text-xs text-muted-foreground">Step {inst.current_step + 1} · Started {formatDistanceToNow(new Date(inst.started_at), { addSuffix: true })}</p>
                 </div>
                 {inst.status === "active" && (
+                  <div className="flex items-center gap-2">
+                  <Button size="sm" variant="outline" className="rounded-lg h-8" onClick={() => advanceInstance(inst.id)}>
+                    <Zap className="w-3 h-3 mr-1" /> Advance
+                  </Button>
                   <Button size="sm" variant="outline" className="rounded-lg h-8" onClick={async () => {
                     await supabase.from("workflow_instances").update({ status: "completed", completed_at: new Date().toISOString() }).eq("id", inst.id);
                     toast.success("Marked complete");
                     fetchData();
                   }}><CheckCircle className="w-3 h-3 mr-1" /> Complete</Button>
+                  </div>
                 )}
               </motion.div>
             ))}
