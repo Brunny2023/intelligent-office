@@ -232,15 +232,11 @@ const SuperAdmin = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="audit">
-            {/* audit tab below */}
-          </TabsContent>
-
           <TabsContent value="egress">
             <EgressHealthPanel />
           </TabsContent>
 
-          <TabsContent value="audit-real" className="hidden">
+          <TabsContent value="audit">
             <Card>
               <CardHeader><CardTitle className="text-base flex items-center gap-2"><Activity className="w-4 h-4" /> Recent Cross-Tenant Activity ({activity.length})</CardTitle></CardHeader>
               <CardContent>
