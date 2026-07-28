@@ -1,102 +1,118 @@
-# Plan: Phase 6 Admin/Super Admin + Investor Page Elevation
 
-Two large, independent workstreams. Both delivered in this pass.
+# Closing the Investor-Page Gaps: Full Delivery Plan
 
----
+Goal: make the product deliver every promise the `/investors` page makes. Ship in credibility-weighted order — the claims that most define "Organizational Intelligence Layer" go first, cosmetic ones last.
 
-## Workstream A — Phase 6: Admin & Super Admin Panel
-
-### A1. Scope
-Two tiers:
-- **Org Admin** (owner/executive): extends existing `AdminDashboard.tsx` with usage monitoring, system health, audit trail.
-- **Super Admin** (platform-level, cross-tenant): new gated surface for tenant overview, platform usage, health, billing signals.
-
-### A2. Super Admin gating
-- New `app_role` value is out-of-scope; instead gate by an env-configured allowlist of `user.email` values stored in a new `platform_admins` table (RLS: only self-read; service role writes).
-- Migration: create `public.platform_admins (user_id uuid PK, email text, created_at)` + grants + RLS + `is_platform_admin(uid)` security-definer function.
-- New route `/super-admin` protected by `ProtectedRoute` + `is_platform_admin` check; redirects otherwise.
-
-### A3. Super Admin surfaces (`src/pages/SuperAdmin.tsx`)
-Tabs:
-1. **Tenants** — list all orgs (name, slug, member count, plan, created_at, last_activity). Search + sort. Row → tenant detail drawer with member list, storage usage, ticket count, task count.
-2. **Usage** — platform-wide counters: total orgs, MAU (distinct users with activity in 30d), tasks created (30d), messages sent (30d), AI insights generated (30d), storage used. Sparkline via lightweight inline SVG (no chart lib).
-3. **System Health** — DB latency probe (round-trip `select 1`), edge function ping (`livekit-token` health), storage bucket reachability, auth service check, error rate (last 100 activity_logs errors). Green/amber/red pills.
-4. **Audit / Activity** — recent cross-tenant `activity_logs` (last 200) with tenant filter.
-
-Data via existing tables + a new SQL RPC `get_platform_stats()` (security definer, checks `is_platform_admin`).
-
-### A4. Org Admin enhancements (`AdminDashboard.tsx`)
-Add tabs beside existing Members/Tickets:
-- **Usage** — org-scoped: tasks 30d, messages 30d, storage MB, AI credits consumed (best-effort from `ai_insights` count), active users 7d/30d.
-- **Health** — org-level status pills: attendance completeness today, overdue tasks %, unread announcements %, unresolved tickets aged >72h.
-- **Audit** — org's `activity_logs` with filters.
-
-### A5. Access + nav
-- Add "Super Admin" link in sidebar only when `is_platform_admin` returns true.
-- Keep existing Admin link.
+Plan is organized in 5 waves. Each wave ends with the product provably matching a specific set of investor-page claims. After each wave you can re-audit before we advance.
 
 ---
 
-## Workstream B — Investor Page Elevation
+## Wave 1 — The Intelligence Core (the promise that defines the category)
 
-### B1. Positioning shift
-Reframe copy sitewide on `/investors` from "AI Business Operating System" to lead with **"Organizational Intelligence Layer"**, with ABOS as the delivery layer. Preserve existing content; strengthen and layer new sections.
+The investor page claims a **Knowledge Graph**, **Organizational Intelligence Layer**, and **AI that reasons over org data**. Today that layer doesn't exist — insights are one-shot LLM calls over ad-hoc SQL. This wave builds the real substrate.
 
-### B2. New sections (in order, inserted into `src/pages/Investors.tsx`)
-1. **Hero refresh** — headline: *"The Organizational Intelligence Layer for Modern Enterprises."* Sub: contrast incumbents (Microsoft/Google/Salesforce/SAP/Notion each own one slice; Global Office owns organizational intelligence).
-2. **5-Minute Investor Brief** — sticky card grid: Problem, Solution, Market, Why Now, Moat, Business Model, Ask, Traction, Milestones.
-3. **The Missing Layer** — animated architecture stack (People → Projects → Messages → … → Knowledge Graph → Intelligence Layer → Recommendations → Automation → Decisions → Outcomes). Framer Motion; upward data pulses, downward insight pulses. Pure SVG + motion, no new deps.
-4. **Strategic Moat (Compounding Loop)** — circular flywheel diagram: More Users → More Org Data → Richer Graph → Smarter Intelligence → Better Recs → Higher Value → More Adoption ↺.
-5. **Why Incumbents Can't Copy This** — 5 cards (MSFT doc-centric, Google comms-centric, Salesforce CRM-centric, SAP ERP-centric, Notion knowledge-centric) contrasted with Global Office graph-centric.
-6. **Product Proof** — placeholder device mockups for Executive Control Center, Workflow Builder, Knowledge Graph Explorer, Org Health Dashboard. Uses existing screenshots where available; otherwise elegant placeholder frames.
-7. **Demo Video** — "See Organizational Intelligence in Action" section, 90s walkthrough placeholder with play affordance (opens existing `DemoModal` or Vimeo/Loom embed slot).
-8. **Competitive Positioning Matrix** — 2D scatter (X: System Intelligence, Y: Business Surface Coverage) with plotted competitors + Global Office highlighted. SVG.
-9. **Early Market Validation** — cards for design partners, pilots, waitlist, LOIs, demos completed, newsletter, community. Gracefully render 0.
-10. **Roadmap Timeline** — premium horizontal timeline: Discovery → MVP → Design Partners → Commercial Launch → PMF → Regional Expansion → Enterprise → Global Scale.
-11. **Founder Credibility expansion** — expand existing block with placeholder stats slots (no fabricated numbers).
-12. **Confidence Cards** — TAM, launch geos, ICP, business model, AI architecture, round size, runway, expansion.
-13. **New Closing Statement** — the "systems that understand organizations" close.
+1. **Knowledge Graph schema (v1)**
+   - New tables: `graph_entities` (people, projects, tasks, docs, meetings, customers, kpis), `graph_edges` (typed relationships: owns, blocks, mentions, participates_in, reports_to, depends_on), `graph_events` (append-only signal stream).
+   - Ingestion triggers on `tasks`, `messages`, `documents`, `meetings`, `profiles`, `kpis` → populate entities/edges automatically.
+   - RLS scoped to `organization_id`; service_role writes from triggers.
 
-Keep the existing downloads table intact.
+2. **Signal pipeline**
+   - Edge function `graph-ingest` that batch-normalizes historical rows on org backfill.
+   - Nightly scheduled job `graph-recompute` (pg_cron) that recalculates derived metrics: workload per person, blocker chains, collaboration density, at-risk projects.
 
-### B3. Design language
-- Typography scale bump on hero (existing Space Grotesk display).
-- More whitespace, glass panels, subtle gradient dividers.
-- Motion: restrained — fade/rise on scroll, gentle pulse on intelligence layer, flywheel rotation on view.
-- Mobile: single-column stacks, sticky section nav, larger tap targets.
-- No new heavy deps; reuse `framer-motion`, `lucide-react`, existing tokens.
+3. **Intelligence API**
+   - Edge function `intelligence-query` that answers structured questions ("who is overloaded?", "which projects are at risk?", "what decisions are pending?") by querying the graph + LLM synthesis — not raw prompts over SQL dumps.
+   - Replaces the current `ai-insights-generate` fallback path with graph-grounded reasoning.
 
-### B4. SEO
-Update `<title>`, meta description, og tags on `Investors.tsx` via `document.title` effect (existing pattern) to reflect new positioning.
+4. **Graph Explorer UI**
+   - New `/intelligence/graph` route: interactive node/edge view (react-flow), filter by entity type, click-through to source records.
+   - Investor page's "Knowledge Graph" claim becomes demonstrable.
 
 ---
 
-## Technical Details
+## Wave 2 — Automation That Actually Runs
 
-**New files:**
-- `supabase/migrations/<ts>_platform_admins_and_stats.sql` — table, grants, RLS, `is_platform_admin`, `get_platform_stats` RPC.
-- `src/pages/SuperAdmin.tsx`
-- `src/hooks/usePlatformAdmin.ts`
-- `src/components/admin/UsageTab.tsx`, `HealthTab.tsx`, `AuditTab.tsx` (shared org + super).
-- `src/components/investors/IntelligenceStack.tsx` (animated architecture)
-- `src/components/investors/MoatFlywheel.tsx`
-- `src/components/investors/PositioningMatrix.tsx`
-- `src/components/investors/RoadmapTimeline.tsx`
-- `src/components/investors/InvestorBrief.tsx`
-- `src/components/investors/IncumbentGrid.tsx`
-- `src/components/investors/ProductProof.tsx`
-- `src/components/investors/ValidationCards.tsx`
+Investor page promises **workflow automation, escalations, and AI-suggested workflows**. Today `workflows`, `workflow_instances`, `workflow_step_logs` exist as tables with no executor.
 
-**Edits:**
-- `src/App.tsx` — add `/super-admin` route.
-- `src/pages/AdminDashboard.tsx` — add Usage/Health/Audit tabs.
-- `src/components/layout/AppSidebar.tsx` — conditional Super Admin link.
-- `src/pages/Investors.tsx` — insert new sections; reframe copy.
-- `index.html` — meta updates if needed.
+1. **Workflow executor**
+   - Edge function `workflow-run` triggered by (a) DB triggers matching `trigger_type` (task.created, task.overdue, leave.requested, kpi.threshold), (b) pg_cron for time-based.
+   - Steps supported: notify, assign, create_task, require_approval, escalate, call_webhook, ai_summarize.
+   - Full audit into `workflow_step_logs`.
 
-**RLS/Grants:** all new tables/functions get GRANT + policies per project rules. `platform_admins` seeded manually via SQL by user; no self-signup.
+2. **Escalation engine**
+   - Timeout watcher promotes stalled steps up the reporting chain using `profiles.department_id` + org roles.
 
-**Deps:** none added.
+3. **AI workflow suggester**
+   - Uses graph signals ("3 tasks blocked >48h in Marketing") to propose workflow templates in the Workflows UI.
 
-## Delivery
-Ship both workstreams in this pass. Verify build; no runtime seed of platform admins (user adds their user_id via SQL later — I'll surface the exact SQL snippet in the reply).
+---
+
+## Wave 3 — Meetings Intelligence (the biggest visible gap)
+
+Investor page implies **AI transcription, summaries, action-item extraction, multilingual**. Today only LiveKit tokens exist.
+
+1. **Recording capture** via LiveKit egress → Supabase `documents` bucket (new `recordings/` prefix, private).
+2. **Transcription pipeline**: edge function `meeting-transcribe` posts audio to `openai/gpt-4o-transcribe` through the Lovable AI Gateway; stores transcript rows in new `meeting_transcripts`.
+3. **Summarization + action items**: `meeting-analyze` calls chat model, writes `meeting_summaries` and auto-creates linked `tasks` with `assigned_to` inferred from speaker→profile mapping.
+4. **Meetings UI**: post-meeting panel with transcript, summary, extracted actions, and a "push to tasks" confirm.
+5. **Multilingual**: language auto-detect + optional translation pass for summaries.
+
+---
+
+## Wave 4 — Predictive & Advisory Intelligence
+
+Investor page promises **predictive alerts, anomaly detection, executive advisor**. Today: rule-based fallbacks + one gemini call.
+
+1. **Anomaly detectors** (SQL + light stats, not LLM):
+   - Attendance deviation vs 30-day baseline per user.
+   - Task velocity drop per project week-over-week.
+   - Message volume collapse in a channel (disengagement signal).
+   - Overdue-cluster detection per assignee/department.
+   Persist as `ai_insights` rows with `insight_type = 'anomaly'` and evidence links.
+
+2. **Executive Advisor**
+   - New `/executive/advisor` panel — chat surface grounded in the graph via `intelligence-query`. Returns cited answers (links to underlying tasks/kpis/meetings). No free-floating hallucinations.
+
+3. **Weekly digest**
+   - pg_cron → `digest-generate` → emails execs (via existing transactional email path) with top 5 graph-derived insights.
+
+---
+
+## Wave 5 — Trust, Compliance & Category Proof
+
+Closes the remaining "enterprise-ready" claims.
+
+1. **Compliance surface**
+   - Wire `compliance_settings` into real behaviors: IP allowlist enforced in `AuthContext` sign-in check; MFA-required flag gates protected routes; audit log export from `activity_logs`.
+   - Data-retention job purges `activity_logs`, `messages`, `notifications` beyond `data_retention_days`.
+
+2. **E-signature integrity**
+   - Hash memo content + signature at signing time into a new `signature_ledger` (append-only, service_role write, everyone-read within org). Verifies the "cryptographically signed memos" claim.
+
+3. **Partner Connect proof**
+   - Add cross-org intelligence-sharing consent flow so `org_conversations` can share selected KPIs/insights — matches the "inter-org intelligence" line.
+
+4. **Investor-page validation numbers**
+   - Replace placeholder cards in `InvestorSections.tsx` with live counts pulled at build time from `get_platform_stats` (orgs, tasks, insights, meetings once Wave 3 lands). Keeps promises honest as usage grows.
+
+---
+
+## Sequencing & checkpoints
+
+```text
+Wave 1 → re-audit → Wave 2 → re-audit → Wave 3 → re-audit → Wave 4 → re-audit → Wave 5 → final audit
+```
+
+Each wave is independently shippable; nothing regresses existing modules. After every wave I'll re-run the investor-page-vs-product audit and report remaining gaps before starting the next.
+
+## Technical notes
+
+- All new tables follow the mandatory pattern: CREATE → GRANT (authenticated + service_role, no anon) → ENABLE RLS → POLICY scoped by `organization_id` via `get_user_org_id(auth.uid())`.
+- All AI calls go through the Lovable AI Gateway using the shared provider helper; chat default `openai/gpt-5.6-sol`, transcription `openai/gpt-4o-transcribe`.
+- Executor + cron jobs live in edge functions with `verify_jwt = false` where triggered internally, JWT-validated where user-initiated.
+- Graph ingestion is idempotent (unique `(org, entity_type, source_id)`), safe to replay on backfill.
+- No investor-page copy changes — product rises to meet the copy.
+
+## First action after approval
+
+Start Wave 1 step 1: submit the knowledge-graph migration (entities, edges, events, triggers, RLS, grants) for your review.
