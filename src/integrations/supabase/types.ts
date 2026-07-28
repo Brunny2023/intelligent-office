@@ -2146,6 +2146,17 @@ export type Database = {
         }
         Returns: string
       }
+      graph_workload_by_person: {
+        Args: { _org: string }
+        Returns: {
+          blocked_count: number
+          completed_count: number
+          full_name: string
+          open_count: number
+          overdue_count: number
+          user_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -2153,7 +2164,12 @@ export type Database = {
         }
         Returns: boolean
       }
+      intelligence_isolation_probe: { Args: never; Returns: Json }
       is_platform_admin: { Args: { _user_id: string }; Returns: boolean }
+      workflow_instantiate: {
+        Args: { _actor: string; _org: string; _payload: Json; _trigger: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role:
