@@ -51,40 +51,61 @@ export type Database = {
         Row: {
           content: string
           created_by: string | null
+          escalation_level: number
           expires_at: string | null
           generated_at: string
           id: string
           insight_type: string
           is_read: boolean
+          last_escalated_at: string | null
           metadata: Json | null
           organization_id: string
+          reason: Json
+          resolved_at: string | null
+          resolved_by: string | null
           severity: string
+          snoozed_until: string | null
+          status: string
           title: string
         }
         Insert: {
           content: string
           created_by?: string | null
+          escalation_level?: number
           expires_at?: string | null
           generated_at?: string
           id?: string
           insight_type?: string
           is_read?: boolean
+          last_escalated_at?: string | null
           metadata?: Json | null
           organization_id: string
+          reason?: Json
+          resolved_at?: string | null
+          resolved_by?: string | null
           severity?: string
+          snoozed_until?: string | null
+          status?: string
           title: string
         }
         Update: {
           content?: string
           created_by?: string | null
+          escalation_level?: number
           expires_at?: string | null
           generated_at?: string
           id?: string
           insight_type?: string
           is_read?: boolean
+          last_escalated_at?: string | null
           metadata?: Json | null
           organization_id?: string
+          reason?: Json
+          resolved_at?: string | null
+          resolved_by?: string | null
           severity?: string
+          snoozed_until?: string | null
+          status?: string
           title?: string
         }
         Relationships: [
@@ -443,6 +464,64 @@ export type Database = {
           },
         ]
       }
+      document_shares: {
+        Row: {
+          created_at: string
+          document_id: string
+          expires_at: string | null
+          granted_by: string
+          id: string
+          owner_org_id: string
+          partner_org_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          document_id: string
+          expires_at?: string | null
+          granted_by: string
+          id?: string
+          owner_org_id: string
+          partner_org_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          document_id?: string
+          expires_at?: string | null
+          granted_by?: string
+          id?: string
+          owner_org_id?: string
+          partner_org_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_shares_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "document_shares_owner_org_id_fkey"
+            columns: ["owner_org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "document_shares_partner_org_id_fkey"
+            columns: ["partner_org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documents: {
         Row: {
           category: string | null
@@ -729,6 +808,57 @@ export type Database = {
           {
             foreignKeyName: "graph_events_organization_id_fkey"
             columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inter_org_audit_log: {
+        Row: {
+          actor_id: string | null
+          event_type: string
+          id: string
+          metadata: Json
+          occurred_at: string
+          owner_org_id: string
+          partner_org_id: string | null
+          resource_id: string | null
+          resource_type: string | null
+        }
+        Insert: {
+          actor_id?: string | null
+          event_type: string
+          id?: string
+          metadata?: Json
+          occurred_at?: string
+          owner_org_id: string
+          partner_org_id?: string | null
+          resource_id?: string | null
+          resource_type?: string | null
+        }
+        Update: {
+          actor_id?: string | null
+          event_type?: string
+          id?: string
+          metadata?: Json
+          occurred_at?: string
+          owner_org_id?: string
+          partner_org_id?: string | null
+          resource_id?: string | null
+          resource_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inter_org_audit_log_owner_org_id_fkey"
+            columns: ["owner_org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inter_org_audit_log_partner_org_id_fkey"
+            columns: ["partner_org_id"]
             isOneToOne: false
             referencedRelation: "organizations"
             referencedColumns: ["id"]
@@ -1389,6 +1519,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      notification_preferences: {
+        Row: {
+          created_at: string
+          email: boolean
+          escalate_to_manager: boolean
+          escalation_after_hours: number
+          id: string
+          in_app: boolean
+          slack: boolean
+          slack_webhook_url: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: boolean
+          escalate_to_manager?: boolean
+          escalation_after_hours?: number
+          id?: string
+          in_app?: boolean
+          slack?: boolean
+          slack_webhook_url?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: boolean
+          escalate_to_manager?: boolean
+          escalation_after_hours?: number
+          id?: string
+          in_app?: boolean
+          slack?: boolean
+          slack_webhook_url?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       notifications: {
         Row: {
@@ -2414,6 +2583,7 @@ export type Database = {
         }
         Returns: Json
       }
+      escalate_alerts: { Args: never; Returns: Json }
       get_platform_stats: { Args: never; Returns: Json }
       get_platform_tenants: {
         Args: never
@@ -2461,6 +2631,10 @@ export type Database = {
           overdue_count: number
           user_id: string
         }[]
+      }
+      has_document_share: {
+        Args: { _document_id: string; _owner_org: string }
+        Returns: boolean
       }
       has_role: {
         Args: {
