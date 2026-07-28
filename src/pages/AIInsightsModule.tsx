@@ -134,7 +134,7 @@ const AIInsightsModule = () => {
               onClick={async () => {
                 const { data, error } = await supabase.functions.invoke("predictive-alerts", { body: {} });
                 if (error || (data as any)?.error) toast.error((data as any)?.error ?? error?.message ?? "Scan failed");
-                else { toast.success(`${(data as any)?.insights_created ?? 0} predictive alerts`); loadInsights(); }
+                else { toast.success(`${(data as any)?.insights_created ?? 0} predictive alerts`); fetchInsights(); }
               }}
               className="rounded-xl">
               <AlertTriangle className="w-4 h-4 mr-1" /> Predictive Scan
