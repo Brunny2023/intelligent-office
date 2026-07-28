@@ -56,6 +56,17 @@ export default function PostMeetingPanel({ recordingId, onDone }: Props) {
     onDone?.();
   };
 
+  const translate = async (target: string) => {
+    setProcessing(true);
+    const { data, error } = await supabase.functions.invoke("meeting-analyze", {
+      body: { mode: "translate", recording_id: recordingId, target_lang: target },
+    });
+    setProcessing(false);
+    if (error || (data as any)?.error) { toast.error((data as any)?.error ?? error?.message ?? "Translate failed"); return; }
+    toast.success(`Translated to ${target}`);
+    load();
+  };
+
   if (loading) return <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin" /></div>;
 
   const items: any[] = summary?.action_items ?? [];
@@ -87,6 +98,18 @@ export default function PostMeetingPanel({ recordingId, onDone }: Props) {
             <div className="text-sm font-semibold flex items-center gap-2"><Sparkles className="w-4 h-4 text-accent" /> Summary</div>
             <p className="text-sm text-muted-foreground">{summary.summary}</p>
             {summary.sentiment && <Badge variant="outline" className="text-[10px]">Sentiment: {summary.sentiment}</Badge>}
+            <div className="flex gap-2 pt-1">
+              {["en","es","fr","de","zh","ar","hi","yo"].map(l => (
+                <button key={l} disabled={processing} onClick={() => translate(l)}
+                  className="text-[10px] px-2 py-0.5 rounded-full border border-border hover:bg-muted/50 disabled:opacity-50">{l}</button>
+              ))}
+            </div>
+            {summary.translated_summary && Object.entries(summary.translated_summary as any).map(([lang, v]: any) => (
+              <div key={lang} className="mt-2 pt-2 border-t border-border/50">
+                <Badge variant="outline" className="text-[10px] mb-1"><Languages className="w-3 h-3 mr-1" />{lang}</Badge>
+                <p className="text-sm text-muted-foreground">{v?.summary}</p>
+              </div>
+            ))}
           </div>
           {(summary.key_decisions ?? []).length > 0 && (
             <div className="glass-card rounded-xl p-4">

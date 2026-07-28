@@ -128,9 +128,21 @@ const AIInsightsModule = () => {
             </h1>
             <p className="text-muted-foreground mt-1">AI-powered insights, anomaly detection & performance analysis</p>
           </div>
-          <Button onClick={generateInsights} disabled={generating} className="rounded-xl bg-accent text-accent-foreground">
-            {generating ? <><RefreshCw className="w-4 h-4 mr-1 animate-spin" /> Analyzing...</> : <><Sparkles className="w-4 h-4 mr-1" /> Generate Insights</>}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={async () => {
+                const { data, error } = await supabase.functions.invoke("predictive-alerts", { body: {} });
+                if (error || (data as any)?.error) toast.error((data as any)?.error ?? error?.message ?? "Scan failed");
+                else { toast.success(`${(data as any)?.insights_created ?? 0} predictive alerts`); fetchInsights(); }
+              }}
+              className="rounded-xl">
+              <AlertTriangle className="w-4 h-4 mr-1" /> Predictive Scan
+            </Button>
+            <Button onClick={generateInsights} disabled={generating} className="rounded-xl bg-accent text-accent-foreground">
+              {generating ? <><RefreshCw className="w-4 h-4 mr-1 animate-spin" /> Analyzing...</> : <><Sparkles className="w-4 h-4 mr-1" /> Generate Insights</>}
+            </Button>
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">

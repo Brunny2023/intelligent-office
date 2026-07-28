@@ -171,6 +171,13 @@ const MeetingsModule = () => {
     if (error) { toast.error(error.message); return; }
     setOpenRecording(rec.id);
     fetchRecordings();
+    toast.success("Recording uploaded — analyzing…");
+    supabase.functions.invoke("meeting-analyze", { body: { mode: "full", recording_id: rec.id } })
+      .then(({ data, error }) => {
+        if (error || (data as any)?.error) toast.error((data as any)?.error ?? error?.message ?? "Analysis failed");
+        else toast.success("Meeting analyzed");
+        fetchRecordings();
+      });
   };
 
   if (loading) {
