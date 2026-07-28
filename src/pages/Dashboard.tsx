@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useOrganization } from "@/hooks/useOrganization";
+import { supabase } from "@/integrations/supabase/client";
 import ClockInWidget from "@/components/attendance/ClockInWidget";
 import ActivityFeed from "@/components/activity/ActivityFeed";
 import PerformanceWidget from "@/components/dashboard/PerformanceWidget";
@@ -14,12 +15,12 @@ import {
   Megaphone, Brain, Crown, Workflow, UserPlus, Target, Shield, Sparkles
 } from "lucide-react";
 
-const quickStats = [
-  { label: "Team Members", value: "—", icon: Users },
-  { label: "Active Tasks", value: "—", icon: CheckSquare },
-  { label: "Messages", value: "—", icon: MessageSquare },
-  { label: "Health Score", value: "—", icon: BarChart3 },
-];
+const STAT_META = [
+  { key: "team", label: "Team Members", icon: Users },
+  { key: "tasks", label: "Active Tasks", icon: CheckSquare },
+  { key: "messages", label: "Messages (7d)", icon: MessageSquare },
+  { key: "health", label: "Health Score", icon: BarChart3 },
+] as const;
 
 const modules = [
   { icon: Clock, label: "Attendance", description: "Check in & workforce presence", color: "bg-svo-blue/10 text-svo-blue", path: "/attendance" },
@@ -43,6 +44,47 @@ const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { profile, org, loading } = useOrganization();
+  const [stats, setStats] = useState<Record<string, string>>({ team: "—", tasks: "—", messages: "—", health: "—" });
+
+  useEffect(() => {
+    if (!org?.id) return;
+    const orgId = org.id;
+    const since = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
+    (async () => {
+      const [teamRes, tasksActive, tasksDone, tasksTotal, kpisAll, attendance, channels] = await Promise.all([
+        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
+        supabase.from("tasks").select("id", { count: "exact", head: true }).eq("organization_id", orgId).in("status", ["todo", "in_progress", "review"]),
+        supabase.from("tasks").select("id", { count: "exact", head: true }).eq("organization_id", orgId).eq("status", "completed"),
+        supabase.from("tasks").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
+        supabase.from("kpis").select("current_value,target_value").eq("organization_id", orgId),
+        supabase.from("attendance_records").select("id", { count: "exact", head: true }).eq("organization_id", orgId).gte("clock_in", new Date(new Date().toDateString()).toISOString()),
+        supabase.from("channels").select("id").eq("organization_id", orgId),
+      ]);
+      let messagesCount = 0;
+      const channelIds = (channels.data || []).map((c) => c.id);
+      if (channelIds.length > 0) {
+        const msgs = await supabase.from("messages").select("id", { count: "exact", head: true }).in("channel_id", channelIds).gte("created_at", since);
+        messagesCount = msgs.count || 0;
+      }
+      const teamCount = teamRes.count || 0;
+      const activeCount = tasksActive.count || 0;
+      const doneCount = tasksDone.count || 0;
+      const totalCount = tasksTotal.count || 0;
+      const completionRate = totalCount > 0 ? (doneCount / totalCount) * 100 : 0;
+      const kpis = kpisAll.data || [];
+      const kpiRate = kpis.length > 0
+        ? kpis.reduce((s, k) => s + Math.min(100, (Number(k.current_value || 0) / Math.max(1, Number(k.target_value || 1))) * 100), 0) / kpis.length
+        : 0;
+      const attendanceRate = teamCount > 0 ? Math.min(100, ((attendance.count || 0) / teamCount) * 100) : 0;
+      const health = Math.round(completionRate * 0.3 + kpiRate * 0.3 + attendanceRate * 0.4);
+      setStats({
+        team: String(teamCount),
+        tasks: String(activeCount),
+        messages: String(messagesCount),
+        health: totalCount + kpis.length + teamCount === 0 ? "—" : `${health}%`,
+      });
+    })();
+  }, [org?.id]);
 
   useEffect(() => {
     if (!loading && profile && !profile.organization_id) {
@@ -113,7 +155,7 @@ const Dashboard = () => {
             <ClockInWidget />
           </motion.div>
           <div className="md:col-span-1 lg:col-span-2 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-            {quickStats.map((stat, i) => (
+            {STAT_META.map((stat, i) => (
               <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.15 + i * 0.05 } }}
                 whileHover={{ y: -4, boxShadow: "0 8px 24px hsl(var(--svo-navy) / 0.1)", transition: { type: "spring", stiffness: 400, damping: 20 } }}
                 whileTap={{ scale: 0.97 }}
@@ -123,7 +165,7 @@ const Dashboard = () => {
                   <stat.icon className="w-4 h-4 text-muted-foreground" />
                   <span className="text-xs text-muted-foreground">{stat.label}</span>
                 </div>
-                <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                <p className="text-2xl font-bold text-foreground">{stats[stat.key]}</p>
               </motion.div>
             ))}
           </div>
