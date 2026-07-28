@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Plus, PenLine, Send, Eye } from "lucide-react";
+import { FileText, Plus, PenLine, Send, Eye, ShieldCheck, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import SignaturePad from "@/components/signatures/SignaturePad";
@@ -79,6 +79,8 @@ const InternalMemos = () => {
 
   // Load signature for a viewed memo
   const [viewSignatureData, setViewSignatureData] = useState<string | null>(null);
+  const [verification, setVerification] = useState<any>(null);
+  const [signing, setSigning] = useState(false);
   useEffect(() => {
     if (!viewMemo?.signature_id) { setViewSignatureData(null); return; }
     supabase
@@ -90,6 +92,28 @@ const InternalMemos = () => {
         setViewSignatureData(data ? (data as any).signature_data : null);
       });
   }, [viewMemo]);
+
+  useEffect(() => {
+    if (!viewMemo) { setVerification(null); return; }
+    supabase.rpc("verify_memo_signature" as any, { _memo_id: viewMemo.id })
+      .then(({ data }) => setVerification(data));
+  }, [viewMemo]);
+
+  const handleSealMemo = async () => {
+    if (!viewMemo) return;
+    if (!signature) { toast.error("Set your signature first"); return; }
+    setSigning(true);
+    const { data, error } = await supabase.rpc("sign_memo" as any, { _memo_id: viewMemo.id });
+    setSigning(false);
+    if (error || (data as any)?.error) {
+      toast.error((data as any)?.error || error?.message || "Failed to seal memo");
+      return;
+    }
+    toast.success("Memo cryptographically sealed");
+    const { data: v } = await supabase.rpc("verify_memo_signature" as any, { _memo_id: viewMemo.id });
+    setVerification(v);
+    fetchMemos();
+  };
 
   return (
     <div className="space-y-4">
@@ -165,6 +189,27 @@ const InternalMemos = () => {
                   <img src={viewSignatureData} alt="Signature" className="h-16 object-contain" />
                 </div>
               )}
+              <div className="border-t border-border pt-4 flex items-center justify-between gap-3">
+                {verification?.valid ? (
+                  <div className="flex items-center gap-2 text-xs text-green-600">
+                    <ShieldCheck className="w-4 h-4" />
+                    <div>
+                      <p className="font-medium">Cryptographic seal verified</p>
+                      <p className="text-[10px] text-muted-foreground font-mono truncate max-w-[280px]">{verification.chain_hash}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <ShieldAlert className="w-4 h-4" />
+                    <span>{verification?.reason === "not_signed" ? "Not yet sealed" : "Signature could not be verified"}</span>
+                  </div>
+                )}
+                {viewMemo.created_by === user?.id && !verification?.valid && (
+                  <Button size="sm" onClick={handleSealMemo} disabled={signing} className="rounded-xl bg-accent text-accent-foreground">
+                    <ShieldCheck className="w-4 h-4 mr-1" /> {signing ? "Sealing..." : "Seal & Sign"}
+                  </Button>
+                )}
+              </div>
             </div>
           )}
         </DialogContent>

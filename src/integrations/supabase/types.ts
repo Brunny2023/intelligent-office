@@ -1527,6 +1527,60 @@ export type Database = {
           },
         ]
       }
+      org_share_consents: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          granted_by: string
+          id: string
+          owner_org_id: string
+          partner_org_id: string
+          resource_id: string
+          share_type: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          granted_by: string
+          id?: string
+          owner_org_id: string
+          partner_org_id: string
+          resource_id: string
+          share_type: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          granted_by?: string
+          id?: string
+          owner_org_id?: string
+          partner_org_id?: string
+          resource_id?: string
+          share_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "org_share_consents_owner_org_id_fkey"
+            columns: ["owner_org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "org_share_consents_partner_org_id_fkey"
+            columns: ["partner_org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           brand_tagline: string | null
@@ -1818,6 +1872,57 @@ export type Database = {
           },
           {
             foreignKeyName: "projects_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      signature_ledger: {
+        Row: {
+          chain_hash: string
+          content_hash: string
+          id: string
+          memo_id: string
+          organization_id: string
+          prev_hash: string | null
+          signature_hash: string
+          signed_at: string
+          signer_id: string
+        }
+        Insert: {
+          chain_hash: string
+          content_hash: string
+          id?: string
+          memo_id: string
+          organization_id: string
+          prev_hash?: string | null
+          signature_hash: string
+          signed_at?: string
+          signer_id: string
+        }
+        Update: {
+          chain_hash?: string
+          content_hash?: string
+          id?: string
+          memo_id?: string
+          organization_id?: string
+          prev_hash?: string | null
+          signature_hash?: string
+          signed_at?: string
+          signer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "signature_ledger_memo_id_fkey"
+            columns: ["memo_id"]
+            isOneToOne: false
+            referencedRelation: "internal_memos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "signature_ledger_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -2366,6 +2471,9 @@ export type Database = {
       }
       intelligence_isolation_probe: { Args: never; Returns: Json }
       is_platform_admin: { Args: { _user_id: string }; Returns: boolean }
+      retention_purge: { Args: never; Returns: Json }
+      sign_memo: { Args: { _memo_id: string }; Returns: Json }
+      verify_memo_signature: { Args: { _memo_id: string }; Returns: Json }
       workflow_instantiate: {
         Args: { _actor: string; _org: string; _payload: Json; _trigger: string }
         Returns: undefined

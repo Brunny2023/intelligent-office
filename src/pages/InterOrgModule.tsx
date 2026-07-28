@@ -10,7 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
-import { Building2, Plus, Send, ArrowLeft, Paperclip, Download } from "lucide-react";
+import { Building2, Plus, Send, ArrowLeft, Paperclip, Download, Share2, Shield, Trash2 } from "lucide-react";
+import ShareConsentDialog from "@/components/interorg/ShareConsentDialog";
 import { toast } from "sonner";
 import { format, isToday, isYesterday } from "date-fns";
 
@@ -252,6 +253,9 @@ const InterOrgModule = () => {
                 <div>
                   <h3 className="font-semibold text-foreground text-sm">{getOrgName(getPartnerOrgId(selected))}</h3>
                   {selected.subject && <p className="text-[10px] text-muted-foreground">{selected.subject}</p>}
+                </div>
+                <div className="ml-auto">
+                  <ShareConsentDialog ownerOrgId={org!.id} partnerOrgId={getPartnerOrgId(selected)} userId={user!.id} />
                 </div>
               </div>
               <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-2">
