@@ -1354,10 +1354,12 @@ export type Database = {
       meeting_rooms: {
         Row: {
           created_at: string
+          duration_seconds: number | null
           ended_at: string | null
           host_id: string
           id: string
           organization_id: string
+          peak_participants: number
           room_name: string
           started_at: string
           status: string
@@ -1365,10 +1367,12 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          duration_seconds?: number | null
           ended_at?: string | null
           host_id: string
           id?: string
           organization_id: string
+          peak_participants?: number
           room_name: string
           started_at?: string
           status?: string
@@ -1376,10 +1380,12 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          duration_seconds?: number | null
           ended_at?: string | null
           host_id?: string
           id?: string
           organization_id?: string
+          peak_participants?: number
           room_name?: string
           started_at?: string
           status?: string
@@ -2583,6 +2589,7 @@ export type Database = {
         }
         Returns: Json
       }
+      end_stale_meeting_rooms: { Args: never; Returns: number }
       escalate_alerts: { Args: never; Returns: Json }
       get_platform_stats: { Args: never; Returns: Json }
       get_platform_tenants: {

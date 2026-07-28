@@ -70,6 +70,29 @@ Deno.serve(async (req) => {
       const { data: transcript } = await admin.from("meeting_transcripts").select("*")
         .eq("recording_id", recordingId).order("created_at", { ascending: false }).limit(1).maybeSingle();
       if (!transcript) return json({ error: "no_transcript" }, 404);
+      const fullText: string = transcript.full_text ?? "";
+      const CHUNK = 12000;
+      // For long meetings, first compress each chunk into partial notes, then summarize the notes.
+      let workingText = fullText;
+      if (fullText.length > CHUNK) {
+        const chunks: string[] = [];
+        for (let i = 0; i < fullText.length; i += CHUNK) chunks.push(fullText.slice(i, i + CHUNK));
+        const partials: string[] = [];
+        for (const c of chunks) {
+          const cRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}` },
+            body: JSON.stringify({
+              model: "openai/gpt-5.6-sol", reasoning_effort: "none",
+              messages: [{ role: "user", content:
+                `Compress this meeting transcript segment into concise notes preserving decisions, action items (with any assignee/date hints), and topics discussed. Return plain text only.\n\nSEGMENT:\n${c}` }],
+            }),
+          });
+          const cJson: any = await cRes.json().catch(() => ({}));
+          if (cRes.ok) partials.push(cJson?.choices?.[0]?.message?.content ?? "");
+        }
+        workingText = partials.join("\n\n---\n\n").slice(0, CHUNK);
+      }
       const prompt = `You are analyzing a work meeting transcript. Return strict JSON with this shape:
 {"summary": "2-4 sentence executive summary",
  "key_decisions": ["decision 1", ...],
@@ -77,7 +100,7 @@ Deno.serve(async (req) => {
  "sentiment": "positive|neutral|negative|mixed"}
 
 TRANSCRIPT (${transcript.language ?? "auto"}):
-${(transcript.full_text ?? "").slice(0, 12000)}`;
+${workingText}`;
       const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}` },

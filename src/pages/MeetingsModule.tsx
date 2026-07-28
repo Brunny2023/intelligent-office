@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, Suspense } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useOrganization } from "@/hooks/useOrganization";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,33 +8,36 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { motion, AnimatePresence } from "framer-motion";
-import { Video, Plus, PhoneCall, Mic, MicOff, VideoOff, Monitor, PhoneOff, X, Upload, Sparkles, Circle, Square, FileAudio } from "lucide-react";
+import { motion } from "framer-motion";
+import { Video, PhoneCall, Mic, Upload, Sparkles, FileAudio, Link as LinkIcon, Users } from "lucide-react";
 import { toast } from "sonner";
 import PostMeetingPanel from "@/components/meetings/PostMeetingPanel";
 import { formatDistanceToNow } from "date-fns";
-import {
-  LiveKitRoom,
-  VideoConference,
-  RoomAudioRenderer,
-  ControlBar,
-} from "@livekit/components-react";
+import MeetingRoomView from "@/components/meetings/MeetingRoomView";
+
+const MAX_RECORDING_BYTES = 500 * 1024 * 1024; // 500 MB
 
 const MeetingsModule = () => {
   const { user } = useAuth();
   const { org, loading } = useOrganization();
+  const params = useParams();
+  const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [roomName, setRoomName] = useState("");
   const [lkToken, setLkToken] = useState("");
   const [lkUrl, setLkUrl] = useState("");
   const [connecting, setConnecting] = useState(false);
   const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
+  const [currentParticipantRowId, setCurrentParticipantRowId] = useState<string | null>(null);
+  const [activeRooms, setActiveRooms] = useState<any[]>([]);
   const [recordings, setRecordings] = useState<any[]>([]);
   const [openRecording, setOpenRecording] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [recording, setRecording] = useState(false);
   const mediaRecRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const roomStartRef = useRef<number>(0);
+  const rescanRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const fetchRecordings = useCallback(async () => {
     if (!org) return;
@@ -43,42 +47,62 @@ const MeetingsModule = () => {
     setRecordings(data || []);
   }, [org]);
 
-  useEffect(() => { fetchRecordings(); }, [fetchRecordings]);
+  const fetchActiveRooms = useCallback(async () => {
+    if (!org) return;
+    const { data } = await supabase.from("meeting_rooms")
+      .select("id, room_name, title, host_id, started_at")
+      .eq("organization_id", org.id).eq("status", "active")
+      .order("started_at", { ascending: false });
+    setActiveRooms(data || []);
+  }, [org]);
 
-  const startMeeting = useCallback(async () => {
-    if (!roomName.trim()) { toast.error("Please enter a room name"); return; }
+  useEffect(() => { fetchRecordings(); fetchActiveRooms(); }, [fetchRecordings, fetchActiveRooms]);
+
+  // Realtime: recordings & active rooms
+  useEffect(() => {
+    if (!org) return;
+    const ch = supabase.channel(`meetings-${org.id}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "meeting_recordings", filter: `organization_id=eq.${org.id}` }, () => fetchRecordings())
+      .on("postgres_changes", { event: "*", schema: "public", table: "meeting_rooms", filter: `organization_id=eq.${org.id}` }, () => fetchActiveRooms())
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [org, fetchRecordings, fetchActiveRooms]);
+
+  const startMeeting = useCallback(async (overrideName?: string) => {
+    const raw = (overrideName ?? roomName).trim();
+    if (!raw) { toast.error("Please enter a room name"); return; }
+    const normalized = raw.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60);
+    if (!normalized) { toast.error("Room name must contain letters or numbers"); return; }
     setConnecting(true);
-
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session || !org || !user) { toast.error("Not authenticated"); setConnecting(false); return; }
-
       const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-      const normalized = roomName.trim().toLowerCase().replace(/\s+/g, "-");
-      const res = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/livekit-token`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({ roomName: normalized }),
-        }
-      );
-
+      const res = await fetch(`https://${projectId}.supabase.co/functions/v1/livekit-token`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({ roomName: normalized }),
+      });
       const data = await res.json();
       if (!res.ok) { toast.error(data.error || "Failed to get token"); setConnecting(false); return; }
 
-      const { data: mroom } = await supabase.from("meeting_rooms").insert({
-        organization_id: org.id, room_name: normalized, title: roomName.trim(), host_id: user.id,
-      }).select().single();
-      if (mroom) {
-        setCurrentRoomId(mroom.id);
-        await supabase.from("meeting_participants").insert({
-          room_id: mroom.id, user_id: user.id, organization_id: org.id,
-        }).select();
+      // Join existing active room in this org, or create one
+      const { data: existing } = await supabase.from("meeting_rooms")
+        .select("id").eq("organization_id", org.id).eq("room_name", normalized).eq("status", "active").maybeSingle();
+      let roomId = existing?.id ?? null;
+      if (!roomId) {
+        const { data: mroom, error: rmErr } = await supabase.from("meeting_rooms").insert({
+          organization_id: org.id, room_name: normalized, title: raw, host_id: user.id,
+        }).select("id").single();
+        if (rmErr) { toast.error(rmErr.message); setConnecting(false); return; }
+        roomId = mroom.id;
       }
+      setCurrentRoomId(roomId);
+      const { data: prow } = await supabase.from("meeting_participants").insert({
+        room_id: roomId, user_id: user.id, organization_id: org.id,
+      }).select("id").single();
+      setCurrentParticipantRowId(prow?.id ?? null);
+      roomStartRef.current = Date.now();
 
       setLkToken(data.token);
       setLkUrl(data.url);
@@ -89,54 +113,18 @@ const MeetingsModule = () => {
     setConnecting(false);
   }, [roomName, org, user]);
 
-  const leaveMeeting = async () => {
-    if (recording) await stopRecording();
-    if (currentRoomId) {
-      await supabase.from("meeting_rooms").update({ status: "ended", ended_at: new Date().toISOString() }).eq("id", currentRoomId);
+  // Deep-link: /meetings/:roomName auto-joins
+  useEffect(() => {
+    const rn = (params as any).roomName as string | undefined;
+    if (rn && !lkToken && org && user) {
+      setRoomName(rn);
+      startMeeting(rn);
     }
-    setLkToken("");
-    setLkUrl("");
-    setRoomName("");
-    setCurrentRoomId(null);
-    fetchRecordings();
-  };
-
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mr = new MediaRecorder(stream, { mimeType: "audio/webm" });
-      chunksRef.current = [];
-      mr.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
-      mr.onstop = async () => {
-        stream.getTracks().forEach(t => t.stop());
-        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
-        await uploadRecording(blob);
-      };
-      mr.start();
-      mediaRecRef.current = mr;
-      setRecording(true);
-      toast.success("Recording audio for AI transcription");
-    } catch (e: any) { toast.error(e.message || "Mic access denied"); }
-  };
-
-  const stopRecording = async () => {
-    return new Promise<void>((resolve) => {
-      const mr = mediaRecRef.current;
-      if (!mr) return resolve();
-      mr.onstop = async () => {
-        const stream = mr.stream;
-        stream?.getTracks().forEach(t => t.stop());
-        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
-        await uploadRecording(blob);
-        resolve();
-      };
-      mr.stop();
-      setRecording(false);
-    });
-  };
+  }, [params, lkToken, org, user, startMeeting]);
 
   const uploadRecording = async (blob: Blob) => {
     if (!org || !user) return;
+    if (blob.size === 0) { toast.error("Empty recording — nothing to upload"); return; }
     setUploading(true);
     const path = `${org.id}/${currentRoomId ?? "adhoc"}/${Date.now()}.webm`;
     const { error: upErr } = await supabase.storage.from("recordings").upload(path, blob, { contentType: "audio/webm" });
@@ -157,8 +145,102 @@ const MeetingsModule = () => {
       });
   };
 
+  // Mixes local mic + all remote audio tracks via WebAudio, chunked at 5s
+  const startRecording = async (getRoom?: () => any | null) => {
+    try {
+      const localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const AC: typeof AudioContext = (window as any).AudioContext ?? (window as any).webkitAudioContext;
+      const ctx = new AC();
+      const dest = ctx.createMediaStreamDestination();
+      const sources: MediaStreamAudioSourceNode[] = [];
+      const localSrc = ctx.createMediaStreamSource(localStream);
+      localSrc.connect(dest); sources.push(localSrc);
+
+      const lkRoom = getRoom?.();
+      const attached = new Set<string>();
+      const scanRemote = () => {
+        if (!lkRoom) return;
+        lkRoom.remoteParticipants?.forEach?.((rp: any) => {
+          const pubs = rp.audioTrackPublications ?? rp.getTrackPublications?.() ?? [];
+          (pubs.values ? Array.from(pubs.values()) : pubs).forEach((pub: any) => {
+            const mt: MediaStreamTrack | undefined = pub?.track?.mediaStreamTrack;
+            if (mt && mt.kind === "audio" && !attached.has(mt.id)) {
+              attached.add(mt.id);
+              try {
+                const s = ctx.createMediaStreamSource(new MediaStream([mt]));
+                s.connect(dest); sources.push(s);
+              } catch (e) { console.warn("mix attach failed", e); }
+            }
+          });
+        });
+      };
+      scanRemote();
+      rescanRef.current = setInterval(scanRemote, 2000);
+
+      const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : "audio/webm";
+      const mr = new MediaRecorder(dest.stream, { mimeType: mime, audioBitsPerSecond: 64000 });
+      chunksRef.current = [];
+      let total = 0;
+      mr.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          chunksRef.current.push(e.data);
+          total += e.data.size;
+          if (total > MAX_RECORDING_BYTES) {
+            toast.error("Recording reached 500 MB cap — stopping");
+            if (mr.state !== "inactive") mr.stop();
+          }
+        }
+      };
+      mr.onstop = async () => {
+        if (rescanRef.current) { clearInterval(rescanRef.current); rescanRef.current = null; }
+        localStream.getTracks().forEach(t => t.stop());
+        sources.forEach(s => { try { s.disconnect(); } catch {} });
+        try { await ctx.close(); } catch {}
+        const blob = new Blob(chunksRef.current, { type: mime });
+        await uploadRecording(blob);
+      };
+      mr.start(5000);
+      mediaRecRef.current = mr;
+      setRecording(true);
+      toast.success("Recording full-room audio for AI");
+    } catch (e: any) { toast.error(e.message || "Mic access denied"); }
+  };
+
+  const stopRecording = async () => {
+    return new Promise<void>((resolve) => {
+      const mr = mediaRecRef.current;
+      if (!mr) return resolve();
+      const prev = mr.onstop;
+      mr.onstop = async (ev) => { try { await (prev as any)?.call(mr, ev); } finally { resolve(); } };
+      if (mr.state !== "inactive") mr.stop(); else resolve();
+      setRecording(false);
+    });
+  };
+
+  const leaveMeeting = async () => {
+    if (recording) await stopRecording();
+    if (currentParticipantRowId) {
+      await supabase.from("meeting_participants").update({ left_at: new Date().toISOString() }).eq("id", currentParticipantRowId);
+    }
+    if (currentRoomId) {
+      const { data: remaining } = await supabase.from("meeting_participants")
+        .select("id").eq("room_id", currentRoomId).is("left_at", null);
+      if (!remaining || remaining.length === 0) {
+        const dur = Math.max(1, Math.round((Date.now() - roomStartRef.current) / 1000));
+        await supabase.from("meeting_rooms").update({
+          status: "ended", ended_at: new Date().toISOString(), duration_seconds: dur,
+        }).eq("id", currentRoomId);
+      }
+    }
+    setLkToken(""); setLkUrl(""); setRoomName("");
+    setCurrentRoomId(null); setCurrentParticipantRowId(null);
+    if ((params as any).roomName) navigate("/meetings", { replace: true });
+    fetchRecordings(); fetchActiveRooms();
+  };
+
   const handleFileUpload = async (file: File) => {
     if (!org || !user) return;
+    if (file.size > MAX_RECORDING_BYTES) { toast.error("File exceeds 500 MB limit"); return; }
     setUploading(true);
     const path = `${org.id}/uploads/${Date.now()}-${file.name}`;
     const { error: upErr } = await supabase.storage.from("recordings").upload(path, file, { contentType: file.type });
@@ -180,6 +262,11 @@ const MeetingsModule = () => {
       });
   };
 
+  const copyInvite = (name: string) => {
+    const url = `${window.location.origin}/meetings/${encodeURIComponent(name)}`;
+    navigator.clipboard.writeText(url).then(() => toast.success("Invite link copied"));
+  };
+
   if (loading) {
     return (
       <AppLayout title="Meetings">
@@ -190,46 +277,26 @@ const MeetingsModule = () => {
     );
   }
 
-  // Active meeting view
   if (lkToken && lkUrl) {
+    const currentName = activeRooms.find(r => r.id === currentRoomId)?.room_name || roomName || "meeting";
     return (
       <AppLayout title="Meeting">
-        <div className="relative h-[calc(100vh-4rem)]">
-          <LiveKitRoom
+        <Suspense fallback={<div className="h-[calc(100vh-4rem)] flex items-center justify-center"><div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" /></div>}>
+          <MeetingRoomView
             token={lkToken}
             serverUrl={lkUrl}
-            connect={true}
-            onDisconnected={leaveMeeting}
-            data-lk-theme="default"
-            style={{ height: "100%" }}
-          >
-            <VideoConference />
-            <RoomAudioRenderer />
-          </LiveKitRoom>
-          <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
-            {!recording ? (
-              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                onClick={startRecording}
-                className="bg-svo-blue text-white rounded-full px-4 py-2 shadow-lg flex items-center gap-2 text-sm font-medium">
-                <Circle className="w-4 h-4 fill-current" /> Record for AI
-              </motion.button>
-            ) : (
-              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                onClick={stopRecording}
-                className="bg-red-500 text-white rounded-full px-4 py-2 shadow-lg flex items-center gap-2 text-sm font-medium animate-pulse">
-                <Square className="w-4 h-4 fill-current" /> Stop & Analyze
-              </motion.button>
-            )}
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-              onClick={leaveMeeting}
-              className="bg-destructive text-destructive-foreground rounded-full p-3 shadow-lg">
-              <PhoneOff className="w-5 h-5" />
-            </motion.button>
-          </div>
-        </div>
+            recording={recording}
+            onStartRecording={startRecording}
+            onStopRecording={stopRecording}
+            onLeave={leaveMeeting}
+            onCopyInvite={() => copyInvite(currentName)}
+          />
+        </Suspense>
       </AppLayout>
     );
   }
+
+  const previewSlug = roomName.trim().toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "");
 
   return (
     <AppLayout title="Meetings">
@@ -240,7 +307,6 @@ const MeetingsModule = () => {
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Quick Meeting Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }}
@@ -261,9 +327,7 @@ const MeetingsModule = () => {
                 </Button>
               </DialogTrigger>
               <DialogContent className="rounded-2xl">
-                <DialogHeader>
-                  <DialogTitle>Start a Meeting</DialogTitle>
-                </DialogHeader>
+                <DialogHeader><DialogTitle>Start or Join a Meeting</DialogTitle></DialogHeader>
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label>Room Name</Label>
@@ -274,8 +338,11 @@ const MeetingsModule = () => {
                       className="rounded-xl"
                       onKeyDown={e => e.key === "Enter" && startMeeting()}
                     />
+                    <p className="text-xs text-muted-foreground break-all">
+                      Share to invite: <span className="font-mono">{window.location.origin}/meetings/{previewSlug || "…"}</span>
+                    </p>
                   </div>
-                  <Button onClick={startMeeting} disabled={connecting} className="w-full rounded-xl bg-svo-blue text-white">
+                  <Button onClick={() => startMeeting()} disabled={connecting} className="w-full rounded-xl bg-svo-blue text-white">
                     {connecting ? "Connecting..." : <><Video className="w-4 h-4 mr-2" /> Join Room</>}
                   </Button>
                 </div>
@@ -283,7 +350,6 @@ const MeetingsModule = () => {
             </Dialog>
           </motion.div>
 
-          {/* AI Features Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }}
@@ -299,14 +365,13 @@ const MeetingsModule = () => {
             </p>
             <label className="cursor-pointer">
               <input type="file" accept="audio/*,video/*" className="hidden"
-                onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
+                onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileUpload(f); e.currentTarget.value = ""; }} />
               <span className="inline-flex items-center gap-2 rounded-xl bg-accent px-3 py-2 text-accent-foreground text-sm font-medium">
                 {uploading ? "Uploading…" : <><Upload className="w-4 h-4" /> Upload recording</>}
               </span>
             </label>
           </motion.div>
 
-          {/* Recent Analyzed Meetings */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0, transition: { delay: 0.3 } }}
@@ -328,7 +393,36 @@ const MeetingsModule = () => {
           </motion.div>
         </div>
 
-        {/* Recordings list */}
+        {activeRooms.length > 0 && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            className="glass-card-strong rounded-2xl p-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <Users className="w-5 h-5 text-svo-blue" /> Active Meetings
+            </h3>
+            <div className="space-y-2">
+              {activeRooms.map(r => (
+                <div key={r.id} className="glass-card rounded-xl p-3 flex items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium truncate">{r.title || r.room_name}</div>
+                    <div className="text-xs text-muted-foreground">
+                      started {formatDistanceToNow(new Date(r.started_at), { addSuffix: true })}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <Button variant="outline" size="sm" className="rounded-lg h-8" onClick={() => copyInvite(r.room_name)}>
+                      <LinkIcon className="w-3 h-3 mr-1" /> Invite
+                    </Button>
+                    <Button size="sm" className="rounded-lg h-8 bg-svo-blue text-white"
+                      onClick={() => startMeeting(r.room_name)}>
+                      <PhoneCall className="w-3 h-3 mr-1" /> Join
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}

@@ -67,6 +67,7 @@ const App = () => (
             <Route path="/execution" element={<ProtectedRoute><ExecutionModule /></ProtectedRoute>} />
             <Route path="/messages" element={<ProtectedRoute><MessagesModule /></ProtectedRoute>} />
             <Route path="/meetings" element={<ProtectedRoute><MeetingsModule /></ProtectedRoute>} />
+            <Route path="/meetings/:roomName" element={<ProtectedRoute><MeetingsModule /></ProtectedRoute>} />
             <Route path="/documents" element={<ProtectedRoute><DocumentsModule /></ProtectedRoute>} />
             <Route path="/intelligence" element={<ProtectedRoute><KPIModule /></ProtectedRoute>} />
             <Route path="/hr" element={<ProtectedRoute><HRModule /></ProtectedRoute>} />
