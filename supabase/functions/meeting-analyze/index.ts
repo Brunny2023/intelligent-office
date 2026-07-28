@@ -16,6 +16,7 @@ const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
  *   { mode: "analyze",    recording_id }  → summarize transcript, extract action items
  *   { mode: "full",       recording_id }  → transcribe + analyze in one call
  *   { mode: "push_tasks", recording_id, indexes:[..] } → create tasks from action items
+ *   { mode: "translate",  recording_id, target_lang } → translate summary into target_lang
  */
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
