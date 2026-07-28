@@ -1,118 +1,70 @@
 
-# Closing the Investor-Page Gaps: Full Delivery Plan
+# Wave 6 — Alerts, Trust & Compliance Surface
 
-Goal: make the product deliver every promise the `/investors` page makes. Ship in credibility-weighted order — the claims that most define "Organizational Intelligence Layer" go first, cosmetic ones last.
+There is no prior Wave 6. The eight requests naturally form it. Below is what already exists, what's missing, and what will ship.
 
-Plan is organized in 5 waves. Each wave ends with the product provably matching a specific set of investor-page claims. After each wave you can re-audit before we advance.
+## Audit summary
 
----
+| # | Request | Status |
+|---|---|---|
+| 1 | Wave 4 audit / routing | Mostly correct; two gaps to fix (below) |
+| 2 | AI Alerts inbox | `AIInsightsModule` exists as a list but has no filters, no "resolved" state, no drill-in "why" panel |
+| 3 | Per-user notification prefs (in-app / email / Slack) | Missing entirely |
+| 4 | Escalation policy for repeated alerts | Missing |
+| 5 | Trust Center public page | Missing |
+| 6 | Inter-org audit log viewer | `activity_logs` exists but nothing writes inter-org events and no viewer |
+| 7 | Consent revocation propagation | Works for KPIs & insights via RLS; **documents are not covered** |
+| 8 | Compliance report export (PDF/CSV) | Missing |
 
-## Wave 1 — The Intelligence Core (the promise that defines the category)
+## Wave 4 gaps found
 
-The investor page claims a **Knowledge Graph**, **Organizational Intelligence Layer**, and **AI that reasons over org data**. Today that layer doesn't exist — insights are one-shot LLM calls over ad-hoc SQL. This wave builds the real substrate.
+- **Ownership routing**: slipping-task alerts notify `assigned_to` only. If unassigned, no one is told. Fix: also notify project owner and the task creator, and fall back to org owners when both are absent.
+- **Workflow stall routing**: notifies `started_by` only. If they've left the org (profile null) no one gets it. Fix: fall back to workflow creator, then org owners.
+- **Missing case — approvals aging**: workflow instances awaiting approval > timeout_hours are not detected. Add a fourth scanner.
+- **Missing case — KPI drift**: KPI with `current_value / target_value < 0.5` past mid-period generates no alert. Add fifth scanner.
 
-1. **Knowledge Graph schema (v1)**
-   - New tables: `graph_entities` (people, projects, tasks, docs, meetings, customers, kpis), `graph_edges` (typed relationships: owns, blocks, mentions, participates_in, reports_to, depends_on), `graph_events` (append-only signal stream).
-   - Ingestion triggers on `tasks`, `messages`, `documents`, `meetings`, `profiles`, `kpis` → populate entities/edges automatically.
-   - RLS scoped to `organization_id`; service_role writes from triggers.
+## What ships
 
-2. **Signal pipeline**
-   - Edge function `graph-ingest` that batch-normalizes historical rows on org backfill.
-   - Nightly scheduled job `graph-recompute` (pg_cron) that recalculates derived metrics: workload per person, blocker chains, collaboration density, at-risk projects.
+### Database
+- `ai_insights`: add `status` (`open` | `acknowledged` | `resolved`), `resolved_at`, `resolved_by`, `escalation_level` (0–3), `last_escalated_at`, `reason` (jsonb — the raw evidence: task_id, cluster count, workflow logs, etc.).
+- `notification_preferences` (per user): `in_app`, `email`, `slack`, `escalation_after_hours`, `escalate_to_manager` (bool). Grants + RLS scoped to `auth.uid()`.
+- `inter_org_audit_log`: append-only table capturing `event_type` (`consent_granted`, `consent_revoked`, `memo_sealed`, `memo_verified`, `document_shared`, `document_unshared`), `owner_org_id`, `partner_org_id`, `actor_id`, `resource_id`, `metadata`. RLS: either party of the event can read.
+- Triggers on `org_share_consents` and `signature_ledger` to write into the audit log automatically.
+- `document_shares` table (owner org grants a specific document to a partner org). RLS + `has_document_share()` helper. Revoking = update status; RLS immediately blocks access.
+- Extend `documents` SELECT policy with `has_document_share()`.
+- `escalate_alerts()` SECURITY DEFINER function + hourly cron: finds `open` alerts older than the user's `escalation_after_hours` and creates a manager notification, bumping `escalation_level`.
 
-3. **Intelligence API**
-   - Edge function `intelligence-query` that answers structured questions ("who is overloaded?", "which projects are at risk?", "what decisions are pending?") by querying the graph + LLM synthesis — not raw prompts over SQL dumps.
-   - Replaces the current `ai-insights-generate` fallback path with graph-grounded reasoning.
+### Edge functions
+- Extend `predictive-alerts` with the 4 new fixes/cases and richer `reason` payload.
+- New `compliance-report`: server-side generator returning JSON blob covering retention schedule, sharing history, ledger integrity chain check, alert stats. Frontend converts to CSV; PDF built client-side with jsPDF.
+- New `notify-user`: fan-out helper called by the alerts function — reads `notification_preferences`, always writes in-app, best-effort email (via existing infra) and Slack webhook (from prefs).
 
-4. **Graph Explorer UI**
-   - New `/intelligence/graph` route: interactive node/edge view (react-flow), filter by entity type, click-through to source records.
-   - Investor page's "Knowledge Graph" claim becomes demonstrable.
+### Frontend
+- `AIInsightsModule` upgraded to a full **Alerts Inbox**: severity/status/type filters, resolve / snooze / acknowledge actions, and a right-side drawer showing the "why" (evidence rows, links to the task/workflow/KPI, timeline of escalations).
+- New `NotificationPreferences.tsx` on the profile/settings page.
+- New public `/trust` page (`TrustCenter.tsx`): premium, investor-tone sections on cryptographic memo sealing, RLS isolation (live probe count), retention, compliance evidence, sub-processors. Follows shared-responsibility copy guidance.
+- New `InterOrgAuditLog.tsx` tab in the InterOrg module and Security module: filterable timeline of consent/memo/document events.
+- Consent revocation surfaces gain a "propagates immediately" note and now include documents.
+- `ComplianceReport.tsx` (Security module): button generates PDF + CSV via the new function and offers download.
 
----
-
-## Wave 2 — Automation That Actually Runs
-
-Investor page promises **workflow automation, escalations, and AI-suggested workflows**. Today `workflows`, `workflow_instances`, `workflow_step_logs` exist as tables with no executor.
-
-1. **Workflow executor**
-   - Edge function `workflow-run` triggered by (a) DB triggers matching `trigger_type` (task.created, task.overdue, leave.requested, kpi.threshold), (b) pg_cron for time-based.
-   - Steps supported: notify, assign, create_task, require_approval, escalate, call_webhook, ai_summarize.
-   - Full audit into `workflow_step_logs`.
-
-2. **Escalation engine**
-   - Timeout watcher promotes stalled steps up the reporting chain using `profiles.department_id` + org roles.
-
-3. **AI workflow suggester**
-   - Uses graph signals ("3 tasks blocked >48h in Marketing") to propose workflow templates in the Workflows UI.
-
----
-
-## Wave 3 — Meetings Intelligence (the biggest visible gap)
-
-Investor page implies **AI transcription, summaries, action-item extraction, multilingual**. Today only LiveKit tokens exist.
-
-1. **Recording capture** via LiveKit egress → Supabase `documents` bucket (new `recordings/` prefix, private).
-2. **Transcription pipeline**: edge function `meeting-transcribe` posts audio to `openai/gpt-4o-transcribe` through the Lovable AI Gateway; stores transcript rows in new `meeting_transcripts`.
-3. **Summarization + action items**: `meeting-analyze` calls chat model, writes `meeting_summaries` and auto-creates linked `tasks` with `assigned_to` inferred from speaker→profile mapping.
-4. **Meetings UI**: post-meeting panel with transcript, summary, extracted actions, and a "push to tasks" confirm.
-5. **Multilingual**: language auto-detect + optional translation pass for summaries.
-
----
-
-## Wave 4 — Predictive & Advisory Intelligence
-
-Investor page promises **predictive alerts, anomaly detection, executive advisor**. Today: rule-based fallbacks + one gemini call.
-
-1. **Anomaly detectors** (SQL + light stats, not LLM):
-   - Attendance deviation vs 30-day baseline per user.
-   - Task velocity drop per project week-over-week.
-   - Message volume collapse in a channel (disengagement signal).
-   - Overdue-cluster detection per assignee/department.
-   Persist as `ai_insights` rows with `insight_type = 'anomaly'` and evidence links.
-
-2. **Executive Advisor**
-   - New `/executive/advisor` panel — chat surface grounded in the graph via `intelligence-query`. Returns cited answers (links to underlying tasks/kpis/meetings). No free-floating hallucinations.
-
-3. **Weekly digest**
-   - pg_cron → `digest-generate` → emails execs (via existing transactional email path) with top 5 graph-derived insights.
-
----
-
-## Wave 5 — Trust, Compliance & Category Proof
-
-Closes the remaining "enterprise-ready" claims.
-
-1. **Compliance surface**
-   - Wire `compliance_settings` into real behaviors: IP allowlist enforced in `AuthContext` sign-in check; MFA-required flag gates protected routes; audit log export from `activity_logs`.
-   - Data-retention job purges `activity_logs`, `messages`, `notifications` beyond `data_retention_days`.
-
-2. **E-signature integrity**
-   - Hash memo content + signature at signing time into a new `signature_ledger` (append-only, service_role write, everyone-read within org). Verifies the "cryptographically signed memos" claim.
-
-3. **Partner Connect proof**
-   - Add cross-org intelligence-sharing consent flow so `org_conversations` can share selected KPIs/insights — matches the "inter-org intelligence" line.
-
-4. **Investor-page validation numbers**
-   - Replace placeholder cards in `InvestorSections.tsx` with live counts pulled at build time from `get_platform_stats` (orgs, tasks, insights, meetings once Wave 3 lands). Keeps promises honest as usage grows.
-
----
-
-## Sequencing & checkpoints
-
-```text
-Wave 1 → re-audit → Wave 2 → re-audit → Wave 3 → re-audit → Wave 4 → re-audit → Wave 5 → final audit
-```
-
-Each wave is independently shippable; nothing regresses existing modules. After every wave I'll re-run the investor-page-vs-product audit and report remaining gaps before starting the next.
+### Routing / navigation
+- `/trust` added to `App.tsx` (public) and to landing footer.
+- Alerts inbox drawer reachable from Dashboard alert widget click.
 
 ## Technical notes
 
-- All new tables follow the mandatory pattern: CREATE → GRANT (authenticated + service_role, no anon) → ENABLE RLS → POLICY scoped by `organization_id` via `get_user_org_id(auth.uid())`.
-- All AI calls go through the Lovable AI Gateway using the shared provider helper; chat default `openai/gpt-5.6-sol`, transcription `openai/gpt-4o-transcribe`.
-- Executor + cron jobs live in edge functions with `verify_jwt = false` where triggered internally, JWT-validated where user-initiated.
-- Graph ingestion is idempotent (unique `(org, entity_type, source_id)`), safe to replay on backfill.
-- No investor-page copy changes — product rises to meet the copy.
+- All new tables: `CREATE TABLE` → `GRANT` → `ENABLE RLS` → policies in the same migration.
+- Escalation cron: hourly, service-role, org-agnostic scan.
+- Trust Center must not claim certifications we don't have — copy uses "app-owner maintained" qualifier and describes enabled controls only.
+- Compliance report generation uses Lovable AI only for narrative summary; hard numbers come from SQL. PDF is generated client-side to avoid server memory pressure.
+- Ledger integrity check re-hashes every entry in order and reports first break, if any.
 
-## First action after approval
+## Order of execution
 
-Start Wave 1 step 1: submit the knowledge-graph migration (entities, edges, events, triggers, RLS, grants) for your review.
+1. Migration (schema + triggers + escalation cron + document_shares).
+2. Edge functions (`predictive-alerts` extension, `compliance-report`, `notify-user`).
+3. Frontend surfaces: alerts inbox, notification prefs, trust center, audit log, doc share dialog, compliance report.
+4. Wire nav, footer link, dashboard widget click-through.
+5. Verify with a manual `predictive-alerts` run and a smoke SQL check on `inter_org_audit_log`.
+
+Approve to proceed and I'll ship it end-to-end.
