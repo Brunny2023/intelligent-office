@@ -591,6 +591,150 @@ export type Database = {
           },
         ]
       }
+      graph_edges: {
+        Row: {
+          created_at: string
+          edge_type: string
+          from_entity_id: string
+          id: string
+          metadata: Json
+          organization_id: string
+          to_entity_id: string
+          weight: number
+        }
+        Insert: {
+          created_at?: string
+          edge_type: string
+          from_entity_id: string
+          id?: string
+          metadata?: Json
+          organization_id: string
+          to_entity_id: string
+          weight?: number
+        }
+        Update: {
+          created_at?: string
+          edge_type?: string
+          from_entity_id?: string
+          id?: string
+          metadata?: Json
+          organization_id?: string
+          to_entity_id?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "graph_edges_from_entity_id_fkey"
+            columns: ["from_entity_id"]
+            isOneToOne: false
+            referencedRelation: "graph_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "graph_edges_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "graph_edges_to_entity_id_fkey"
+            columns: ["to_entity_id"]
+            isOneToOne: false
+            referencedRelation: "graph_entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      graph_entities: {
+        Row: {
+          created_at: string
+          entity_type: string
+          id: string
+          label: string | null
+          metadata: Json
+          organization_id: string
+          source_id: string
+          source_table: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          entity_type: string
+          id?: string
+          label?: string | null
+          metadata?: Json
+          organization_id: string
+          source_id: string
+          source_table: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          entity_type?: string
+          id?: string
+          label?: string | null
+          metadata?: Json
+          organization_id?: string
+          source_id?: string
+          source_table?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "graph_entities_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      graph_events: {
+        Row: {
+          actor_id: string | null
+          entity_id: string | null
+          event_type: string
+          id: string
+          occurred_at: string
+          organization_id: string
+          payload: Json
+        }
+        Insert: {
+          actor_id?: string | null
+          entity_id?: string | null
+          event_type: string
+          id?: string
+          occurred_at?: string
+          organization_id: string
+          payload?: Json
+        }
+        Update: {
+          actor_id?: string | null
+          entity_id?: string | null
+          event_type?: string
+          id?: string
+          occurred_at?: string
+          organization_id?: string
+          payload?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "graph_events_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "graph_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "graph_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       internal_memos: {
         Row: {
           content: string
@@ -1980,6 +2124,28 @@ export type Database = {
         }[]
       }
       get_user_org_id: { Args: { _user_id: string }; Returns: string }
+      graph_upsert_edge: {
+        Args: {
+          _from: string
+          _metadata?: Json
+          _org: string
+          _to: string
+          _type: string
+          _weight?: number
+        }
+        Returns: undefined
+      }
+      graph_upsert_entity: {
+        Args: {
+          _label: string
+          _metadata?: Json
+          _org: string
+          _source_id: string
+          _source_table: string
+          _type: string
+        }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
