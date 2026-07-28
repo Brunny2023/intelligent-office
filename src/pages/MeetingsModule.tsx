@@ -34,6 +34,7 @@ const MeetingsModule = () => {
   const [openRecording, setOpenRecording] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [recording, setRecording] = useState(false);
+  const [egressActive, setEgressActive] = useState(false);
   const mediaRecRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const roomStartRef = useRef<number>(0);
@@ -107,6 +108,24 @@ const MeetingsModule = () => {
       setLkToken(data.token);
       setLkUrl(data.url);
       setDialogOpen(false);
+
+      // Auto-start server-side LiveKit Egress if enabled for this tenant.
+      // Only the host initiates; other joiners get idempotent "reused" response.
+      if (org.egress_enabled && roomId) {
+        try {
+          const { data: egRes, error: egErr } = await supabase.functions.invoke("livekit-egress-start", {
+            body: { roomName: normalized, roomId },
+          });
+          if (egErr || (egRes as any)?.error) {
+            toast.error((egRes as any)?.error ?? egErr?.message ?? "Cloud recording failed to start");
+          } else {
+            setEgressActive(true);
+            toast.success("Cloud recording started — safe to close your tab");
+          }
+        } catch (e: any) {
+          toast.error(e.message || "Cloud recording start failed");
+        }
+      }
     } catch (err: any) {
       toast.error(err.message || "Connection failed");
     }
@@ -234,6 +253,7 @@ const MeetingsModule = () => {
     }
     setLkToken(""); setLkUrl(""); setRoomName("");
     setCurrentRoomId(null); setCurrentParticipantRowId(null);
+    setEgressActive(false);
     if ((params as any).roomName) navigate("/meetings", { replace: true });
     fetchRecordings(); fetchActiveRooms();
   };
@@ -286,6 +306,7 @@ const MeetingsModule = () => {
             token={lkToken}
             serverUrl={lkUrl}
             recording={recording}
+            egressActive={egressActive}
             onStartRecording={startRecording}
             onStopRecording={stopRecording}
             onLeave={leaveMeeting}
