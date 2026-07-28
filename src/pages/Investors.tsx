@@ -229,7 +229,7 @@ const Investors = () => {
             Modern businesses run on ten to thirty disconnected tools — email, chat, spreadsheets, project trackers, HR platforms, finance systems, CRMs, storage drives, video meetings, and ad-hoc AI assistants. The result is not productivity. It is coordination overhead. Work fragments across surfaces. Context is lost. Decisions are made without evidence. AI, in this environment, is an add-on to chaos rather than an amplifier of order.
           </p>
           <p>
-            Global Office collapses this fragmentation into the <strong>Organizational Intelligence Layer</strong> — a persistent, graph-native substrate where every action, artifact, and decision is a first-class citizen. The AI Business Operating System is how customers experience it. The intelligence layer is what compounds.
+            Global Office collapses this fragmentation into the <strong>Organizational Intelligence Layer</strong> — a persistent, graph-modeled substrate (entities, edges, and events materialized on Postgres) where every action, artifact, and decision is a first-class citizen. The AI Business Operating System is how customers experience it. The intelligence layer is what compounds.
           </p>
           <p>
             The ICP is global-first — SMEs and mid-market organizations across the United States, United Kingdom, European Union, and other developed economies where AI-native operating layers command the strongest willingness to pay, followed by an emerging-markets expansion motion. Traditional software manages functions. Global Office manages organizational intelligence.
@@ -282,7 +282,7 @@ const Investors = () => {
               ["Knowledge Graph", "Every entity — person, task, message, document, decision — is a node. Every action strengthens the graph."],
               ["Intelligence Layer", "AI observes patterns across the graph and surfaces anomalies, risks, and opportunities — before they escalate."],
               ["Workflow Engine", "Visual IF/THEN automation lets any team compose autonomous processes without engineering."],
-              ["Executive Control", "A weighted organizational Health Score derived from real activity, not self-reported dashboards."],
+              ["Executive Control", "A weighted organizational Health Score derived from live operational signals — task completion, KPI attainment, and attendance — not self-reported dashboards."],
               ["Partner Connect", "Inter-organization workflows for supply chains, professional networks, and B2B collaboration."],
             ].map(([t, d]) => (
               <div key={t} className="border-t pt-4" style={{ borderColor: NAVY }}>
@@ -324,7 +324,7 @@ const Investors = () => {
                 <li>· Messaging & Channels</li>
                 <li>· Meetings (LiveKit + AI transcription)</li>
                 <li>· Knowledge & Documents (with digital signatures)</li>
-                <li>· HR, Payroll, Performance</li>
+                <li>· HR, Payroll (core records &amp; approvals), Performance</li>
                 <li>· Finance</li>
                 <li>· Announcements & Notifications</li>
                 <li>· Job Planning & OKRs</li>
