@@ -22,6 +22,8 @@ export interface Organization {
   core_values: string[];
   brand_tagline: string | null;
   favicon_url: string | null;
+  egress_enabled?: boolean;
+  egress_mode?: "audio_video" | "audio_only";
 }
 
 export const useOrganization = () => {
@@ -55,6 +57,8 @@ export const useOrganization = () => {
               mission: (o as any).mission || null,
               brand_tagline: (o as any).brand_tagline || null,
               favicon_url: (o as any).favicon_url || null,
+              egress_enabled: (o as any).egress_enabled ?? false,
+              egress_mode: (o as any).egress_mode ?? "audio_video",
             } as Organization);
           }
         }
