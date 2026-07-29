@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Brain, Crown, Users, Building2, Sparkles, Send, Loader2, ChevronRight, BookOpen, CheckSquare, ThumbsUp, ThumbsDown, MessageSquare, Shield, ShieldCheck, ShieldAlert, Activity, Search as SearchIcon } from "lucide-react";
+import { Brain, Crown, Users, Building2, Sparkles, Send, Loader2, ChevronRight, BookOpen, CheckSquare, ThumbsUp, ThumbsDown, MessageSquare, Shield, ShieldCheck, ShieldAlert, Activity, Search as SearchIcon, TrendingUp, TrendingDown, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -29,6 +29,8 @@ export default function CognitionModule() {
   const [memoryCount, setMemoryCount] = useState(0);
   const [memory, setMemory] = useState<MemoryRow[]>([]);
   const [memoryQuery, setMemoryQuery] = useState("");
+  const [memoryComment, setMemoryComment] = useState<Record<string, string>>({});
+  const [memorySaving, setMemorySaving] = useState<string | null>(null);
   const [prompt, setPrompt] = useState("");
   const [targetDept, setTargetDept] = useState<string>("");
   const [running, setRunning] = useState(false);
@@ -93,6 +95,52 @@ export default function CognitionModule() {
     if (activeTab === "memory") loadMemory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, org?.id]);
+
+  const rateMemory = async (m: MemoryRow, direction: "up" | "down") => {
+    setMemorySaving(m.id);
+    const delta = direction === "up" ? 0.5 : -0.5;
+    const current = typeof m.relevance_score === "number" ? m.relevance_score : 1;
+    const next = Math.max(0.1, Math.min(10, current + delta));
+    const { error } = await supabase.from("organizational_memory")
+      .update({ relevance_score: next, last_referenced_at: new Date().toISOString() })
+      .eq("id", m.id);
+    setMemorySaving(null);
+    if (error) return toast({ title: "Update failed", description: error.message, variant: "destructive" });
+    setMemory(prev => prev.map(x => x.id === m.id ? { ...x, relevance_score: next } : x));
+    toast({ title: direction === "up" ? "Boosted" : "Dampened", description: "Leadership will weigh this memory accordingly." });
+  };
+
+  const submitMemoryFeedback = async (m: MemoryRow) => {
+    if (!org?.id) return;
+    const note = (memoryComment[m.id] ?? "").trim();
+    if (!note) return;
+    setMemorySaving(m.id);
+    const { data: userData } = await supabase.auth.getUser();
+    const { error } = await supabase.from("organizational_memory").insert({
+      organization_id: org.id,
+      memory_type: "feedback",
+      title: `Feedback on: ${m.title}`.slice(0, 120),
+      content: note,
+      tags: ["feedback", "memory_review", ...(m.tags?.slice(0, 3) ?? [])],
+      created_by: userData.user?.id ?? null,
+      relevance_score: 2.0,
+    } as any);
+    setMemorySaving(null);
+    if (error) return toast({ title: "Feedback failed", description: error.message, variant: "destructive" });
+    setMemoryComment(prev => ({ ...prev, [m.id]: "" }));
+    toast({ title: "Feedback saved", description: "Recorded as a new memory the leadership will consult." });
+    loadMemory();
+  };
+
+  const removeMemory = async (m: MemoryRow) => {
+    if (!confirm(`Remove "${m.title}" from organizational memory?`)) return;
+    setMemorySaving(m.id);
+    const { error } = await supabase.from("organizational_memory").delete().eq("id", m.id);
+    setMemorySaving(null);
+    if (error) return toast({ title: "Delete failed", description: error.message, variant: "destructive" });
+    setMemory(prev => prev.filter(x => x.id !== m.id));
+    toast({ title: "Memory removed" });
+  };
 
   useEffect(() => { load(); }, [org?.id]);
 
@@ -462,7 +510,7 @@ export default function CognitionModule() {
             ) : (
               <div className="grid sm:grid-cols-2 gap-3">
                 {memory.map((m) => (
-                  <div key={m.id} className="glass-card rounded-xl p-4">
+                  <div key={m.id} className="glass-card rounded-xl p-4 flex flex-col">
                     <div className="flex items-center justify-between gap-2 mb-2">
                       <Badge variant="outline" className="text-[10px] capitalize">{m.memory_type.replace(/_/g, " ")}</Badge>
                       {typeof m.relevance_score === "number" && (
@@ -478,6 +526,36 @@ export default function CognitionModule() {
                         ))}
                       </div>
                     )}
+                    <div className="mt-3 pt-3 border-t border-border/60 space-y-2">
+                      <div className="flex items-center gap-1.5">
+                        <Button size="sm" variant="outline" className="h-7 px-2 gap-1 text-xs"
+                          disabled={memorySaving === m.id} onClick={() => rateMemory(m, "up")}>
+                          <TrendingUp className="w-3 h-3" /> Boost
+                        </Button>
+                        <Button size="sm" variant="outline" className="h-7 px-2 gap-1 text-xs"
+                          disabled={memorySaving === m.id} onClick={() => rateMemory(m, "down")}>
+                          <TrendingDown className="w-3 h-3" /> Dampen
+                        </Button>
+                        <Button size="sm" variant="ghost" className="h-7 px-2 gap-1 text-xs ml-auto text-muted-foreground hover:text-destructive"
+                          disabled={memorySaving === m.id} onClick={() => removeMemory(m)}>
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+                      <div className="flex gap-1.5">
+                        <Input
+                          value={memoryComment[m.id] ?? ""}
+                          onChange={(e) => setMemoryComment(prev => ({ ...prev, [m.id]: e.target.value }))}
+                          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); submitMemoryFeedback(m); } }}
+                          placeholder="Add a note leadership should remember…"
+                          className="h-7 text-xs bg-background/60"
+                        />
+                        <Button size="sm" variant="outline" className="h-7 px-2 text-xs"
+                          disabled={memorySaving === m.id || !(memoryComment[m.id]?.trim())}
+                          onClick={() => submitMemoryFeedback(m)}>
+                          Save
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
