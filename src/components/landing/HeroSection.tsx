@@ -89,16 +89,16 @@ const HeroSection = () => {
                 <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             </Link>
-            <Link to="/demo">
+            <a href="#live-demo">
               <Button
                 variant="ghost"
                 size="lg"
                 className="text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/5 font-medium text-base h-12 rounded-xl"
               >
                 <Play className="w-4 h-4 mr-2" />
-                Try Live Demo
+                Watch Live Demo
               </Button>
-            </Link>
+            </a>
           </motion.div>
 
           <motion.div

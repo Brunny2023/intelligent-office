@@ -25,6 +25,7 @@ export default function NotificationPreferences() {
       else setPrefs({
         user_id: user.id, in_app: true, email: false, slack: false, slack_webhook_url: "",
         escalation_after_hours: 24, escalate_to_manager: true,
+        cognition_followup_after_hours: 24, cognition_followup_max_level: 3,
         event_prefs: {
           cognition_finished: { in_app: true, realtime: true },
           policy_blocked: { in_app: true, realtime: true },
@@ -174,6 +175,40 @@ export default function NotificationPreferences() {
                 {[4, 8, 12, 24, 48, 72].map(h => <SelectItem key={h} value={String(h)}>{h} hours</SelectItem>)}
               </SelectContent>
             </Select>
+          </div>
+          <div className="border-t border-border pt-4 space-y-3">
+            <div>
+              <p className="text-sm font-medium text-foreground">Deliberation follow-up SLA</p>
+              <p className="text-xs text-muted-foreground">
+                When a leadership deliberation completes with a policy block, high-risk flag, or awaiting-approval plan and you haven't approved or rejected it, we'll nudge you until you decide.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-xs">Nudge after</Label>
+                <Select
+                  value={String(prefs.cognition_followup_after_hours ?? 24)}
+                  onValueChange={v => setPrefs({ ...prefs, cognition_followup_after_hours: Number(v) })}
+                >
+                  <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {[2, 4, 8, 12, 24, 48, 72].map(h => <SelectItem key={h} value={String(h)}>{h} hours</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-xs">Max follow-ups</Label>
+                <Select
+                  value={String(prefs.cognition_followup_max_level ?? 3)}
+                  onValueChange={v => setPrefs({ ...prefs, cognition_followup_max_level: Number(v) })}
+                >
+                  <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {[1, 2, 3, 5, 10].map(n => <SelectItem key={n} value={String(n)}>{n} reminders</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </div>
         </div>
         <div className="flex gap-2 pt-2">

@@ -626,8 +626,10 @@ export type Database = {
         Row: {
           completed_at: string | null
           created_at: string
+          followup_level: number
           id: string
           intent: string | null
+          last_followup_at: string | null
           latency_ms: number | null
           organization_id: string
           outcome: Json | null
@@ -639,8 +641,10 @@ export type Database = {
         Insert: {
           completed_at?: string | null
           created_at?: string
+          followup_level?: number
           id?: string
           intent?: string | null
+          last_followup_at?: string | null
           latency_ms?: number | null
           organization_id: string
           outcome?: Json | null
@@ -652,8 +656,10 @@ export type Database = {
         Update: {
           completed_at?: string | null
           created_at?: string
+          followup_level?: number
           id?: string
           intent?: string | null
+          last_followup_at?: string | null
           latency_ms?: number | null
           organization_id?: string
           outcome?: Json | null
@@ -2195,6 +2201,8 @@ export type Database = {
       }
       notification_preferences: {
         Row: {
+          cognition_followup_after_hours: number
+          cognition_followup_max_level: number
           created_at: string
           email: boolean
           escalate_to_manager: boolean
@@ -2209,6 +2217,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          cognition_followup_after_hours?: number
+          cognition_followup_max_level?: number
           created_at?: string
           email?: boolean
           escalate_to_manager?: boolean
@@ -2223,6 +2233,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          cognition_followup_after_hours?: number
+          cognition_followup_max_level?: number
           created_at?: string
           email?: boolean
           escalate_to_manager?: boolean
@@ -3369,6 +3381,7 @@ export type Database = {
         Returns: Json
       }
       cognition_learn_dispatch: { Args: never; Returns: undefined }
+      cognition_sla_followups: { Args: never; Returns: Json }
       complete_onboarding: {
         Args: {
           _brand_tagline?: string

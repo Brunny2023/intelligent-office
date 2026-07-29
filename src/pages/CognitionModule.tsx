@@ -21,6 +21,12 @@ interface Department { id: string; name: string; charter: string | null; consult
 interface RequestRow { id: string; request: string; intent: string | null; status: string; outcome: any; created_at: string; latency_ms: number | null; }
 interface MemoryRow { id: string; title: string; content: string; memory_type: string; tags: string[] | null; relevance_score: number | null; last_referenced_at?: string | null; created_at: string; }
 
+type MemoryImpact = {
+  approve: number; reject: number; boost: number; dampen: number; comment: number;
+  last?: string;
+  series: { d: string; approve: number; reject: number }[];
+};
+
 export default function CognitionModule() {
   const { org } = useOrganization();
   const [executives, setExecutives] = useState<Executive[]>([]);
@@ -29,6 +35,7 @@ export default function CognitionModule() {
   const [requests, setRequests] = useState<RequestRow[]>([]);
   const [memoryCount, setMemoryCount] = useState(0);
   const [memory, setMemory] = useState<MemoryRow[]>([]);
+  const [memoryImpact, setMemoryImpact] = useState<Record<string, MemoryImpact>>({});
   const [memoryQuery, setMemoryQuery] = useState("");
   const [memoryComment, setMemoryComment] = useState<Record<string, string>>({});
   const [memorySaving, setMemorySaving] = useState<string | null>(null);
@@ -80,9 +87,10 @@ export default function CognitionModule() {
   const loadMemory = async () => {
     if (!org?.id) return;
     const q = memoryQuery.trim();
+    let rows: MemoryRow[] = [];
     if (q.length > 1) {
       const { data } = await supabase.rpc("search_memory", { _org: org.id, _query: q, _limit: 40 });
-      setMemory((data as MemoryRow[]) ?? []);
+      rows = (data as MemoryRow[]) ?? [];
     } else {
       const { data } = await supabase.from("organizational_memory")
         .select("id, title, content, memory_type, tags, relevance_score, last_referenced_at, created_at")
@@ -90,8 +98,45 @@ export default function CognitionModule() {
         .order("relevance_score", { ascending: false })
         .order("last_referenced_at", { ascending: false, nullsFirst: false })
         .limit(40);
-      setMemory((data as MemoryRow[]) ?? []);
+      rows = (data as MemoryRow[]) ?? [];
     }
+    setMemory(rows);
+    loadImpact(rows.map(r => r.id));
+  };
+
+  // Aggregate the last 90 days of feedback events for the visible memories so
+  // each card can show at a glance how leadership's decisions shifted over time.
+  const loadImpact = async (ids: string[]) => {
+    if (!org?.id || ids.length === 0) { setMemoryImpact({}); return; }
+    const since = new Date(Date.now() - 90 * 86400 * 1000).toISOString();
+    const { data } = await supabase.from("memory_feedback_events" as any)
+      .select("memory_id, action, created_at")
+      .eq("organization_id", org.id)
+      .in("memory_id", ids)
+      .gte("created_at", since)
+      .order("created_at", { ascending: true })
+      .limit(2000);
+    const map: Record<string, MemoryImpact> = {};
+    for (const id of ids) map[id] = { approve: 0, reject: 0, boost: 0, dampen: 0, comment: 0, series: [] };
+    const byDay: Record<string, Record<string, { approve: number; reject: number }>> = {};
+    for (const ev of (data as any[]) ?? []) {
+      const bucket = map[ev.memory_id];
+      if (!bucket) continue;
+      if (ev.action in bucket) (bucket as any)[ev.action] += 1;
+      if (!bucket.last || ev.created_at > bucket.last) bucket.last = ev.created_at;
+      if (ev.action === "approve" || ev.action === "reject") {
+        const day = new Date(ev.created_at).toISOString().slice(0, 10);
+        byDay[ev.memory_id] ??= {};
+        byDay[ev.memory_id][day] ??= { approve: 0, reject: 0 };
+        byDay[ev.memory_id][day][ev.action as "approve" | "reject"] += 1;
+      }
+    }
+    for (const [mid, days] of Object.entries(byDay)) {
+      const series = Object.entries(days).sort(([a], [b]) => a.localeCompare(b))
+        .map(([d, v]) => ({ d, ...v }));
+      map[mid].series = series;
+    }
+    setMemoryImpact(map);
   };
 
   useEffect(() => {
@@ -575,6 +620,7 @@ export default function CognitionModule() {
                     </div>
                     <div className="font-semibold text-sm text-foreground">{m.title}</div>
                     <p className="text-xs text-muted-foreground mt-2 leading-relaxed line-clamp-4">{m.content}</p>
+                    <MemoryImpactStrip impact={memoryImpact[m.id]} />
                     {m.tags && m.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-3">
                         {m.tags.slice(0, 6).map((t) => (
@@ -677,6 +723,65 @@ function FactBox({ label, value }: { label: string; value: string }) {
     <div className="rounded-lg bg-muted/40 p-3">
       <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">{label}</div>
       <p className="text-xs text-foreground/90 leading-relaxed">{value}</p>
+    </div>
+  );
+}
+
+// Tiny per-card impact strip: totals + a 90-day approve/reject sparkline that
+// shows how leadership's decisions on this memory shifted after each feedback
+// event. Rendered inline on the memory card.
+function MemoryImpactStrip({ impact }: { impact?: MemoryImpact }) {
+  if (!impact) return null;
+  const { approve, reject, boost, dampen, comment, series } = impact;
+  const total = approve + reject + boost + dampen + comment;
+  if (total === 0) {
+    return (
+      <div className="mt-3 text-[10px] text-muted-foreground/70 italic">No feedback yet — leadership is still forming its view.</div>
+    );
+  }
+  const approveW = approve + reject > 0 ? (approve / (approve + reject)) * 100 : 50;
+  const days = 90;
+  const today = new Date();
+  const buckets: { approve: number; reject: number }[] = Array.from({ length: days }, () => ({ approve: 0, reject: 0 }));
+  for (const s of series) {
+    const diff = Math.floor((today.getTime() - new Date(s.d).getTime()) / 86400000);
+    const idx = days - 1 - diff;
+    if (idx >= 0 && idx < days) {
+      buckets[idx].approve += s.approve;
+      buckets[idx].reject += s.reject;
+    }
+  }
+  const maxVal = Math.max(1, ...buckets.map(b => b.approve + b.reject));
+  return (
+    <div className="mt-3 space-y-1.5">
+      <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+        <span className="font-medium text-foreground/80">Impact</span>
+        <span className="text-emerald-500">▲ {approve}</span>
+        <span className="text-destructive">▼ {reject}</span>
+        <span className="text-accent">↑ {boost}</span>
+        <span className="text-amber-500">↓ {dampen}</span>
+        {comment > 0 && <span>· {comment} note{comment === 1 ? "" : "s"}</span>}
+      </div>
+      {approve + reject > 0 && (
+        <div className="h-1 rounded-full overflow-hidden bg-destructive/20 flex" title={`${approve} approved / ${reject} rejected`}>
+          <div className="h-full bg-emerald-500" style={{ width: `${approveW}%` }} />
+        </div>
+      )}
+      <div className="flex items-end gap-[1px] h-6" aria-label="90-day approve vs reject trend">
+        {buckets.map((b, i) => {
+          const totalDay = b.approve + b.reject;
+          if (totalDay === 0) return <div key={i} className="flex-1 h-px bg-muted/40" />;
+          const h = Math.max(2, Math.round((totalDay / maxVal) * 22));
+          const aH = Math.round(h * (b.approve / totalDay));
+          const rH = h - aH;
+          return (
+            <div key={i} className="flex-1 flex flex-col-reverse" title={`${b.approve} approved, ${b.reject} rejected`}>
+              {aH > 0 && <div className="bg-emerald-500/80" style={{ height: `${aH}px` }} />}
+              {rH > 0 && <div className="bg-destructive/70" style={{ height: `${rH}px` }} />}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
