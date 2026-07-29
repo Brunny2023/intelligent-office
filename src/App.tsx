@@ -45,6 +45,7 @@ import Privacy from "./pages/legal/Privacy";
 import DPA from "./pages/legal/DPA";
 import Subprocessors from "./pages/legal/Subprocessors";
 import ExecMeetingRoom from "./pages/ExecMeetingRoom";
+import CognitionModule from "./pages/CognitionModule";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -98,6 +99,7 @@ const App = () => (
             <Route path="/support/:id" element={<ProtectedRoute><SupportTicketDetail /></ProtectedRoute>} />
             <Route path="/partner-connect" element={<ProtectedRoute><InterOrgModule /></ProtectedRoute>} />
             <Route path="/exec-room/:roomName" element={<ExecMeetingRoom />} />
+            <Route path="/cognition" element={<ProtectedRoute><CognitionModule /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

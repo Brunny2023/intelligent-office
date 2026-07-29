@@ -28,6 +28,7 @@ const navItems = [
   { icon: BarChart3, label: "Intelligence", path: "/intelligence" },
   { icon: Network, label: "Knowledge Graph", path: "/intelligence/graph" },
   { icon: Brain, label: "AI Insights", path: "/ai-insights" },
+  { icon: Sparkles, label: "Cognition", path: "/cognition" },
   { icon: Crown, label: "Executive", path: "/executive" },
   { icon: Workflow, label: "Workflows", path: "/workflows" },
   { icon: Briefcase, label: "HR", path: "/hr" },
