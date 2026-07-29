@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import AppSidebar from "./AppSidebar";
 import MobileNav from "./MobileNav";
 import AskLeadershipFAB from "@/components/cognition/AskLeadershipFAB";
+import NotificationBell from "@/components/notifications/NotificationBell";
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -28,6 +29,10 @@ const AppLayout = ({ children, title }: { children: ReactNode; title?: string })
       </motion.main>
       <MobileNav />
       <AskLeadershipFAB />
+      {/* Mobile-only floating notifications bell — desktop shows it in the sidebar. */}
+      <div className="md:hidden fixed top-3 right-3 z-50 glass-card-strong rounded-full p-1 shadow-lg">
+        <NotificationBell />
+      </div>
     </div>
   );
 };
