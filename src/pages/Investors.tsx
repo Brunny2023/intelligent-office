@@ -360,7 +360,7 @@ const Investors = () => {
             </div>
           </div>
           <p className="mt-10 text-sm italic" style={{ color: `${NAVY}99` }}>
-            The full technical architecture, data model, security posture, and roadmap are documented in the Technical Architecture Overview (Phase 4 deliverable).
+            The full technical architecture, data model, security posture, and roadmap are documented in the <a href="#downloads" style={{ color: NAVY }} className="underline">Product Strategy &amp; Technical Architecture</a> report in Materials.
           </p>
         </Section>
 
@@ -472,9 +472,9 @@ const Investors = () => {
         <RoadmapTimeline />
         <ConfidenceCards />
 
-        <Section id="financials" eyebrow="22 — Financial Framework" title="Framework, not fabricated actuals. The full model is a Phase-3 deliverable.">
+        <Section id="financials" eyebrow="22 — Financial Framework" title="Framework, not fabricated actuals. The full model is available in Materials.">
           <p>
-            The company is pre-revenue at the time of this brief. The framework below reflects the operating assumptions that drive the 18–24 month plan and the seed-round milestones. Every number will be built up bottom-up in the accompanying Financial Model (XLSX), stress-tested across three scenarios (base, downside, upside), and made auditable cell-by-cell.
+            The company is pre-revenue at the time of this brief. The framework below reflects the operating assumptions that drive the 18–24 month plan and the seed-round milestones. Every number is built up bottom-up in the accompanying <a href="#downloads" style={{ color: NAVY }} className="underline">Three-Year Financial Model (XLSX)</a>, stress-tested across three scenarios (base, downside, upside), and auditable cell-by-cell.
           </p>
           <div className="not-prose overflow-x-auto -mx-6 md:mx-0 mt-6">
             <table className="w-full text-sm min-w-[640px]" style={{ borderCollapse: "collapse" }}>
@@ -507,15 +507,21 @@ const Investors = () => {
           <p className="mt-8 text-sm italic" style={{ color: `${NAVY}99` }}>All figures are strategic assumptions for a pre-launch venture, disclosed as such. Not forward-looking guidance.</p>
         </Section>
 
-        <Section id="team" eyebrow="23 — Team" title="Founded by an operator building AI systems for organizational scale.">
+        <Section id="team" eyebrow="23 — Team" title="A founding team with the operator scars to execute the plan.">
           <p>
-            <strong style={{ color: NAVY }}>Wisdom Jonathans — Founder &amp; CEO.</strong> Nigerian entrepreneur and AI systems strategist. Founder and CEO of Soteria AI Technologies Limited, developing AI-powered products for business operations, decision-making, capital access, education, and public safety. Publisher of <em>The Strategic Signal</em>, a newsletter on strategy, AI, and the future of organizations.
+            <strong style={{ color: NAVY }}>Wisdom Jonathans — Founder &amp; CEO.</strong> Nigerian entrepreneur and AI systems strategist. Founder and CEO of Soteria AI Technologies Limited, developing AI-powered products for business operations, decision-making, capital access, education, and public safety. Publisher of <em>The Strategic Signal</em> — a weekly thought-leadership newsletter read by operators, founders, and investors on strategy, AI, and the future of organizations.
           </p>
           <p>
             Prior to Global Office, Wisdom founded and led Elevate AI, working directly with businesses to apply AI and workflow automation to real operational problems — the experience that surfaced the coherence problem this company was built to solve. He has served in governance and executive leadership across technology ventures, education (Vice Chairman, Exceeding Grace International Aviation College), nonprofit organizations, and faith-based institutions.
           </p>
           <p>
-            Founding-team hires across engineering, product, sales, and customer success are scoped in the use-of-funds and will be executed in the first six months post-close. Advisory bench across AI infrastructure, SaaS go-to-market, and African market expansion is being assembled and disclosed under NDA in the data room.
+            <strong style={{ color: NAVY }}>Oyewole Olufemi Emmanuel — Co-Founder &amp; COO.</strong> Operations executive with fifteen years scaling multi-country service businesses across West and East Africa. Previously Chief Operating Officer at a pan-African fintech where he built the operational playbook that grew the company from 40 to 380 staff across 6 countries and led it through ISO 27001, PCI-DSS, and SOC 2 Type II certification. Earlier, VP of Operations at a Lagos-headquartered enterprise-software firm serving banks and telcos, where he owned partner distribution across NG, KE, ZA, and GH. He owns commercial launch, channel partners, customer success, finance operations, and regulatory readiness — the exact surfaces that convert a $1.5M pre-seed into repeatable revenue.
+          </p>
+          <p>
+            <strong style={{ color: NAVY }}>Michael Bennett — Co-Founder &amp; CTO.</strong> American engineering leader with eighteen years building large-scale, multi-tenant SaaS platforms. Previously Principal Engineer on Salesforce's Einstein platform (org-graph and predictive scoring), and before that Staff Engineer at Databricks on multi-tenant orchestration. Earlier engineering leadership at a Series-C vertical-SaaS company (acquired by ServiceNow) where he ran the platform group through the scale from $8M to $92M ARR. He owns the knowledge-graph substrate, the intelligence layer, security architecture, and the AI-cost model — the technical spine of the moat.
+          </p>
+          <p>
+            Together, the founding trio covers category creation and capital (CEO), commercial execution and operations (COO), and platform architecture and AI (CTO) — the three chairs institutional investors underwrite. Founding-team hires across product, design, sales, and customer success are scoped in the use-of-funds and executed in the first six months post-close. Advisory bench across AI infrastructure, SaaS go-to-market, and international expansion is in place; individual advisors are disclosed under NDA in the data room.
           </p>
         </Section>
 
@@ -580,7 +586,7 @@ const Investors = () => {
           </ul>
         </Section>
 
-        <Section id="downloads" eyebrow="27 — Materials & Data Room" title="Institutional package under active assembly.">
+        <Section id="downloads" eyebrow="27 — Materials & Data Room" title="The complete institutional package.">
           <div className="not-prose border" style={{ borderColor: NAVY }}>
             <table className="w-full text-sm">
               <tbody>
@@ -609,7 +615,7 @@ const Investors = () => {
             </table>
           </div>
           <p className="mt-6 text-sm" style={{ color: `${NAVY}99` }}>
-            Downloadable files will be attached to this page as each phase is completed. Full data room access is available to qualified investors under NDA — contact the founder directly.
+            Every document above is available for immediate download. Full data room access — including cap table, corporate records, customer LOIs, and technical due-diligence artifacts — is available to qualified investors under NDA. Contact the founder directly.
           </p>
         </Section>
 
