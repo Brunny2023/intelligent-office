@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { motion } from "framer-motion";
 import AppSidebar from "./AppSidebar";
 import MobileNav from "./MobileNav";
+import AskLeadershipFAB from "@/components/cognition/AskLeadershipFAB";
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -26,6 +27,7 @@ const AppLayout = ({ children, title }: { children: ReactNode; title?: string })
         {children}
       </motion.main>
       <MobileNav />
+      <AskLeadershipFAB />
     </div>
   );
 };

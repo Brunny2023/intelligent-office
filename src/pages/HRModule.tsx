@@ -173,6 +173,17 @@ const CandidatesTab = () => {
     await supabase.from("candidates").update({ stage, updated_at: new Date().toISOString() }).eq("id", id);
     setCandidates(prev => prev.map(c => c.id === id ? { ...c, stage } : c));
     toast.success(`Moved to ${stage}`);
+    // Wave 5 rewire: offer/hire milestones deserve a CHRO+CFO deliberation
+    // (comp band fit, headcount plan impact, onboarding plan).
+    if (stage === "offer" || stage === "hired") {
+      const cand = (await supabase.from("candidates").select("full_name, email, job_posting_id").eq("id", id).maybeSingle()).data;
+      if (cand) {
+        const { triggerCognition } = await import("@/lib/cognition");
+        void triggerCognition(
+          `Candidate ${cand.full_name} moved to "${stage}". Deliberate on comp band, headcount plan impact, onboarding plan, and any risk.`,
+        );
+      }
+    }
   };
 
   const updateRating = async (id: string, rating: number) => {
@@ -468,6 +479,15 @@ const TerminationsTab = () => {
     });
     if (error) { toast.error("Failed to create termination record"); return; }
     toast.success("Termination record created");
+    // Wave 5 rewire: every termination triggers CHRO + CLO deliberation
+    // (legal exposure, coverage, communication plan) — advisory only.
+    {
+      const emp = staff.find((s: any) => s.id === form.userId);
+      const { triggerCognition } = await import("@/lib/cognition");
+      void triggerCognition(
+        `Termination initiated for ${emp?.full_name ?? "employee"} (${form.terminationType}). Reason: ${form.reason || "not provided"}. Advise on legal exposure, coverage plan, and communication.`,
+      );
+    }
     setDialogOpen(false);
     setForm({ userId: "", terminationType: "voluntary", reason: "", lastWorkingDay: "", exitNotes: "" });
     const { data } = await supabase.from("terminations").select("*").eq("organization_id", org.id).order("created_at", { ascending: false });
