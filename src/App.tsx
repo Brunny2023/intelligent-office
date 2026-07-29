@@ -46,6 +46,7 @@ import DPA from "./pages/legal/DPA";
 import Subprocessors from "./pages/legal/Subprocessors";
 import ExecMeetingRoom from "./pages/ExecMeetingRoom";
 import CognitionModule from "./pages/CognitionModule";
+import NotificationsInbox from "./pages/NotificationsInbox";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -100,6 +101,7 @@ const App = () => (
             <Route path="/partner-connect" element={<ProtectedRoute><InterOrgModule /></ProtectedRoute>} />
             <Route path="/exec-room/:roomName" element={<ExecMeetingRoom />} />
             <Route path="/cognition" element={<ProtectedRoute><CognitionModule /></ProtectedRoute>} />
+            <Route path="/notifications" element={<ProtectedRoute><NotificationsInbox /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

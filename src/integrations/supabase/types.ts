@@ -2157,6 +2157,7 @@ export type Database = {
           email: boolean
           escalate_to_manager: boolean
           escalation_after_hours: number
+          event_prefs: Json
           id: string
           in_app: boolean
           slack: boolean
@@ -2169,6 +2170,7 @@ export type Database = {
           email?: boolean
           escalate_to_manager?: boolean
           escalation_after_hours?: number
+          event_prefs?: Json
           id?: string
           in_app?: boolean
           slack?: boolean
@@ -2181,6 +2183,7 @@ export type Database = {
           email?: boolean
           escalate_to_manager?: boolean
           escalation_after_hours?: number
+          event_prefs?: Json
           id?: string
           in_app?: boolean
           slack?: boolean
