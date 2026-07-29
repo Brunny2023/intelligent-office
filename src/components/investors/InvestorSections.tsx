@@ -231,11 +231,13 @@ export const IncumbentGrid = () => (
 /* Product Proof — placeholder device mockups                         */
 /* ------------------------------------------------------------------ */
 
+import { ExecutiveView, WorkflowsView, GraphView, DashboardView } from "@/components/mockups/views";
+
 const products = [
-  { title: "AI Executive Control Center", desc: "Weighted health scores, anomaly detection, and cross-module signal in one command surface." },
-  { title: "Workflow Builder", desc: "Visual IF/THEN automation across every module — composed by operators, not engineers." },
-  { title: "Knowledge Graph Explorer", desc: "Every person, task, message, and decision as a node — queryable and reasoned over." },
-  { title: "Organization Health Dashboard", desc: "Real activity, not self-reported dashboards. Attendance, execution, and coordination in one glance." },
+  { title: "AI Executive Control Center", desc: "Weighted health scores, anomaly detection, and cross-module signal in one command surface.", Preview: ExecutiveView },
+  { title: "Workflow Builder",             desc: "Visual IF/THEN automation across every module — composed by operators, not engineers.",              Preview: WorkflowsView },
+  { title: "Knowledge Graph Explorer",     desc: "Every person, task, message, and decision as a node — queryable and reasoned over.",                  Preview: GraphView },
+  { title: "Organization Health Dashboard",desc: "Real activity, not self-reported dashboards. Attendance, execution, and coordination in one glance.", Preview: DashboardView },
 ];
 
 export const ProductProof = () => (
@@ -258,30 +260,20 @@ export const ProductProof = () => (
           className="rounded-md overflow-hidden"
           style={{ border: `1px solid ${NAVY}22`, background: `${NAVY}05` }}
         >
-          {/* Device frame */}
-          <div
-            className="aspect-[16/10] relative flex items-center justify-center"
-            style={{
-              background: `linear-gradient(135deg, ${NAVY}, ${NAVY}CC)`,
-              backgroundImage: `linear-gradient(135deg, ${NAVY}, ${NAVY}CC), radial-gradient(circle at 30% 30%, ${GOLD}22, transparent 50%)`,
-            }}
-          >
-            <div className="absolute inset-4 rounded border" style={{ borderColor: `${GOLD}44` }}>
-              <div className="absolute top-3 left-3 flex gap-1.5">
-                <div className="w-2 h-2 rounded-full" style={{ background: `${BONE}55` }} />
-                <div className="w-2 h-2 rounded-full" style={{ background: `${BONE}55` }} />
-                <div className="w-2 h-2 rounded-full" style={{ background: `${BONE}55` }} />
+          {/* MacBook-framed live mockup */}
+          <div className="relative p-5" style={{ background: `linear-gradient(135deg, ${NAVY}, ${NAVY}CC)` }}>
+            <div className="rounded-lg overflow-hidden shadow-2xl border border-white/10 bg-white">
+              <div className="flex items-center gap-1.5 px-3 py-1.5 border-b border-slate-200 bg-slate-50">
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-400" />
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
               </div>
-              <div className="absolute inset-x-6 top-10 space-y-2">
-                <div className="h-1.5 rounded-full" style={{ background: `${GOLD}44`, width: "60%" }} />
-                <div className="h-1.5 rounded-full" style={{ background: `${BONE}22`, width: "80%" }} />
-                <div className="h-1.5 rounded-full" style={{ background: `${BONE}22`, width: "45%" }} />
-              </div>
-              <div className="absolute inset-x-6 bottom-6 grid grid-cols-3 gap-2">
-                {[1,2,3].map(x => <div key={x} className="h-10 rounded" style={{ background: `${BONE}12`, border: `1px solid ${BONE}22` }} />)}
+              <div className="aspect-[16/10] overflow-hidden relative bg-[#F5F6F8]">
+                <div className="absolute inset-0 origin-top-left" style={{ transform: "scale(0.42)", width: "238%", height: "238%" }}>
+                  <div className="p-6"><p.Preview /></div>
+                </div>
               </div>
             </div>
-            <span className="relative text-[10px] tracking-[0.3em] uppercase" style={{ color: `${BONE}66`, fontFamily: "'Space Grotesk', sans-serif" }}>Preview</span>
           </div>
           <div className="p-6">
             <div className="text-[11px] tracking-[0.2em] uppercase mb-2" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Module {i + 1}</div>
