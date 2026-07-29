@@ -30,6 +30,7 @@ export default function NotificationPreferences() {
           policy_blocked: { in_app: true, realtime: true },
           insight_escalation: { in_app: true, realtime: true },
         },
+        snoozes: {},
       });
     })();
   }, [user]);
@@ -112,6 +113,20 @@ export default function NotificationPreferences() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-foreground">{row.label}</p>
                       <p className="text-xs text-muted-foreground">{row.hint}</p>
+                      {(() => {
+                        const until = prefs.snoozes?.[row.key];
+                        if (!until) return null;
+                        const untilDate = new Date(until);
+                        if (untilDate <= new Date()) return null;
+                        return (
+                          <p className="text-[10px] text-amber-500 mt-1">
+                            Realtime snoozed until {untilDate.toLocaleString()}
+                            <button className="ml-2 underline" onClick={() => setPrefs({ ...prefs, snoozes: { ...(prefs.snoozes ?? {}), [row.key]: null } })}>
+                              unsnooze
+                            </button>
+                          </p>
+                        );
+                      })()}
                     </div>
                     <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <Switch checked={!!ev.in_app} onCheckedChange={(v) => setEv({ in_app: v })} />
@@ -121,6 +136,24 @@ export default function NotificationPreferences() {
                       <Switch checked={!!ev.realtime} onCheckedChange={(v) => setEv({ realtime: v })} />
                       Realtime
                     </label>
+                    <Select
+                      value=""
+                      onValueChange={(v) => {
+                        const hours = Number(v);
+                        const until = hours === 0 ? null : new Date(Date.now() + hours * 3600 * 1000).toISOString();
+                        setPrefs({ ...prefs, snoozes: { ...(prefs.snoozes ?? {}), [row.key]: until } });
+                      }}
+                    >
+                      <SelectTrigger className="h-8 w-28 text-xs"><SelectValue placeholder="Snooze…" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">1 hour</SelectItem>
+                        <SelectItem value="4">4 hours</SelectItem>
+                        <SelectItem value="8">8 hours</SelectItem>
+                        <SelectItem value="24">24 hours</SelectItem>
+                        <SelectItem value="72">3 days</SelectItem>
+                        <SelectItem value="0">Clear snooze</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 );
               })}
