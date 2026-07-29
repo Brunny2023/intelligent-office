@@ -47,8 +47,8 @@ export const useNotifications = () => {
 
     if (!user) return;
     // Load per-event preferences so realtime toasts respect the user's choices.
-    supabase.from("notification_preferences" as any).select("event_prefs").eq("user_id", user.id).maybeSingle()
-      .then(({ data }) => { if (data?.event_prefs) setEventPrefs(data.event_prefs as any); });
+    (supabase.from("notification_preferences" as any) as any).select("event_prefs").eq("user_id", user.id).maybeSingle()
+      .then(({ data }: any) => { if (data?.event_prefs) setEventPrefs(data.event_prefs); });
 
     const channel = supabase
       .channel(`notifications-${user.id}`)
