@@ -7,6 +7,7 @@ import ClockInWidget from "@/components/attendance/ClockInWidget";
 import ActivityFeed from "@/components/activity/ActivityFeed";
 import PerformanceWidget from "@/components/dashboard/PerformanceWidget";
 import AIInsightWidget from "@/components/dashboard/AIInsightWidget";
+import OnboardingChecklist from "@/components/dashboard/OnboardingChecklist";
 import AppLayout from "@/components/layout/AppLayout";
 import { motion } from "framer-motion";
 import {
@@ -149,6 +150,8 @@ const Dashboard = () => {
           </h1>
           <p className="text-muted-foreground text-sm mt-1">Here's your digital headquarters overview</p>
         </motion.div>
+
+        <OnboardingChecklist />
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }} className="md:col-span-1 lg:col-span-1">
