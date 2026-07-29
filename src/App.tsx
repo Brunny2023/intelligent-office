@@ -39,6 +39,7 @@ import InterOrgModule from "./pages/InterOrgModule";
 import Demo from "./pages/Demo";
 import Investors from "./pages/Investors";
 import TrustCenter from "./pages/TrustCenter";
+import Status from "./pages/Status";
 import Terms from "./pages/legal/Terms";
 import Privacy from "./pages/legal/Privacy";
 import DPA from "./pages/legal/DPA";
@@ -61,6 +62,7 @@ const App = () => (
             <Route path="/demo" element={<Demo />} />
             <Route path="/investors" element={<Investors />} />
             <Route path="/trust" element={<TrustCenter />} />
+            <Route path="/status" element={<Status />} />
             <Route path="/legal/terms" element={<Terms />} />
             <Route path="/legal/privacy" element={<Privacy />} />
             <Route path="/legal/dpa" element={<DPA />} />
