@@ -12,9 +12,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { motion, AnimatePresence } from "framer-motion";
-import { UserPlus, Mail, Users, Clock, CheckCircle, XCircle, Send, Copy, Trash2 } from "lucide-react";
+import { UserPlus, Mail, Users, Clock, CheckCircle, XCircle, Send, Copy, Trash2, KeyRound, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import { buildTenantUrl, getTenantSlug } from "@/lib/tenant";
 
 const roleLabels: Record<string, string> = {
   owner: "Owner", executive: "Executive", manager: "Manager",
@@ -36,6 +37,21 @@ const TeamModule = () => {
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [form, setForm] = useState({ email: "", role: "staff", departmentId: "", jobTitle: "" });
+  const [tokenDialogOpen, setTokenDialogOpen] = useState(false);
+  const [tokenForm, setTokenForm] = useState({ role: "staff", departmentId: "", jobTitle: "", expiresHours: "168" });
+  const [generating, setGenerating] = useState(false);
+
+  const joinBaseUrl = () => {
+    // On a tenant subdomain (or local/preview), stay on the current origin.
+    if (getTenantSlug() || !org?.slug) return window.location.origin;
+    const host = window.location.hostname;
+    if (host === "localhost" || host.endsWith(".lovable.app") || host.endsWith(".lovableproject.com")) {
+      return window.location.origin;
+    }
+    return buildTenantUrl(org.slug);
+  };
+
+  const joinLink = (code: string) => `${joinBaseUrl()}/join?code=${code}`;
 
   const fetchData = async () => {
     if (!org) return;
@@ -88,6 +104,36 @@ const TeamModule = () => {
     await navigator.clipboard.writeText(link);
     toast.success("Invite link copied!");
   };
+
+  const generateAccessToken = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setGenerating(true);
+    const { data, error } = await supabase.rpc("create_access_token", {
+      _role: tokenForm.role as any,
+      _department_id: tokenForm.departmentId && tokenForm.departmentId !== "none" ? tokenForm.departmentId : null,
+      _job_title: tokenForm.jobTitle || null,
+      _expires_hours: Number(tokenForm.expiresHours),
+    });
+    setGenerating(false);
+    const result = data as any;
+    if (error || result?.error) {
+      toast.error(error?.message || result.error);
+      return;
+    }
+    try { await navigator.clipboard.writeText(joinLink(result.access_code)); } catch { /* noop */ }
+    toast.success(`Access token ${result.access_code} generated — join link copied`);
+    setTokenDialogOpen(false);
+    setTokenForm({ role: "staff", departmentId: "", jobTitle: "", expiresHours: "168" });
+    fetchData();
+  };
+
+  const copyAccessLink = async (code: string) => {
+    await navigator.clipboard.writeText(joinLink(code));
+    toast.success("Join link copied!");
+  };
+
+  const emailInvites = invitations.filter(i => !i.access_code);
+  const accessTokens = invitations.filter(i => i.access_code);
 
   const getUserRole = (userId: string) => {
     const r = roles.find(r => r.user_id === userId);
