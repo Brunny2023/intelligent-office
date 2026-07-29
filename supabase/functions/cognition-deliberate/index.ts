@@ -60,7 +60,7 @@ Deno.serve(async (req) => {
     if (!request) return json({ error: "request required" }, 400);
 
     // Gather org context — memory is now relevance-ranked via full-text search
-    const [{ data: org }, { data: executives }, { data: consultants }, { data: departments }, { data: kpis }, memoryRes, { data: recentDecisions }] = await Promise.all([
+    const [{ data: org }, { data: executives }, { data: consultants }, { data: departments }, { data: kpis }, memoryRes, { data: recentDecisions }, { data: policies }] = await Promise.all([
       admin.from("organizations").select("name, mission, brand_tagline, core_values").eq("id", orgId).maybeSingle(),
       admin.from("ai_executives").select("role, title, mandate, focus_kpis").eq("organization_id", orgId).eq("is_active", true),
       admin.from("ai_consultants").select("domain, title, expertise").eq("organization_id", orgId).eq("is_active", true),
@@ -68,6 +68,7 @@ Deno.serve(async (req) => {
       admin.from("kpis").select("title, current_value, target_value, unit, status").eq("organization_id", orgId).limit(20),
       admin.rpc("search_memory", { _org: orgId, _query: request, _limit: 10 }),
       admin.from("cognition_requests").select("request, outcome").eq("organization_id", orgId).eq("status", "completed").order("completed_at", { ascending: false }).limit(6),
+      admin.from("cognition_policies").select("category, title, rule, severity").eq("organization_id", orgId).eq("is_active", true),
     ]);
     const memory = (memoryRes.data as Array<{ id: string; title: string; content: string; tags: string[] }> | null) ?? [];
     const referencedMemoryIds = memory.map((m) => m.id);
@@ -83,6 +84,7 @@ Deno.serve(async (req) => {
       kpis,
       recent_decisions: recentDecisions,
       organizational_memory: memory,
+      governance_policies: policies,
       requester: { name: profile?.full_name, title: profile?.job_title },
     };
 
