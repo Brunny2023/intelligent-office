@@ -169,7 +169,45 @@ Deno.serve(async (req) => {
     // owned by the assigned AI department. Tasks are created with priority derived
     // from risk language and default to `todo` for human/AI worker pickup.
     const createdTasks: Array<{ id: string; title: string }> = [];
-    if (Array.isArray(parsed.execution_plan) && parsed.execution_plan.length > 0) {
+    // --- Wave 4 gap fix: enforce blocking policies server-side ---
+    // The prompt tells the model to refuse blocking violations, but nothing
+    // stopped tasks from being dispatched when it slipped up. Cross-reference
+    // any policy_check{status:"violation"} against the loaded policy severity
+    // and, if any hit a *blocking* policy, halt execution and notify owners.
+    const policyList = (policies ?? []) as Array<{ title: string; severity: string; category: string }>;
+    const blockingViolations: Array<{ policy: string; note?: string }> = [];
+    if (Array.isArray(parsed.policy_checks)) {
+      for (const c of parsed.policy_checks) {
+        if (c?.status !== "violation") continue;
+        const match = policyList.find((p) => p.title?.toLowerCase() === (c.policy ?? "").toString().toLowerCase());
+        if (match && match.severity === "blocking") blockingViolations.push({ policy: match.title, note: c.note });
+      }
+    }
+    const blocked = blockingViolations.length > 0;
+
+    if (blocked) {
+      await admin.from("cognition_steps").insert({
+        request_id: requestId, organization_id: orgId, stage: "policy_enforcement",
+        actor_type: "system", actor_label: "Governance",
+        reasoning: `Blocked by ${blockingViolations.length} blocking policy violation(s): ${blockingViolations.map((b) => b.policy).join(", ")}.`,
+        output: { blocking_violations: blockingViolations },
+        step_order: 24,
+      });
+
+      // Notify org owners/execs/managers so violations don't die silently.
+      const { data: leaders } = await admin.from("user_roles").select("user_id")
+        .eq("organization_id", orgId).in("role", ["owner", "executive", "manager"]);
+      if (leaders && leaders.length) {
+        await admin.from("notifications").insert(leaders.map((l: any) => ({
+          user_id: l.user_id, organization_id: orgId,
+          title: "Deliberation blocked by policy",
+          message: `"${(parsed.intent ?? request).slice(0, 120)}" violated: ${blockingViolations.map((b) => b.policy).join(", ")}.`,
+          type: "governance", link: `/cognition?request=${requestId}`, is_read: false,
+        })));
+      }
+    }
+
+    if (!blocked && Array.isArray(parsed.execution_plan) && parsed.execution_plan.length > 0) {
       const deptName: string | undefined = parsed.department?.name;
       let deptId: string | null = null;
       if (deptName && departments) {
@@ -206,12 +244,12 @@ Deno.serve(async (req) => {
     await admin.from("cognition_requests").update({
       status: "completed",
       intent: parsed.intent,
-      outcome: { ...parsed, tasks_created: createdTasks },
+      outcome: { ...parsed, tasks_created: createdTasks, blocked_by_policy: blocked, blocking_violations: blockingViolations },
       latency_ms: latency,
       completed_at: new Date().toISOString(),
     }).eq("id", requestId);
 
-    return json({ request_id: requestId, latency_ms: latency, tasks_created: createdTasks, ...parsed });
+    return json({ request_id: requestId, latency_ms: latency, tasks_created: createdTasks, blocked_by_policy: blocked, blocking_violations: blockingViolations, ...parsed });
   } catch (err) {
     return json({ error: (err as Error).message }, 500);
   }
