@@ -129,6 +129,8 @@ const Downloads = [
 ] as { name: string; status: "ready" | "in-progress" | "queued"; phase: string; href?: string }[];
 
 const Investors = () => {
+  const [meetingOpen, setMeetingOpen] = useState(false);
+  const { track } = useInvestorAnalytics();
   useEffect(() => {
     const prev = { title: document.title };
     document.title = "Global Office — Investor Brief (Confidential)";
@@ -157,13 +159,15 @@ const Investors = () => {
     link.href = "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap";
     document.head.appendChild(link);
 
+    track("investor_page_view", { path: "/investors" });
+
     return () => {
       document.title = prev.title;
       undoRobots();
       undoDesc();
       link.remove();
     };
-  }, []);
+  }, [track]);
 
   return (
     <div style={{ background: BONE, color: NAVY, fontFamily: "'Inter', system-ui, sans-serif" }} className="min-h-screen">
@@ -189,13 +193,20 @@ const Investors = () => {
           </div>
           <div className="flex flex-col gap-2 print:hidden">
             <button
+              onClick={() => { track("book_meeting_opened"); setMeetingOpen(true); }}
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm text-white transition-colors"
+              style={{ background: NAVY }}
+            >
+              <Video className="w-4 h-4" /> Meet the Founder
+            </button>
+            <button
               onClick={() => window.print()}
               className="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-none border transition-colors hover:bg-[color:var(--navy)] hover:text-[color:var(--bone)]"
               style={{ borderColor: NAVY, color: NAVY, ["--navy" as any]: NAVY, ["--bone" as any]: BONE }}
             >
               <Printer className="w-4 h-4" /> Print / Save PDF
             </button>
-            <a href="#downloads" className="inline-flex items-center gap-2 px-4 py-2 text-sm border" style={{ borderColor: NAVY, color: NAVY }}>
+            <a href="#downloads" onClick={() => track("materials_scrolled")} className="inline-flex items-center gap-2 px-4 py-2 text-sm border" style={{ borderColor: NAVY, color: NAVY }}>
               <Download className="w-4 h-4" /> Materials
             </a>
           </div>
