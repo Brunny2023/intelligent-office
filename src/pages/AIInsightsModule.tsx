@@ -371,6 +371,21 @@ function AlertDetailSheet({
                 <ExternalLink className="w-3.5 h-3.5 mr-1" /> Open source
               </Button>
             )}
+            <Button
+              size="sm"
+              variant="outline"
+              className="rounded-xl"
+              onClick={async () => {
+                const { triggerCognition } = await import("@/lib/cognition");
+                await triggerCognition(
+                  `Insight to deliberate: "${insight.title}". ${insight.content}\n\nSeverity: ${insight.severity}. Recommend root cause, owner, and next steps.`,
+                  null,
+                );
+                onNavigate("/cognition");
+              }}
+            >
+              <Brain className="w-3.5 h-3.5 mr-1" /> Deliberate with leadership
+            </Button>
             <Button size="sm" variant="outline" className="rounded-xl" onClick={() => onStatus(insight.id, "acknowledged")}>Acknowledge</Button>
             <Button size="sm" variant="outline" className="rounded-xl" onClick={() => onStatus(insight.id, "resolved")}>Mark resolved</Button>
             <Button size="sm" variant="ghost" className="rounded-xl text-muted-foreground" onClick={() => onStatus(insight.id, "dismissed")}>Dismiss</Button>
