@@ -1538,9 +1538,10 @@ export type Database = {
       invitations: {
         Row: {
           accepted_at: string | null
+          access_code: string | null
           created_at: string
           department_id: string | null
-          email: string
+          email: string | null
           expires_at: string
           id: string
           invited_by: string
@@ -1552,9 +1553,10 @@ export type Database = {
         }
         Insert: {
           accepted_at?: string | null
+          access_code?: string | null
           created_at?: string
           department_id?: string | null
-          email: string
+          email?: string | null
           expires_at?: string
           id?: string
           invited_by: string
@@ -1566,9 +1568,10 @@ export type Database = {
         }
         Update: {
           accepted_at?: string | null
+          access_code?: string | null
           created_at?: string
           department_id?: string | null
-          email?: string
+          email?: string | null
           expires_at?: string
           id?: string
           invited_by?: string
@@ -3393,6 +3396,15 @@ export type Database = {
         }
         Returns: Json
       }
+      create_access_token: {
+        Args: {
+          _department_id?: string
+          _expires_hours?: number
+          _job_title?: string
+          _role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: Json
+      }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -3470,6 +3482,7 @@ export type Database = {
       }
       intelligence_isolation_probe: { Args: never; Returns: Json }
       is_platform_admin: { Args: { _user_id: string }; Returns: boolean }
+      lookup_access_token: { Args: { _code: string }; Returns: Json }
       move_to_dlq: {
         Args: {
           dlq_name: string
@@ -3487,6 +3500,7 @@ export type Database = {
           read_ct: number
         }[]
       }
+      redeem_access_token: { Args: { _code: string }; Returns: Json }
       retention_purge: { Args: never; Returns: Json }
       search_memory: {
         Args: { _limit?: number; _org: string; _query: string }

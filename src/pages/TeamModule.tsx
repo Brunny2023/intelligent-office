@@ -12,9 +12,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { motion, AnimatePresence } from "framer-motion";
-import { UserPlus, Mail, Users, Clock, CheckCircle, XCircle, Send, Copy, Trash2 } from "lucide-react";
+import { UserPlus, Mail, Users, Clock, CheckCircle, XCircle, Send, Copy, Trash2, KeyRound, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import { buildTenantUrl, getTenantSlug } from "@/lib/tenant";
 
 const roleLabels: Record<string, string> = {
   owner: "Owner", executive: "Executive", manager: "Manager",
@@ -36,6 +37,21 @@ const TeamModule = () => {
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [form, setForm] = useState({ email: "", role: "staff", departmentId: "", jobTitle: "" });
+  const [tokenDialogOpen, setTokenDialogOpen] = useState(false);
+  const [tokenForm, setTokenForm] = useState({ role: "staff", departmentId: "", jobTitle: "", expiresHours: "168" });
+  const [generating, setGenerating] = useState(false);
+
+  const joinBaseUrl = () => {
+    // On a tenant subdomain (or local/preview), stay on the current origin.
+    if (getTenantSlug() || !org?.slug) return window.location.origin;
+    const host = window.location.hostname;
+    if (host === "localhost" || host.endsWith(".lovable.app") || host.endsWith(".lovableproject.com")) {
+      return window.location.origin;
+    }
+    return buildTenantUrl(org.slug);
+  };
+
+  const joinLink = (code: string) => `${joinBaseUrl()}/join?code=${code}`;
 
   const fetchData = async () => {
     if (!org) return;
@@ -88,6 +104,36 @@ const TeamModule = () => {
     await navigator.clipboard.writeText(link);
     toast.success("Invite link copied!");
   };
+
+  const generateAccessToken = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setGenerating(true);
+    const { data, error } = await supabase.rpc("create_access_token", {
+      _role: tokenForm.role as any,
+      _department_id: tokenForm.departmentId && tokenForm.departmentId !== "none" ? tokenForm.departmentId : null,
+      _job_title: tokenForm.jobTitle || null,
+      _expires_hours: Number(tokenForm.expiresHours),
+    });
+    setGenerating(false);
+    const result = data as any;
+    if (error || result?.error) {
+      toast.error(error?.message || result.error);
+      return;
+    }
+    try { await navigator.clipboard.writeText(joinLink(result.access_code)); } catch { /* noop */ }
+    toast.success(`Access token ${result.access_code} generated — join link copied`);
+    setTokenDialogOpen(false);
+    setTokenForm({ role: "staff", departmentId: "", jobTitle: "", expiresHours: "168" });
+    fetchData();
+  };
+
+  const copyAccessLink = async (code: string) => {
+    await navigator.clipboard.writeText(joinLink(code));
+    toast.success("Join link copied!");
+  };
+
+  const emailInvites = invitations.filter(i => !i.access_code);
+  const accessTokens = invitations.filter(i => i.access_code);
 
   const getUserRole = (userId: string) => {
     const r = roles.find(r => r.user_id === userId);
@@ -144,6 +190,56 @@ const TeamModule = () => {
               </form>
             </DialogContent>
           </Dialog>
+          <Dialog open={tokenDialogOpen} onOpenChange={setTokenDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="rounded-xl w-full sm:w-auto"><KeyRound className="w-4 h-4 mr-1" /> Generate Access Token</Button>
+            </DialogTrigger>
+            <DialogContent className="rounded-2xl">
+              <DialogHeader><DialogTitle>Generate Single-Use Access Token</DialogTitle></DialogHeader>
+              <form onSubmit={generateAccessToken} className="space-y-4">
+                <p className="text-xs text-muted-foreground">
+                  Share the generated link with a new member. It works only on your organization's own space, grants the role
+                  you choose, and expires the moment it is used.
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2"><Label>Role</Label>
+                    <Select value={tokenForm.role} onValueChange={v => setTokenForm({ ...tokenForm, role: v })}>
+                      <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="staff">Staff</SelectItem>
+                        <SelectItem value="manager">Manager</SelectItem>
+                        <SelectItem value="executive">Executive</SelectItem>
+                        <SelectItem value="contractor">Contractor</SelectItem>
+                        <SelectItem value="auditor">Auditor</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2"><Label>Valid for</Label>
+                    <Select value={tokenForm.expiresHours} onValueChange={v => setTokenForm({ ...tokenForm, expiresHours: v })}>
+                      <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="24">24 hours</SelectItem>
+                        <SelectItem value="72">3 days</SelectItem>
+                        <SelectItem value="168">7 days</SelectItem>
+                        <SelectItem value="720">30 days</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="space-y-2"><Label>Department</Label>
+                  <Select value={tokenForm.departmentId || "none"} onValueChange={v => setTokenForm({ ...tokenForm, departmentId: v })}>
+                    <SelectTrigger className="rounded-xl"><SelectValue placeholder="Select" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">No Department</SelectItem>
+                      {departments.map(d => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2"><Label>Job Title (optional)</Label><Input value={tokenForm.jobTitle} onChange={e => setTokenForm({ ...tokenForm, jobTitle: e.target.value })} placeholder="Operations Analyst" className="rounded-xl" /></div>
+                <Button type="submit" disabled={generating} className="w-full rounded-xl bg-accent text-accent-foreground"><KeyRound className="w-4 h-4 mr-1" /> {generating ? "Generating…" : "Generate Token"}</Button>
+              </form>
+            </DialogContent>
+          </Dialog>
         </motion.div>
 
         {/* Stats */}
@@ -165,6 +261,7 @@ const TeamModule = () => {
           <TabsList className="bg-muted/50 rounded-xl p-1">
             <TabsTrigger value="members" className="rounded-lg data-[state=active]:bg-card"><Users className="w-3.5 h-3.5 mr-1" />Members</TabsTrigger>
             <TabsTrigger value="invitations" className="rounded-lg data-[state=active]:bg-card"><Mail className="w-3.5 h-3.5 mr-1" />Invitations</TabsTrigger>
+            <TabsTrigger value="tokens" className="rounded-lg data-[state=active]:bg-card"><KeyRound className="w-3.5 h-3.5 mr-1" />Access Tokens</TabsTrigger>
           </TabsList>
 
           <TabsContent value="members" className="mt-4 space-y-3">
@@ -193,12 +290,12 @@ const TeamModule = () => {
           </TabsContent>
 
           <TabsContent value="invitations" className="mt-4 space-y-3">
-            {invitations.length === 0 ? (
+            {emailInvites.length === 0 ? (
               <div className="glass-card rounded-xl p-12 text-center">
                 <Mail className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
                 <p className="text-muted-foreground">No invitations sent yet</p>
               </div>
-            ) : invitations.map((inv, i) => (
+            ) : emailInvites.map((inv, i) => (
               <motion.div key={inv.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: i * 0.03 } }}
                 className="glass-card-strong rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
               >
@@ -220,6 +317,48 @@ const TeamModule = () => {
                   {inv.status === "pending" && (
                     <>
                       <Button size="sm" variant="ghost" className="h-7 rounded-lg" onClick={() => copyInviteLink(inv.token)}><Copy className="w-3 h-3" /></Button>
+                      <Button size="sm" variant="ghost" className="h-7 rounded-lg text-destructive" onClick={() => revokeInvite(inv.id)}><Trash2 className="w-3 h-3" /></Button>
+                    </>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </TabsContent>
+
+          <TabsContent value="tokens" className="mt-4 space-y-3">
+            <div className="glass-card rounded-xl p-4 flex items-start gap-3">
+              <ShieldCheck className="w-4 h-4 text-accent mt-0.5 shrink-0" />
+              <p className="text-xs text-muted-foreground">
+                Access tokens are single-use. Each token grants exactly one role, is bound to this organization's space,
+                and is burned the instant a member joins — nobody can walk in uninvited.
+              </p>
+            </div>
+            {accessTokens.length === 0 ? (
+              <div className="glass-card rounded-xl p-12 text-center">
+                <KeyRound className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+                <p className="text-muted-foreground">No access tokens generated yet</p>
+              </div>
+            ) : accessTokens.map((inv, i) => (
+              <motion.div key={inv.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: i * 0.03 } }}
+                className="glass-card-strong rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+              >
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-mono text-sm tracking-widest text-foreground">{inv.access_code}</span>
+                    <Badge variant="outline" className={`text-[10px] ${roleColors[inv.role] || ""}`}>{roleLabels[inv.role] || inv.role}</Badge>
+                    <Badge variant="outline" className={inv.status === "pending" ? "bg-svo-gold/10 text-svo-gold" : "bg-green-500/10 text-green-600"}>
+                      {inv.status === "pending" ? (new Date(inv.expires_at) < new Date() ? "expired" : "unused") : "used"}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {inv.job_title && `${inv.job_title} · `}{getDeptName(inv.department_id)} · Created {formatDistanceToNow(new Date(inv.created_at), { addSuffix: true })}
+                    {inv.status === "pending" && ` · Expires ${formatDistanceToNow(new Date(inv.expires_at), { addSuffix: true })}`}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  {inv.status === "pending" && (
+                    <>
+                      <Button size="sm" variant="ghost" className="h-7 rounded-lg" onClick={() => copyAccessLink(inv.access_code)}><Copy className="w-3 h-3" /></Button>
                       <Button size="sm" variant="ghost" className="h-7 rounded-lg text-destructive" onClick={() => revokeInvite(inv.id)}><Trash2 className="w-3 h-3" /></Button>
                     </>
                   )}
