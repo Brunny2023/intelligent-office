@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Shield, Lock, ScrollText, Users, Server, KeyRound, FileCheck, ArrowLeft, Clock, Fingerprint, GitBranch } from "lucide-react";
+import { Shield, Lock, ScrollText, Users, Server, KeyRound, FileCheck, ArrowLeft, Clock, Fingerprint, GitBranch, DatabaseBackup, LifeBuoy } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 
@@ -44,6 +44,16 @@ const pillars = [
     icon: GitBranch, title: "Change control",
     body: "Schema changes ship as reviewable migrations. Row-level security policies are applied in the same migration as the table they protect; a linter runs on every deploy to flag missing policies or unsafe grants.",
     chips: ["Reviewable migrations", "Policy linter", "Least-privilege grants"],
+  },
+  {
+    icon: DatabaseBackup, title: "Backups & disaster recovery",
+    body: "The database runs on managed infrastructure with continuous point-in-time recovery and redundant storage. Our operating targets are a recovery point objective under 15 minutes and a recovery time objective under one hour, validated by periodic restore drills.",
+    chips: ["Point-in-time recovery", "RPO < 15 min", "RTO < 1 hr"],
+  },
+  {
+    icon: LifeBuoy, title: "Continuity & exit rights",
+    body: "Customers can export documents, tasks, KPIs, memos, and audit logs in open formats at any time. Global Office commits contractually to data portability and a wind-down notice period, so no organization is ever locked in or left stranded if commercial circumstances change.",
+    chips: ["Open-format export", "Portability commitment", "Wind-down notice"],
   },
 ];
 
@@ -100,8 +110,9 @@ export default function TrustCenter() {
                 <p className="text-sm text-muted-foreground mt-1">
                   Global Office provides the platform controls described above. Each customer organization is
                   responsible for configuring retention, MFA enforcement, role assignments, sharing consents,
-                  and any regulatory workflows specific to their industry. Owners can generate an on-demand
-                  Compliance Report from the Security module summarizing their current posture.
+                  and any regulatory workflows specific to their industry - including who receives single-use access
+                  tokens for joining the organization. Owners can generate an on-demand Compliance Report from the
+                  Security module summarizing their current posture.
                 </p>
               </div>
             </div>
