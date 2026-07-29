@@ -539,7 +539,7 @@ const roadmap = [
   { phase: "Design Partners", note: "First cohort — deep engagement" },
   { phase: "Commercial Launch", note: "Public availability across geos" },
   { phase: "PMF", note: "Retention, NRR, reference cases" },
-  { phase: "Regional Expansion", note: "UK/EU · developed-market lead" },
+  { phase: "Regional Expansion", note: "Multi-region GTM · developed-market lead" },
   { phase: "Enterprise", note: "Named-account motion, mid-market" },
   { phase: "Global Scale", note: "Ecosystem, marketplace, platform" },
 ];
