@@ -16,6 +16,7 @@ const Footer = () => (
           <Link to="/legal/dpa" className="hover:text-primary-foreground/70 transition-colors">DPA</Link>
           <Link to="/legal/subprocessors" className="hover:text-primary-foreground/70 transition-colors">Subprocessors</Link>
           <Link to="/trust" className="hover:text-primary-foreground/70 transition-colors">Trust</Link>
+         <Link to="/status" className="hover:text-primary-foreground/70 transition-colors">Status</Link>
           <a href="mailto:hello@globaloffice.cloud" className="hover:text-primary-foreground/70 transition-colors">Contact</a>
         </div>
         <div className="flex flex-col items-center md:items-end gap-1">
