@@ -5,16 +5,18 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bell, CheckCheck, Circle, ExternalLink, Filter } from "lucide-react";
+import { Bell, CheckCheck, Circle, ExternalLink, Filter, Archive, ArchiveRestore, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
 
 type Row = {
   id: string; title: string; message: string; type: string;
-  link: string | null; is_read: boolean; created_at: string;
+  link: string | null; is_read: boolean; created_at: string; archived_at: string | null;
 };
 
 const PAGE_SIZE = 20;
@@ -33,6 +35,8 @@ export default function NotificationsInbox() {
   const [page, setPage] = useState(0);
   const [filter, setFilter] = useState<string>("all");
   const [readState, setReadState] = useState<string>("all");
+  const [view, setView] = useState<"inbox" | "archived">("inbox");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
 
   const load = async () => {
@@ -45,23 +49,64 @@ export default function NotificationsInbox() {
     if (filter !== "all") q = q.eq("type", filter);
     if (readState === "unread") q = q.eq("is_read", false);
     if (readState === "read") q = q.eq("is_read", true);
+    if (view === "inbox") q = q.is("archived_at", null);
+    else q = q.not("archived_at", "is", null);
     const { data, count } = await q;
     setRows((data as Row[]) || []);
     setTotal(count || 0);
+    setSelected(new Set());
     setLoading(false);
   };
 
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [user, page, filter, readState]);
+  useEffect(() => { load(); /* eslint-disable-next-line */ }, [user, page, filter, readState, view]);
 
   const toggleRead = async (r: Row) => {
     await supabase.from("notifications").update({ is_read: !r.is_read }).eq("id", r.id);
     setRows(prev => prev.map(x => x.id === r.id ? { ...x, is_read: !r.is_read } : x));
   };
 
-  const markAll = async () => {
+  const markAllInboxRead = async () => {
     if (!user) return;
-    await supabase.from("notifications").update({ is_read: true }).eq("user_id", user.id).eq("is_read", false);
+    await supabase.from("notifications").update({ is_read: true })
+      .eq("user_id", user.id).eq("is_read", false).is("archived_at", null);
+    toast.success("All inbox notifications marked read.");
     load();
+  };
+
+  const markFilterRead = async () => {
+    if (!user) return;
+    let q = supabase.from("notifications").update({ is_read: true } as any)
+      .eq("user_id", user.id).eq("is_read", false);
+    if (filter !== "all") q = q.eq("type", filter);
+    if (view === "inbox") q = q.is("archived_at", null);
+    else q = q.not("archived_at", "is", null);
+    await q;
+    toast.success("Marked matching notifications as read.");
+    load();
+  };
+
+  const applyToSelected = async (patch: Partial<Row>) => {
+    if (selected.size === 0) return;
+    const ids = Array.from(selected);
+    await supabase.from("notifications").update(patch as any).in("id", ids);
+    load();
+  };
+
+  const archiveSelected = () => applyToSelected({ archived_at: new Date().toISOString() as any });
+  const restoreSelected = () => applyToSelected({ archived_at: null as any });
+  const markSelectedRead = () => applyToSelected({ is_read: true });
+  const markSelectedUnread = () => applyToSelected({ is_read: false });
+
+  const toggleSelectAll = () => {
+    if (selected.size === rows.length) setSelected(new Set());
+    else setSelected(new Set(rows.map(r => r.id)));
+  };
+  const toggleOne = (id: string) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
   };
 
   const open = (r: Row) => {
@@ -82,13 +127,25 @@ export default function NotificationsInbox() {
             <h1 className="text-2xl font-bold text-foreground">Notifications</h1>
             <p className="text-sm text-muted-foreground">Every cognition and insight escalation event, with deep links back into context.</p>
           </div>
-          <Button variant="outline" size="sm" onClick={markAll} className="gap-1.5">
-            <CheckCheck className="w-4 h-4" /> Mark all read
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={markFilterRead} className="gap-1.5">
+              <Filter className="w-4 h-4" /> Mark filter read
+            </Button>
+            <Button variant="outline" size="sm" onClick={markAllInboxRead} className="gap-1.5">
+              <CheckCheck className="w-4 h-4" /> Mark all read
+            </Button>
+          </div>
         </header>
 
         <div className="glass-card rounded-xl p-3 flex flex-wrap items-center gap-2">
           <Filter className="w-4 h-4 text-muted-foreground ml-1" />
+          <Select value={view} onValueChange={(v) => { setPage(0); setView(v as any); }}>
+            <SelectTrigger className="h-9 w-36"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="inbox">Inbox</SelectItem>
+              <SelectItem value="archived">Archived</SelectItem>
+            </SelectContent>
+          </Select>
           <Select value={filter} onValueChange={(v) => { setPage(0); setFilter(v); }}>
             <SelectTrigger className="h-9 w-56"><SelectValue /></SelectTrigger>
             <SelectContent>
@@ -109,6 +166,26 @@ export default function NotificationsInbox() {
           <span className="text-xs text-muted-foreground ml-auto">{total} total</span>
         </div>
 
+        {rows.length > 0 && (
+          <div className="rounded-xl border border-border bg-card p-2 flex flex-wrap items-center gap-2">
+            <label className="flex items-center gap-2 px-2 text-xs text-muted-foreground cursor-pointer">
+              <Checkbox checked={selected.size > 0 && selected.size === rows.length} onCheckedChange={toggleSelectAll} />
+              {selected.size > 0 ? `${selected.size} selected` : "Select all on page"}
+            </label>
+            {selected.size > 0 && (
+              <>
+                <Button size="sm" variant="outline" onClick={markSelectedRead} className="gap-1.5"><CheckCheck className="w-3.5 h-3.5" /> Read</Button>
+                <Button size="sm" variant="outline" onClick={markSelectedUnread} className="gap-1.5"><Circle className="w-3.5 h-3.5" /> Unread</Button>
+                {view === "inbox" ? (
+                  <Button size="sm" variant="outline" onClick={archiveSelected} className="gap-1.5"><Archive className="w-3.5 h-3.5" /> Archive</Button>
+                ) : (
+                  <Button size="sm" variant="outline" onClick={restoreSelected} className="gap-1.5"><ArchiveRestore className="w-3.5 h-3.5" /> Restore</Button>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
         <div className="rounded-xl border border-border divide-y divide-border/60 bg-card">
           {loading && rows.length === 0 && (
             <div className="p-8 text-center text-sm text-muted-foreground">Loading…</div>
@@ -121,6 +198,7 @@ export default function NotificationsInbox() {
           )}
           {rows.map((r) => (
             <div key={r.id} className={cn("flex items-start gap-3 p-4 hover:bg-muted/40 transition", !r.is_read && "bg-accent/5")}>
+              <Checkbox className="mt-1" checked={selected.has(r.id)} onCheckedChange={() => toggleOne(r.id)} />
               <button
                 aria-label={r.is_read ? "Mark unread" : "Mark read"}
                 onClick={() => toggleRead(r)}
@@ -138,6 +216,13 @@ export default function NotificationsInbox() {
                   {formatDistanceToNow(new Date(r.created_at), { addSuffix: true })}
                 </p>
               </button>
+              <Button variant="ghost" size="sm" onClick={async () => {
+                const nextArchived = r.archived_at ? null : new Date().toISOString();
+                await supabase.from("notifications").update({ archived_at: nextArchived as any }).eq("id", r.id);
+                load();
+              }} className="gap-1 text-xs" title={r.archived_at ? "Restore" : "Archive"}>
+                {r.archived_at ? <ArchiveRestore className="w-3.5 h-3.5" /> : <Archive className="w-3.5 h-3.5" />}
+              </Button>
               {r.link && (
                 <Button variant="ghost" size="sm" onClick={() => open(r)} className="gap-1 text-xs">
                   Open <ExternalLink className="w-3 h-3" />
