@@ -151,7 +151,7 @@ const Investors = () => {
     };
 
     const undoRobots = setMeta("robots", "noindex,nofollow,noarchive,nosnippet");
-    const undoDesc = setMeta("description", "Confidential investor brief for Global Office — the Enterprise Cognition Platform: a virtual C-suite, expert AI consultants, and AI-run departments reasoning on your own data.");
+    const undoDesc = setMeta("description", "Confidential investor brief for Global Office — the Organizational Intelligence Layer: an AI-native cognition platform with a virtual C-suite, expert consultants, and AI-run departments reasoning on your own data.");
 
     // Load editorial serif for this page only
     const link = document.createElement("link");
@@ -185,10 +185,10 @@ const Investors = () => {
               Global Office · Investor Brief · MMXXVI
             </p>
             <h1 className="mt-6 text-5xl md:text-7xl lg:text-8xl leading-[0.95] max-w-5xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontWeight: 400, letterSpacing: "-0.02em" }}>
-              The Enterprise Cognition Platform.
+              The Organizational Intelligence Layer.
             </h1>
             <p className="mt-8 max-w-2xl text-lg md:text-xl leading-[1.6]" style={{ color: `${NAVY}CC` }}>
-              Microsoft owns documents. Google owns communication. Salesforce owns customers. SAP owns resources. Notion owns knowledge. <strong style={{ color: NAVY }}>Global Office owns enterprise cognition</strong> — a virtual C-suite, expert AI consultants, and AI-run departments that reason, decide, and remember on your organization's own data.
+              Microsoft owns documents. Google owns communication. Salesforce owns customers. SAP owns resources. Notion owns knowledge. <strong style={{ color: NAVY }}>Global Office owns organizational intelligence</strong> — the cognition platform underneath, with a virtual C-suite, expert AI consultants, and AI-run departments that reason, decide, and remember on your organization's own data.
             </p>
           </div>
           <div className="flex flex-col gap-2 print:hidden">
@@ -242,7 +242,7 @@ const Investors = () => {
             Modern businesses run on ten to thirty disconnected tools — email, chat, spreadsheets, project trackers, HR platforms, finance systems, CRMs, storage drives, video meetings, and ad-hoc AI assistants. The result is not productivity. It is coordination overhead. Work fragments across surfaces. Context is lost. Decisions are made without evidence. AI, in this environment, is an add-on to chaos rather than an amplifier of order.
           </p>
           <p>
-            Global Office collapses this fragmentation into the <strong>Enterprise Cognition Platform</strong> — a persistent, graph-modeled substrate (entities, edges, and events materialized on Postgres) plus a virtual leadership layer: an AI C-suite that deliberates on decisions, expert consultants that recommend, and AI-run departments that execute. Every action, artifact, and decision is a first-class citizen and a permanent memory the organization reasons on next time.
+            Global Office collapses this fragmentation into the <strong>Organizational Intelligence Layer</strong> — a persistent, graph-modeled substrate (entities, edges, and events materialized on Postgres) with an enterprise cognition platform on top: an AI C-suite that deliberates on decisions, expert consultants that recommend, and AI-run departments that execute. Every action, artifact, and decision is a first-class citizen and a permanent memory the organization reasons on next time.
           </p>
           <p>
             The ICP is global-first — SMEs and mid-market organizations across the United States, United Kingdom, European Union, and other developed economies where AI-native operating layers command the strongest willingness to pay, followed by an emerging-markets expansion motion. Traditional software manages functions. Global Office manages organizational intelligence.

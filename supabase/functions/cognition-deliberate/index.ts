@@ -155,24 +155,53 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Wave 2 — AI Workforce execution: convert execution_plan into real tasks
+    // owned by the assigned AI department. Tasks are created with priority derived
+    // from risk language and default to `todo` for human/AI worker pickup.
+    const createdTasks: Array<{ id: string; title: string }> = [];
+    if (Array.isArray(parsed.execution_plan) && parsed.execution_plan.length > 0) {
+      const deptName: string | undefined = parsed.department?.name;
+      let deptId: string | null = null;
+      if (deptName && departments) {
+        deptId = departments.find((d: any) => d.name?.toLowerCase() === deptName.toLowerCase())?.id ?? null;
+      }
+      const priority = /high|urgent|critical|severe/i.test(parsed.risk ?? "") ? "high" : "medium";
+      const rows = parsed.execution_plan.slice(0, 12).map((s: any) => ({
+        organization_id: orgId,
+        title: (s.action ?? "Execution step").toString().slice(0, 240),
+        description: [
+          s.owner ? `Owner: ${s.owner}` : null,
+          s.success_criteria ? `Success criteria: ${s.success_criteria}` : null,
+          parsed.intent ? `From deliberation: ${parsed.intent}` : null,
+        ].filter(Boolean).join("\n\n"),
+        status: "todo" as const,
+        priority,
+        created_by: userData.user.id,
+        department_id: deptId,
+        cognition_request_id: requestId,
+      }));
+      const { data: taskRows } = await admin.from("tasks").insert(rows).select("id, title");
+      if (taskRows) createdTasks.push(...taskRows);
+    }
+
     // Graph event
     await admin.from("graph_events").insert({
       organization_id: orgId,
       event_type: "cognition_deliberation",
       actor_id: userData.user.id,
-      payload: { request_id: requestId, intent: parsed.intent, department: parsed.department?.name },
+      payload: { request_id: requestId, intent: parsed.intent, department: parsed.department?.name, tasks_created: createdTasks.length },
     });
 
     const latency = Date.now() - started;
     await admin.from("cognition_requests").update({
       status: "completed",
       intent: parsed.intent,
-      outcome: parsed,
+      outcome: { ...parsed, tasks_created: createdTasks },
       latency_ms: latency,
       completed_at: new Date().toISOString(),
     }).eq("id", requestId);
 
-    return json({ request_id: requestId, latency_ms: latency, ...parsed });
+    return json({ request_id: requestId, latency_ms: latency, tasks_created: createdTasks, ...parsed });
   } catch (err) {
     return json({ error: (err as Error).message }, 500);
   }

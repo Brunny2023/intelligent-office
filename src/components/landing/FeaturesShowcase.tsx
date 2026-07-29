@@ -4,6 +4,18 @@ import { Clock, CheckSquare, MessageSquare, BarChart3, FileText, Shield } from "
 
 const modules = [
   {
+    id: "cognition",
+    icon: BarChart3,
+    label: "Cognition",
+    title: "Enterprise Cognition Platform",
+    description: "A virtual C-suite, expert AI consultants, and AI-run departments deliberate on every decision, hand execution to real tasks, and remember every outcome — so the organization gets smarter with each request.",
+    stats: [
+      { label: "Executives", value: "11" },
+      { label: "Consultants", value: "10" },
+      { label: "Memory", value: "Live" },
+    ],
+  },
+  {
     id: "attendance",
     icon: Clock,
     label: "Attendance",

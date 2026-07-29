@@ -8,7 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Brain, Crown, Users, Building2, Sparkles, Send, Loader2, ChevronRight, BookOpen } from "lucide-react";
+import { Brain, Crown, Users, Building2, Sparkles, Send, Loader2, ChevronRight, BookOpen, CheckSquare, ThumbsUp, ThumbsDown, MessageSquare } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Input } from "@/components/ui/input";
 
 interface Executive { id: string; role: string; title: string; mandate: string | null; tone: string | null; is_active: boolean; }
 interface Consultant { id: string; domain: string; title: string; expertise: string | null; is_active: boolean; reporting_executive_id: string | null; }
@@ -27,6 +29,9 @@ export default function CognitionModule() {
   const [running, setRunning] = useState(false);
   const [activeRequestId, setActiveRequestId] = useState<string | null>(null);
   const [trace, setTrace] = useState<any | null>(null);
+  const [feedbackComment, setFeedbackComment] = useState("");
+  const [feedbackSaving, setFeedbackSaving] = useState<string | null>(null);
+  const [feedbackDone, setFeedbackDone] = useState<Record<string, string>>({});
 
   const load = async () => {
     if (!org?.id) return;
@@ -86,6 +91,28 @@ export default function CognitionModule() {
   const openHistoric = async (r: RequestRow) => {
     setActiveRequestId(r.id);
     setTrace({ request_id: r.id, ...r.outcome });
+    setFeedbackComment("");
+  };
+
+  const sendFeedback = async (outcome: "approved" | "revised" | "rejected") => {
+    if (!activeRequestId || !org?.id) return;
+    setFeedbackSaving(outcome);
+    const { data: userData } = await supabase.auth.getUser();
+    const uid = userData.user?.id;
+    if (!uid) { setFeedbackSaving(null); return; }
+    const rating = outcome === "approved" ? 5 : outcome === "revised" ? 3 : 1;
+    const { error } = await supabase.from("cognition_feedback").insert({
+      organization_id: org.id, request_id: activeRequestId, user_id: uid,
+      rating, outcome, comment: feedbackComment.trim() || null,
+    });
+    setFeedbackSaving(null);
+    if (error) {
+      toast({ title: "Feedback failed", description: error.message, variant: "destructive" });
+      return;
+    }
+    setFeedbackDone((s) => ({ ...s, [activeRequestId]: outcome }));
+    setFeedbackComment("");
+    toast({ title: "Feedback recorded", description: "The organization will remember this." });
   };
 
   return (
@@ -199,6 +226,45 @@ export default function CognitionModule() {
                     <div className="rounded-xl bg-accent/5 border border-accent/20 p-4">
                       <div className="text-[10px] uppercase tracking-widest text-accent mb-1">CEO decision</div>
                       <p className="text-sm text-foreground">{trace.decision_summary}</p>
+                    </div>
+                  )}
+                  {Array.isArray(trace.tasks_created) && trace.tasks_created.length > 0 && (
+                    <div className="rounded-xl border border-border p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <CheckSquare className="w-4 h-4 text-accent" />
+                        <div className="text-sm font-semibold text-foreground">{trace.tasks_created.length} tasks dispatched to the AI workforce</div>
+                        <Link to="/execution" className="ml-auto text-xs text-accent hover:underline">Open Execution →</Link>
+                      </div>
+                      <ul className="space-y-1">
+                        {trace.tasks_created.map((t: any) => (
+                          <li key={t.id} className="text-xs text-muted-foreground truncate">• {t.title}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {activeRequestId && (
+                    <div className="rounded-xl border border-border p-4 space-y-3">
+                      <div className="flex items-center gap-2">
+                        <MessageSquare className="w-4 h-4 text-accent" />
+                        <div className="text-sm font-semibold text-foreground">Validate & feed back</div>
+                        {feedbackDone[activeRequestId] && (
+                          <Badge variant="outline" className="ml-auto text-[10px] capitalize">{feedbackDone[activeRequestId]}</Badge>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground">Your rating and comment feed organizational memory so future deliberations learn from this outcome.</p>
+                      <Input value={feedbackComment} onChange={(e) => setFeedbackComment(e.target.value)}
+                        placeholder="What worked? What should the leadership change next time?" className="bg-background/60" />
+                      <div className="flex flex-wrap gap-2">
+                        <Button size="sm" variant="outline" disabled={!!feedbackSaving} onClick={() => sendFeedback("approved")} className="gap-1.5">
+                          <ThumbsUp className="w-3.5 h-3.5" /> Approve
+                        </Button>
+                        <Button size="sm" variant="outline" disabled={!!feedbackSaving} onClick={() => sendFeedback("revised")} className="gap-1.5">
+                          Needs revision
+                        </Button>
+                        <Button size="sm" variant="outline" disabled={!!feedbackSaving} onClick={() => sendFeedback("rejected")} className="gap-1.5">
+                          <ThumbsDown className="w-3.5 h-3.5" /> Reject
+                        </Button>
+                      </div>
                     </div>
                   )}
                   {Array.isArray(trace.follow_ups) && trace.follow_ups.length > 0 && (
