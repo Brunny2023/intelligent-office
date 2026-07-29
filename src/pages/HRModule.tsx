@@ -479,6 +479,15 @@ const TerminationsTab = () => {
     });
     if (error) { toast.error("Failed to create termination record"); return; }
     toast.success("Termination record created");
+    // Wave 5 rewire: every termination triggers CHRO + CLO deliberation
+    // (legal exposure, coverage, communication plan) — advisory only.
+    {
+      const emp = staff.find((s: any) => s.id === form.userId);
+      const { triggerCognition } = await import("@/lib/cognition");
+      void triggerCognition(
+        `Termination initiated for ${emp?.full_name ?? "employee"} (${form.terminationType}). Reason: ${form.reason || "not provided"}. Advise on legal exposure, coverage plan, and communication.`,
+      );
+    }
     setDialogOpen(false);
     setForm({ userId: "", terminationType: "voluntary", reason: "", lastWorkingDay: "", exitNotes: "" });
     const { data } = await supabase.from("terminations").select("*").eq("organization_id", org.id).order("created_at", { ascending: false });
