@@ -211,7 +211,6 @@ const SuperAdmin = () => {
           </TabsContent>
 
           <TabsContent value="health">
-            {null}
             <Card>
               <CardHeader><CardTitle className="text-base flex items-center gap-2"><HeartPulse className="w-4 h-4" /> System Health Probes</CardTitle></CardHeader>
               <CardContent className="space-y-2">
