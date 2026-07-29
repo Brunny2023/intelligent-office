@@ -4,8 +4,10 @@ import {
   AlertTriangle, Sparkles, Plus, Send, Video, Megaphone, Activity,
   Workflow, Briefcase, DollarSign, Building2, Network, Play, ArrowUpRight,
   MapPin, Calendar, FileText, Crown, Shield,
+  Home, MessageSquare,
 } from "lucide-react";
-import { StatTile, Card, PillBtn } from "./shell";
+import { StatTile, Card } from "./shell";
+import type { MockView } from "./shell";
 import { cn } from "@/lib/utils";
 
 /* ---------- Shared seed data ---------- */
@@ -850,11 +852,6 @@ export const PartnerView = () => (
     </div>
   </Card>
 );
-
-/* =====================================================================
-   Router that maps view name → component + page metadata
-===================================================================== */
-import { MockView } from "./shell";
 
 export const VIEW_META: Record<MockView, { title: string; subtitle?: string; Icon?: any; Component: () => JSX.Element }> = {
   admin:         { title: "Admin",                     subtitle: "Global platform overview",                   Icon: Shield,      Component: AdminView },
