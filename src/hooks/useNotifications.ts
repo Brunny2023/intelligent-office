@@ -27,6 +27,7 @@ export const useNotifications = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [eventPrefs, setEventPrefs] = useState<Record<string, { in_app: boolean; realtime: boolean }>>({});
+  const [snoozes, setSnoozes] = useState<Record<string, string | null>>({});
 
   const fetchNotifications = useCallback(async () => {
     if (!user) return;
@@ -34,6 +35,7 @@ export const useNotifications = () => {
       .from("notifications")
       .select("*")
       .eq("user_id", user.id)
+      .is("archived_at", null)
       .order("created_at", { ascending: false })
       .limit(50);
     const items = (data || []) as Notification[];
@@ -47,8 +49,11 @@ export const useNotifications = () => {
 
     if (!user) return;
     // Load per-event preferences so realtime toasts respect the user's choices.
-    (supabase.from("notification_preferences" as any) as any).select("event_prefs").eq("user_id", user.id).maybeSingle()
-      .then(({ data }: any) => { if (data?.event_prefs) setEventPrefs(data.event_prefs); });
+    (supabase.from("notification_preferences" as any) as any).select("event_prefs, snoozes").eq("user_id", user.id).maybeSingle()
+      .then(({ data }: any) => {
+        if (data?.event_prefs) setEventPrefs(data.event_prefs);
+        if (data?.snoozes) setSnoozes(data.snoozes);
+      });
 
     const channel = supabase
       .channel(`notifications-${user.id}`)
@@ -62,7 +67,9 @@ export const useNotifications = () => {
         const key = typeToPrefKey(n.type);
         const pref = key ? eventPrefs[key] : undefined;
         const inAppOn = !key || pref?.in_app !== false;
-        const realtimeOn = !key || pref?.realtime !== false;
+        const snoozeUntil = key ? snoozes[key] : null;
+        const isSnoozed = !!snoozeUntil && new Date(snoozeUntil) > new Date();
+        const realtimeOn = (!key || pref?.realtime !== false) && !isSnoozed;
         if (inAppOn) {
           setNotifications(prev => [n, ...prev]);
           setUnreadCount(prev => prev + 1);
@@ -74,7 +81,7 @@ export const useNotifications = () => {
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, [user, fetchNotifications, eventPrefs]);
+  }, [user, fetchNotifications, eventPrefs, snoozes]);
 
   const markAsRead = async (id: string) => {
     await supabase.from("notifications").update({ is_read: true }).eq("id", id);
