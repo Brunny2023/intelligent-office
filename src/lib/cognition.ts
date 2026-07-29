@@ -17,13 +17,7 @@ export async function triggerCognition(request: string, targetDepartmentId?: str
     // a one-tap deep-link into the Cognition Center to watch it stream in.
     toast({
       title: "Leadership is deliberating",
-      description: "Follow along in the Cognition Center.",
-      action: {
-        // @ts-expect-error — action shape supports href in project toast usage
-        altText: "Open Cognition",
-        label: "Open",
-        href: "/cognition",
-      } as any,
+      description: "Follow along in the Cognition Center at /cognition.",
     });
     // Kick off; do not await response so callers stay responsive.
     void fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/cognition-deliberate`, {
