@@ -190,6 +190,56 @@ const TeamModule = () => {
               </form>
             </DialogContent>
           </Dialog>
+          <Dialog open={tokenDialogOpen} onOpenChange={setTokenDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="rounded-xl w-full sm:w-auto"><KeyRound className="w-4 h-4 mr-1" /> Generate Access Token</Button>
+            </DialogTrigger>
+            <DialogContent className="rounded-2xl">
+              <DialogHeader><DialogTitle>Generate Single-Use Access Token</DialogTitle></DialogHeader>
+              <form onSubmit={generateAccessToken} className="space-y-4">
+                <p className="text-xs text-muted-foreground">
+                  Share the generated link with a new member. It works only on your organization's own space, grants the role
+                  you choose, and expires the moment it is used.
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2"><Label>Role</Label>
+                    <Select value={tokenForm.role} onValueChange={v => setTokenForm({ ...tokenForm, role: v })}>
+                      <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="staff">Staff</SelectItem>
+                        <SelectItem value="manager">Manager</SelectItem>
+                        <SelectItem value="executive">Executive</SelectItem>
+                        <SelectItem value="contractor">Contractor</SelectItem>
+                        <SelectItem value="auditor">Auditor</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2"><Label>Valid for</Label>
+                    <Select value={tokenForm.expiresHours} onValueChange={v => setTokenForm({ ...tokenForm, expiresHours: v })}>
+                      <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="24">24 hours</SelectItem>
+                        <SelectItem value="72">3 days</SelectItem>
+                        <SelectItem value="168">7 days</SelectItem>
+                        <SelectItem value="720">30 days</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="space-y-2"><Label>Department</Label>
+                  <Select value={tokenForm.departmentId || "none"} onValueChange={v => setTokenForm({ ...tokenForm, departmentId: v })}>
+                    <SelectTrigger className="rounded-xl"><SelectValue placeholder="Select" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">No Department</SelectItem>
+                      {departments.map(d => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2"><Label>Job Title (optional)</Label><Input value={tokenForm.jobTitle} onChange={e => setTokenForm({ ...tokenForm, jobTitle: e.target.value })} placeholder="Operations Analyst" className="rounded-xl" /></div>
+                <Button type="submit" disabled={generating} className="w-full rounded-xl bg-accent text-accent-foreground"><KeyRound className="w-4 h-4 mr-1" /> {generating ? "Generating…" : "Generate Token"}</Button>
+              </form>
+            </DialogContent>
+          </Dialog>
         </motion.div>
 
         {/* Stats */}
