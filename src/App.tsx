@@ -47,6 +47,7 @@ import Subprocessors from "./pages/legal/Subprocessors";
 import ExecMeetingRoom from "./pages/ExecMeetingRoom";
 import CognitionModule from "./pages/CognitionModule";
 import NotificationsInbox from "./pages/NotificationsInbox";
+import MemoryAuditModule from "./pages/MemoryAuditModule";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -102,6 +103,7 @@ const App = () => (
             <Route path="/exec-room/:roomName" element={<ExecMeetingRoom />} />
             <Route path="/cognition" element={<ProtectedRoute><CognitionModule /></ProtectedRoute>} />
             <Route path="/notifications" element={<ProtectedRoute><NotificationsInbox /></ProtectedRoute>} />
+            <Route path="/memory-audit" element={<ProtectedRoute><MemoryAuditModule /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
