@@ -173,6 +173,17 @@ const CandidatesTab = () => {
     await supabase.from("candidates").update({ stage, updated_at: new Date().toISOString() }).eq("id", id);
     setCandidates(prev => prev.map(c => c.id === id ? { ...c, stage } : c));
     toast.success(`Moved to ${stage}`);
+    // Wave 5 rewire: offer/hire milestones deserve a CHRO+CFO deliberation
+    // (comp band fit, headcount plan impact, onboarding plan).
+    if (stage === "offer" || stage === "hired") {
+      const cand = (await supabase.from("candidates").select("full_name, email, job_posting_id").eq("id", id).maybeSingle()).data;
+      if (cand) {
+        const { triggerCognition } = await import("@/lib/cognition");
+        void triggerCognition(
+          `Candidate ${cand.full_name} moved to "${stage}". Deliberate on comp band, headcount plan impact, onboarding plan, and any risk.`,
+        );
+      }
+    }
   };
 
   const updateRating = async (id: string, rating: number) => {
