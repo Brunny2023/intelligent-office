@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { roleLanding } from "@/lib/roleNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,9 +30,27 @@ const SignIn = () => {
     setLoading(false);
     if (error) {
       toast.error(error.message);
-    } else {
-      navigate("/dashboard");
+      return;
     }
+
+    // Land the user on the surface that matches their role.
+    const { data: { user } } = await supabase.auth.getUser();
+    let destination = "/dashboard";
+    if (user) {
+      const { data: profile } = await supabase
+        .from("profiles").select("organization_id").eq("id", user.id).maybeSingle();
+      if (!profile?.organization_id) {
+        destination = "/onboarding";
+      } else {
+        const { data: roleRow } = await supabase
+          .from("user_roles").select("role")
+          .eq("user_id", user.id)
+          .eq("organization_id", profile.organization_id)
+          .maybeSingle();
+        destination = roleLanding(roleRow?.role);
+      }
+    }
+    navigate(destination);
   };
 
   return (
