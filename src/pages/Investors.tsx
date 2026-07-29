@@ -1,7 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Download, Lock, Printer } from "lucide-react";
+import { ArrowUpRight, Download, Lock, Printer, Video } from "lucide-react";
+import BookMeetingDialog from "@/components/investors/BookMeetingDialog";
+import { useInvestorAnalytics } from "@/hooks/useInvestorAnalytics";
 import {
   InvestorBrief, IntelligenceStack, MoatFlywheel, IncumbentGrid,
   ProductProof, DemoVideoBlock, PositioningMatrix, ValidationCards,
