@@ -8,6 +8,7 @@ import ActivityFeed from "@/components/activity/ActivityFeed";
 import PerformanceWidget from "@/components/dashboard/PerformanceWidget";
 import AIInsightWidget from "@/components/dashboard/AIInsightWidget";
 import OnboardingChecklist from "@/components/dashboard/OnboardingChecklist";
+import CognitionPulseWidget from "@/components/dashboard/CognitionPulseWidget";
 import AppLayout from "@/components/layout/AppLayout";
 import { motion } from "framer-motion";
 import {
@@ -207,6 +208,7 @@ const Dashboard = () => {
                 <h2 className="text-lg font-semibold text-foreground mb-4">Team Activity</h2>
                 <ActivityFeed scope="organization" limit={8} />
               </div>
+              <CognitionPulseWidget />
               <AIInsightWidget />
             </div>
           </motion.div>
