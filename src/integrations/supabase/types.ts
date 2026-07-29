@@ -2340,8 +2340,11 @@ export type Database = {
           created_at: string
           created_by: string | null
           id: string
+          last_referenced_at: string | null
           memory_type: string
           organization_id: string
+          relevance_score: number
+          search_vector: unknown
           source_request_id: string | null
           tags: string[]
           title: string
@@ -2351,8 +2354,11 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           id?: string
+          last_referenced_at?: string | null
           memory_type: string
           organization_id: string
+          relevance_score?: number
+          search_vector?: unknown
           source_request_id?: string | null
           tags?: string[]
           title: string
@@ -2362,8 +2368,11 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           id?: string
+          last_referenced_at?: string | null
           memory_type?: string
           organization_id?: string
+          relevance_score?: number
+          search_vector?: unknown
           source_request_id?: string | null
           tags?: string[]
           title?: string
@@ -3257,6 +3266,7 @@ export type Database = {
     }
     Functions: {
       accept_invitation: { Args: { _token: string }; Returns: Json }
+      cognition_learn_dispatch: { Args: never; Returns: undefined }
       complete_onboarding: {
         Args: {
           _brand_tagline?: string
@@ -3363,8 +3373,22 @@ export type Database = {
         }[]
       }
       retention_purge: { Args: never; Returns: Json }
+      search_memory: {
+        Args: { _limit?: number; _org: string; _query: string }
+        Returns: {
+          content: string
+          created_at: string
+          id: string
+          memory_type: string
+          rank: number
+          relevance_score: number
+          tags: string[]
+          title: string
+        }[]
+      }
       seed_cognition_defaults: { Args: { _org: string }; Returns: undefined }
       sign_memo: { Args: { _memo_id: string }; Returns: Json }
+      touch_memory: { Args: { _memory_ids: string[] }; Returns: undefined }
       verify_memo_signature: { Args: { _memo_id: string }; Returns: Json }
       workflow_instantiate: {
         Args: { _actor: string; _org: string; _payload: Json; _trigger: string }
