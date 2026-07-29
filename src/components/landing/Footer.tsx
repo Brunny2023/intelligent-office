@@ -1,4 +1,4 @@
-import { Shield } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => (
   <footer className="py-12 bg-svo-charcoal border-t border-border/10">
@@ -11,10 +11,12 @@ const Footer = () => (
           </span>
         </div>
         <div className="flex items-center gap-6 text-xs text-primary-foreground/40">
-          <a href="#" className="hover:text-primary-foreground/70 transition-colors">Privacy</a>
-          <a href="#" className="hover:text-primary-foreground/70 transition-colors">Terms</a>
-          <a href="#" className="hover:text-primary-foreground/70 transition-colors">Security</a>
-          <a href="#" className="hover:text-primary-foreground/70 transition-colors">Contact</a>
+          <Link to="/legal/privacy" className="hover:text-primary-foreground/70 transition-colors">Privacy</Link>
+          <Link to="/legal/terms" className="hover:text-primary-foreground/70 transition-colors">Terms</Link>
+          <Link to="/legal/dpa" className="hover:text-primary-foreground/70 transition-colors">DPA</Link>
+          <Link to="/legal/subprocessors" className="hover:text-primary-foreground/70 transition-colors">Subprocessors</Link>
+          <Link to="/trust" className="hover:text-primary-foreground/70 transition-colors">Trust</Link>
+          <a href="mailto:hello@globaloffice.cloud" className="hover:text-primary-foreground/70 transition-colors">Contact</a>
         </div>
         <div className="flex flex-col items-center md:items-end gap-1">
           <p className="text-xs text-primary-foreground/30">
