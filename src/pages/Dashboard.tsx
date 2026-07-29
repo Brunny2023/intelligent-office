@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useOrganization } from "@/hooks/useOrganization";
+import { useUserRole } from "@/hooks/useUserRole";
+import { isPathAllowed, roleGreeting } from "@/lib/roleNav";
 import { supabase } from "@/integrations/supabase/client";
 import ClockInWidget from "@/components/attendance/ClockInWidget";
 import ActivityFeed from "@/components/activity/ActivityFeed";
@@ -46,6 +48,8 @@ const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { profile, org, loading } = useOrganization();
+  const { role } = useUserRole();
+  const visibleModules = modules.filter((m) => isPathAllowed(role, m.path));
   const [stats, setStats] = useState<Record<string, string>>({ team: "—", tasks: "—", messages: "—", health: "—" });
 
   useEffect(() => {
@@ -149,7 +153,7 @@ const Dashboard = () => {
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
             Welcome back, {profile?.full_name?.split(" ")[0] || "there"} 👋
           </h1>
-          <p className="text-muted-foreground text-sm mt-1">Here's your digital headquarters overview</p>
+          <p className="text-muted-foreground text-sm mt-1">{roleGreeting(role)}</p>
         </motion.div>
 
         <OnboardingChecklist />
@@ -183,7 +187,7 @@ const Dashboard = () => {
           <div className="md:col-span-1 lg:col-span-2">
             <h2 className="text-lg font-semibold text-foreground mb-4">Modules</h2>
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-              {modules.map((mod, i) => (
+              {visibleModules.map((mod, i) => (
                 <motion.button key={mod.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.2 + i * 0.03 } }}
                   whileHover={{ y: -6, boxShadow: "0 12px 32px hsl(var(--svo-navy) / 0.12)", transition: { type: "spring", stiffness: 400, damping: 20 } }}
                   whileTap={{ scale: 0.96 }}
