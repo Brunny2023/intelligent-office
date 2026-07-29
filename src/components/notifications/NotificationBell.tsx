@@ -109,6 +109,12 @@ const NotificationBell = () => {
                 })
               )}
             </div>
+            <button
+              onClick={() => { navigate("/notifications"); setOpen(false); }}
+              className="text-xs text-center py-2 border-t border-border text-accent hover:bg-muted/50 transition"
+            >
+              View all notifications →
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
