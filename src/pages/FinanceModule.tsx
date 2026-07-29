@@ -182,13 +182,22 @@ const ExpensesTab = () => {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !org) return;
+    const amt = parseFloat(form.amount) || 0;
     const { error } = await supabase.from("expense_reports").insert({
       organization_id: org.id, submitted_by: user.id, title: form.title,
-      description: form.description || null, amount: parseFloat(form.amount) || 0,
+      description: form.description || null, amount: amt,
       category: form.category, currency: form.currency,
     });
     if (error) { toast.error("Failed to submit expense"); return; }
     toast.success("Expense submitted!");
+    // Wave 5 rewire: material expenses run through the cognition layer for
+    // policy-checked financial advisory (CFO deliberation + governance).
+    if (amt >= 1000) {
+      const { triggerCognition } = await import("@/lib/cognition");
+      void triggerCognition(
+        `Expense submitted: ${form.title} — ${form.currency} ${amt.toFixed(2)} (${form.category}). ${form.description || ""}. Advise on approval, budget impact, and any compliance risk.`,
+      );
+    }
     setDialogOpen(false);
     setForm({ title: "", description: "", amount: "", category: "general", currency: "USD" });
     const { data } = await supabase.from("expense_reports").select("*").eq("organization_id", org.id).order("created_at", { ascending: false });
