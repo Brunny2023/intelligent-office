@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Home, Clock, CheckSquare, MessageSquare, Target, Menu, X, BarChart3, Shield, Users, FileText, Video, Megaphone, Brain, Crown, Workflow, Briefcase, DollarSign, Activity, Ticket, ShieldCheck, Settings, Globe } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useUserRole } from "@/hooks/useUserRole";
+import { isPathAllowed } from "@/lib/roleNav";
 
 const mainTabs = [
   { icon: Home, label: "Home", path: "/dashboard" },
@@ -36,6 +38,9 @@ const MobileNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [moreOpen, setMoreOpen] = useState(false);
+  const { role } = useUserRole();
+  const visibleTabs = mainTabs.filter((t) => t.path === "__more" || isPathAllowed(role, t.path));
+  const visibleMore = moreItems.filter((i) => isPathAllowed(role, i.path));
 
   const handleNav = (path: string) => {
     if (path === "__more") {
@@ -59,7 +64,7 @@ const MobileNav = () => {
             className="fixed bottom-20 left-2 right-2 z-50 glass-card-strong rounded-2xl p-4 max-h-[60vh] overflow-y-auto"
           >
             <div className="grid grid-cols-4 gap-3">
-              {moreItems.map((item) => {
+              {visibleMore.map((item) => {
                 const isActive = location.pathname === item.path;
                 return (
                   <motion.button
@@ -89,7 +94,7 @@ const MobileNav = () => {
         className="fixed bottom-0 left-0 right-0 z-50 md:hidden glass-card-strong border-t border-border/50 safe-area-bottom"
       >
         <div className="flex items-center justify-around px-2 pt-2 pb-1">
-          {mainTabs.map((tab) => {
+          {visibleTabs.map((tab) => {
             const isActive = tab.path === "__more" ? moreOpen : location.pathname === tab.path;
             return (
               <motion.button

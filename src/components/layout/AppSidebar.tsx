@@ -14,6 +14,7 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import NotificationBell from "@/components/notifications/NotificationBell";
+import { isPathAllowed } from "@/lib/roleNav";
 
 const navItems = [
   { icon: Home, label: "Dashboard", path: "/dashboard" },
@@ -43,7 +44,7 @@ const navItems = [
 const AppSidebar = () => {
   const { signOut } = useAuth();
   const { profile, org } = useOrganization();
-  const { isAdmin } = useUserRole();
+  const { role, isAdmin } = useUserRole();
   const { isPlatformAdmin } = usePlatformAdmin();
   const navigate = useNavigate();
   const location = useLocation();
@@ -64,7 +65,7 @@ const AppSidebar = () => {
   const allItems = [
     ...(isPlatformAdmin ? [{ icon: Sparkles, label: "Super Admin", path: "/super-admin" }] : []),
     ...(isAdmin ? [{ icon: ShieldCheck, label: "Admin", path: "/admin" }] : []),
-    ...navItems,
+    ...navItems.filter((item) => isPlatformAdmin || isPathAllowed(role, item.path)),
   ];
 
   return (
