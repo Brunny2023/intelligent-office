@@ -39,6 +39,7 @@ import InterOrgModule from "./pages/InterOrgModule";
 import Demo from "./pages/Demo";
 import Investors from "./pages/Investors";
 import TrustCenter from "./pages/TrustCenter";
+import ExecMeetingRoom from "./pages/ExecMeetingRoom";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -86,6 +87,7 @@ const App = () => (
             <Route path="/support" element={<ProtectedRoute><SupportModule /></ProtectedRoute>} />
             <Route path="/support/:id" element={<ProtectedRoute><SupportTicketDetail /></ProtectedRoute>} />
             <Route path="/partner-connect" element={<ProtectedRoute><InterOrgModule /></ProtectedRoute>} />
+            <Route path="/exec-room/:roomName" element={<ExecMeetingRoom />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
