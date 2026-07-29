@@ -534,6 +534,47 @@ export type Database = {
           },
         ]
       }
+      cognition_feedback: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          organization_id: string
+          outcome: string
+          rating: number
+          request_id: string
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          organization_id: string
+          outcome: string
+          rating: number
+          request_id: string
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          organization_id?: string
+          outcome?: string
+          rating?: number
+          request_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cognition_feedback_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "cognition_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cognition_requests: {
         Row: {
           completed_at: string | null
@@ -2805,9 +2846,11 @@ export type Database = {
       tasks: {
         Row: {
           assigned_to: string | null
+          cognition_request_id: string | null
           completed_at: string | null
           created_at: string
           created_by: string
+          department_id: string | null
           description: string | null
           due_date: string | null
           id: string
@@ -2821,9 +2864,11 @@ export type Database = {
         }
         Insert: {
           assigned_to?: string | null
+          cognition_request_id?: string | null
           completed_at?: string | null
           created_at?: string
           created_by: string
+          department_id?: string | null
           description?: string | null
           due_date?: string | null
           id?: string
@@ -2837,9 +2882,11 @@ export type Database = {
         }
         Update: {
           assigned_to?: string | null
+          cognition_request_id?: string | null
           completed_at?: string | null
           created_at?: string
           created_by?: string
+          department_id?: string | null
           description?: string | null
           due_date?: string | null
           id?: string
@@ -2852,6 +2899,20 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "tasks_cognition_request_id_fkey"
+            columns: ["cognition_request_id"]
+            isOneToOne: false
+            referencedRelation: "cognition_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "ai_departments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "tasks_organization_id_fkey"
             columns: ["organization_id"]
