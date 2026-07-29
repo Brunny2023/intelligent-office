@@ -726,3 +726,62 @@ function FactBox({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
+
+// Tiny per-card impact strip: totals + a 90-day approve/reject sparkline that
+// shows how leadership's decisions on this memory shifted after each feedback
+// event. Rendered inline on the memory card.
+function MemoryImpactStrip({ impact }: { impact?: MemoryImpact }) {
+  if (!impact) return null;
+  const { approve, reject, boost, dampen, comment, series } = impact;
+  const total = approve + reject + boost + dampen + comment;
+  if (total === 0) {
+    return (
+      <div className="mt-3 text-[10px] text-muted-foreground/70 italic">No feedback yet — leadership is still forming its view.</div>
+    );
+  }
+  const approveW = approve + reject > 0 ? (approve / (approve + reject)) * 100 : 50;
+  const days = 90;
+  const today = new Date();
+  const buckets: { approve: number; reject: number }[] = Array.from({ length: days }, () => ({ approve: 0, reject: 0 }));
+  for (const s of series) {
+    const diff = Math.floor((today.getTime() - new Date(s.d).getTime()) / 86400000);
+    const idx = days - 1 - diff;
+    if (idx >= 0 && idx < days) {
+      buckets[idx].approve += s.approve;
+      buckets[idx].reject += s.reject;
+    }
+  }
+  const maxVal = Math.max(1, ...buckets.map(b => b.approve + b.reject));
+  return (
+    <div className="mt-3 space-y-1.5">
+      <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+        <span className="font-medium text-foreground/80">Impact</span>
+        <span className="text-emerald-500">▲ {approve}</span>
+        <span className="text-destructive">▼ {reject}</span>
+        <span className="text-accent">↑ {boost}</span>
+        <span className="text-amber-500">↓ {dampen}</span>
+        {comment > 0 && <span>· {comment} note{comment === 1 ? "" : "s"}</span>}
+      </div>
+      {approve + reject > 0 && (
+        <div className="h-1 rounded-full overflow-hidden bg-destructive/20 flex" title={`${approve} approved / ${reject} rejected`}>
+          <div className="h-full bg-emerald-500" style={{ width: `${approveW}%` }} />
+        </div>
+      )}
+      <div className="flex items-end gap-[1px] h-6" aria-label="90-day approve vs reject trend">
+        {buckets.map((b, i) => {
+          const totalDay = b.approve + b.reject;
+          if (totalDay === 0) return <div key={i} className="flex-1 h-px bg-muted/40" />;
+          const h = Math.max(2, Math.round((totalDay / maxVal) * 22));
+          const aH = Math.round(h * (b.approve / totalDay));
+          const rH = h - aH;
+          return (
+            <div key={i} className="flex-1 flex flex-col-reverse" title={`${b.approve} approved, ${b.reject} rejected`}>
+              {aH > 0 && <div className="bg-emerald-500/80" style={{ height: `${aH}px` }} />}
+              {rH > 0 && <div className="bg-destructive/70" style={{ height: `${rH}px` }} />}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
