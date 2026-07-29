@@ -61,7 +61,7 @@ const TeamModule = () => {
       organization_id: org.id, email: form.email, role: form.role as any,
       invited_by: user.id, job_title: form.jobTitle || null,
     };
-    if (form.departmentId) insertData.department_id = form.departmentId;
+    if (form.departmentId && form.departmentId !== "none") insertData.department_id = form.departmentId;
 
     const { data, error } = await supabase.from("invitations").insert(insertData).select().single();
     if (error) {
@@ -130,10 +130,10 @@ const TeamModule = () => {
                     </Select>
                   </div>
                   <div className="space-y-2"><Label>Department</Label>
-                    <Select value={form.departmentId} onValueChange={v => setForm({ ...form, departmentId: v })}>
+                    <Select value={form.departmentId || "none"} onValueChange={v => setForm({ ...form, departmentId: v })}>
                       <SelectTrigger className="rounded-xl"><SelectValue placeholder="Select" /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">No Department</SelectItem>
+                        <SelectItem value="none">No Department</SelectItem>
                         {departments.map(d => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}
                       </SelectContent>
                     </Select>
