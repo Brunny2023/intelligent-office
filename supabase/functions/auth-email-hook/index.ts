@@ -36,7 +36,7 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
 }
 
 // Configuration
-const SITE_NAME = "Lovable Office AI"
+const SITE_NAME = "Global Office"
 const SENDER_DOMAIN = "notify.globaloffice.cloud"
 const ROOT_DOMAIN = "globaloffice.cloud"
 const FROM_DOMAIN = "globaloffice.cloud" // Domain shown in From address (may be root or sender subdomain)
