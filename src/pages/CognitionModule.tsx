@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { Brain, Crown, Users, Building2, Sparkles, Send, Loader2, ChevronRight, BookOpen, CheckSquare, ThumbsUp, ThumbsDown, MessageSquare, Shield, ShieldCheck, ShieldAlert, Activity } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import GovernancePanel from "@/components/cognition/GovernancePanel";
 
@@ -35,6 +36,20 @@ export default function CognitionModule() {
   const [feedbackDone, setFeedbackDone] = useState<Record<string, string>>({});
   const [auditSteps, setAuditSteps] = useState<any[] | null>(null);
   const [activeTab, setActiveTab] = useState("deliberations");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Wave 6: honor ?prefill=… so proactive nominations and the Ask Leadership
+  // FAB can land the user directly on the composer with the prompt loaded.
+  useEffect(() => {
+    const pre = searchParams.get("prefill");
+    if (pre) {
+      setPrompt(pre);
+      setActiveTab("deliberations");
+      const next = new URLSearchParams(searchParams);
+      next.delete("prefill");
+      setSearchParams(next, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const load = async () => {
     if (!org?.id) return;
