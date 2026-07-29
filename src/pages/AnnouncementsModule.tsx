@@ -98,6 +98,14 @@ const AnnouncementsModule = () => {
     const { error } = await supabase.from("announcements").insert(insertData);
     if (error) { toast.error("Failed: " + error.message); return; }
     toast.success(asDraft ? "Draft saved!" : "Announcement published!");
+    // Wave 5 rewire: mandatory published announcements get a leadership review
+    // (tone, compliance, risk) in the background — surfaces in /cognition.
+    if (!asDraft && form.isMandatory) {
+      const { triggerCognition } = await import("@/lib/cognition");
+      void triggerCognition(
+        `Mandatory announcement "${form.title}" (${form.priority}) published org-wide: ${form.content.slice(0, 600)}. Review tone, compliance, and communication risk; suggest follow-ups.`,
+      );
+    }
     setDialogOpen(false);
     setForm({ title: "", content: "", priority: "normal", isMandatory: false, departmentId: "all", scheduledAt: "", status: "published" });
     fetchData();
