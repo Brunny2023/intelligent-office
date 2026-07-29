@@ -59,16 +59,21 @@ Deno.serve(async (req) => {
     const targetDepartmentId: string | null = body.targetDepartmentId ?? null;
     if (!request) return json({ error: "request required" }, 400);
 
-    // Gather org context
-    const [{ data: org }, { data: executives }, { data: consultants }, { data: departments }, { data: kpis }, { data: memory }, { data: recentDecisions }] = await Promise.all([
+    // Gather org context — memory is now relevance-ranked via full-text search
+    const [{ data: org }, { data: executives }, { data: consultants }, { data: departments }, { data: kpis }, memoryRes, { data: recentDecisions }] = await Promise.all([
       admin.from("organizations").select("name, mission, brand_tagline, core_values").eq("id", orgId).maybeSingle(),
       admin.from("ai_executives").select("role, title, mandate, focus_kpis").eq("organization_id", orgId).eq("is_active", true),
       admin.from("ai_consultants").select("domain, title, expertise").eq("organization_id", orgId).eq("is_active", true),
       admin.from("ai_departments").select("id, name, charter").eq("organization_id", orgId).eq("is_active", true),
       admin.from("kpis").select("title, current_value, target_value, unit, status").eq("organization_id", orgId).limit(20),
-      admin.from("organizational_memory").select("title, content, tags").eq("organization_id", orgId).order("created_at", { ascending: false }).limit(12),
+      admin.rpc("search_memory", { _org: orgId, _query: request, _limit: 10 }),
       admin.from("cognition_requests").select("request, outcome").eq("organization_id", orgId).eq("status", "completed").order("completed_at", { ascending: false }).limit(6),
     ]);
+    const memory = (memoryRes.data as Array<{ id: string; title: string; content: string; tags: string[] }> | null) ?? [];
+    const referencedMemoryIds = memory.map((m) => m.id);
+    if (referencedMemoryIds.length > 0) {
+      await admin.rpc("touch_memory", { _memory_ids: referencedMemoryIds });
+    }
 
     const context = {
       organization: org,
