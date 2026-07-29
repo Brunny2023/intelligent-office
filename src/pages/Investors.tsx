@@ -662,6 +662,7 @@ const Investors = () => {
         .prose-investor p { margin-bottom: 1.1rem; }
         .prose-investor strong { color: ${NAVY}; }
       `}</style>
+      <BookMeetingDialog open={meetingOpen} onOpenChange={setMeetingOpen} />
     </div>
   );
 };
