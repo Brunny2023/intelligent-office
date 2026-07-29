@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Brain, Crown, Users, Building2, Sparkles, Send, Loader2, ChevronRight, BookOpen, CheckSquare, ThumbsUp, ThumbsDown, MessageSquare, Shield, ShieldCheck, ShieldAlert, Activity } from "lucide-react";
+import { Brain, Crown, Users, Building2, Sparkles, Send, Loader2, ChevronRight, BookOpen, CheckSquare, ThumbsUp, ThumbsDown, MessageSquare, Shield, ShieldCheck, ShieldAlert, Activity, Search as SearchIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,7 @@ interface Executive { id: string; role: string; title: string; mandate: string |
 interface Consultant { id: string; domain: string; title: string; expertise: string | null; is_active: boolean; reporting_executive_id: string | null; }
 interface Department { id: string; name: string; charter: string | null; consultant_id: string | null; is_active: boolean; }
 interface RequestRow { id: string; request: string; intent: string | null; status: string; outcome: any; created_at: string; latency_ms: number | null; }
+interface MemoryRow { id: string; title: string; content: string; memory_type: string; tags: string[] | null; relevance_score: number | null; last_referenced_at: string | null; created_at: string; }
 
 export default function CognitionModule() {
   const { org } = useOrganization();
@@ -26,6 +27,8 @@ export default function CognitionModule() {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [requests, setRequests] = useState<RequestRow[]>([]);
   const [memoryCount, setMemoryCount] = useState(0);
+  const [memory, setMemory] = useState<MemoryRow[]>([]);
+  const [memoryQuery, setMemoryQuery] = useState("");
   const [prompt, setPrompt] = useState("");
   const [targetDept, setTargetDept] = useState<string>("");
   const [running, setRunning] = useState(false);
@@ -66,6 +69,30 @@ export default function CognitionModule() {
     setRequests((r.data as RequestRow[]) ?? []);
     setMemoryCount((m.count as number) ?? 0);
   };
+
+  // Wave-3 gap fix: users had no visibility into what the organization
+  // remembers. This surfaces the top memories (relevance-ranked or search).
+  const loadMemory = async () => {
+    if (!org?.id) return;
+    const q = memoryQuery.trim();
+    if (q.length > 1) {
+      const { data } = await supabase.rpc("search_memory", { _org: org.id, _query: q, _limit: 40 });
+      setMemory((data as MemoryRow[]) ?? []);
+    } else {
+      const { data } = await supabase.from("organizational_memory")
+        .select("id, title, content, memory_type, tags, relevance_score, last_referenced_at, created_at")
+        .eq("organization_id", org.id)
+        .order("relevance_score", { ascending: false })
+        .order("last_referenced_at", { ascending: false, nullsFirst: false })
+        .limit(40);
+      setMemory((data as MemoryRow[]) ?? []);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === "memory") loadMemory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, org?.id]);
 
   useEffect(() => { load(); }, [org?.id]);
 
@@ -168,6 +195,7 @@ export default function CognitionModule() {
             <TabsTrigger value="consultants" className="gap-1.5"><Users className="w-4 h-4" /> Consultants</TabsTrigger>
             <TabsTrigger value="departments" className="gap-1.5"><Building2 className="w-4 h-4" /> Departments</TabsTrigger>
             <TabsTrigger value="governance" className="gap-1.5"><Shield className="w-4 h-4" /> Governance</TabsTrigger>
+            <TabsTrigger value="memory" className="gap-1.5"><BookOpen className="w-4 h-4" /> Memory</TabsTrigger>
           </TabsList>
 
           <TabsContent value="deliberations" className="space-y-4">
@@ -413,6 +441,47 @@ export default function CognitionModule() {
 
           <TabsContent value="governance">
             <GovernancePanel onSelectRequest={openFromGovernance} />
+          </TabsContent>
+
+          <TabsContent value="memory" className="space-y-3">
+            <div className="glass-card rounded-xl p-3 flex items-center gap-2">
+              <SearchIcon className="w-4 h-4 text-muted-foreground ml-1" />
+              <Input
+                value={memoryQuery}
+                onChange={(e) => setMemoryQuery(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") loadMemory(); }}
+                placeholder="Search what the organization has learned…"
+                className="h-9 rounded-xl border-0 bg-transparent focus-visible:ring-0"
+              />
+              <Button size="sm" variant="outline" className="rounded-xl" onClick={loadMemory}>Search</Button>
+            </div>
+            {memory.length === 0 ? (
+              <div className="glass-card rounded-xl p-8 text-center text-sm text-muted-foreground">
+                No memories yet. As leadership deliberates and the nightly learn job runs, lessons will accumulate here.
+              </div>
+            ) : (
+              <div className="grid sm:grid-cols-2 gap-3">
+                {memory.map((m) => (
+                  <div key={m.id} className="glass-card rounded-xl p-4">
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <Badge variant="outline" className="text-[10px] capitalize">{m.memory_type.replace(/_/g, " ")}</Badge>
+                      {typeof m.relevance_score === "number" && (
+                        <span className="text-[10px] text-muted-foreground">weight {m.relevance_score.toFixed(1)}</span>
+                      )}
+                    </div>
+                    <div className="font-semibold text-sm text-foreground">{m.title}</div>
+                    <p className="text-xs text-muted-foreground mt-2 leading-relaxed line-clamp-4">{m.content}</p>
+                    {m.tags && m.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-3">
+                        {m.tags.slice(0, 6).map((t) => (
+                          <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground">{t}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>
