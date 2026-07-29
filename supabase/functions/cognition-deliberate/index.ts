@@ -205,6 +205,13 @@ Deno.serve(async (req) => {
           type: "governance", link: `/cognition?request=${requestId}`, is_read: false,
         })));
       }
+      // Also tell the requester their deliberation was blocked.
+      await admin.from("notifications").insert({
+        user_id: userData.user.id, organization_id: orgId,
+        title: "Your deliberation was blocked",
+        message: `Policy violation: ${blockingViolations.map((b) => b.policy).join(", ")}.`,
+        type: "governance", link: `/cognition?request=${requestId}`, is_read: false,
+      });
     }
 
     if (!blocked && Array.isArray(parsed.execution_plan) && parsed.execution_plan.length > 0) {
@@ -248,6 +255,20 @@ Deno.serve(async (req) => {
       latency_ms: latency,
       completed_at: new Date().toISOString(),
     }).eq("id", requestId);
+
+    // Notify the requester that leadership has finished deliberating so they
+    // can jump straight into the Cognition Center via the notifications bell.
+    if (!blocked) {
+      await admin.from("notifications").insert({
+        user_id: userData.user.id,
+        organization_id: orgId,
+        title: "Leadership deliberation ready",
+        message: `${(parsed.intent ?? request).slice(0, 140)}${createdTasks.length ? ` — ${createdTasks.length} task${createdTasks.length === 1 ? "" : "s"} dispatched.` : ""}`,
+        type: "cognition",
+        link: `/cognition?request=${requestId}`,
+        is_read: false,
+      });
+    }
 
     return json({ request_id: requestId, latency_ms: latency, tasks_created: createdTasks, blocked_by_policy: blocked, blocking_violations: blockingViolations, ...parsed });
   } catch (err) {
