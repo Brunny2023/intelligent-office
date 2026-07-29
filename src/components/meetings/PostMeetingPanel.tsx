@@ -32,6 +32,14 @@ export default function PostMeetingPanel({ recordingId, onDone }: Props) {
 
   useEffect(() => { load(); }, [recordingId]);
 
+  // Auto-summarize the moment the panel opens if analysis hasn't run yet.
+  useEffect(() => {
+    if (!loading && !summary && !processing) {
+      runAnalysis();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
+
   const runAnalysis = async () => {
     setProcessing(true);
     const { error, data } = await supabase.functions.invoke("meeting-analyze", {
