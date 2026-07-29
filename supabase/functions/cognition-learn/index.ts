@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
 
     for (const org of orgs ?? []) {
       try {
-        const [tasks, memos, meetings, kpis, delibs] = await Promise.all([
+        const [tasks, memos, meetings, kpis, delibs, feedback] = await Promise.all([
           admin.from("tasks").select("title, status, priority, completed_at, description")
             .eq("organization_id", org.id).eq("status", "completed").gte("completed_at", since).limit(30),
           admin.from("internal_memos").select("title, content, status, published_at")
@@ -52,6 +52,8 @@ Deno.serve(async (req) => {
             .eq("organization_id", org.id).gte("updated_at", since).limit(20),
           admin.from("cognition_requests").select("intent, outcome, completed_at")
             .eq("organization_id", org.id).eq("status", "completed").gte("completed_at", since).limit(10),
+          admin.from("cognition_feedback").select("outcome, rating, comment, created_at")
+            .eq("organization_id", org.id).gte("created_at", since).limit(30),
         ]);
 
         const digest = {
@@ -62,9 +64,10 @@ Deno.serve(async (req) => {
           meeting_summaries: meetings.data,
           kpi_movements: kpis.data,
           deliberations: delibs.data,
+          leadership_feedback: feedback.data,
         };
         const totalItems = (tasks.data?.length ?? 0) + (memos.data?.length ?? 0) +
-          (meetings.data?.length ?? 0) + (kpis.data?.length ?? 0) + (delibs.data?.length ?? 0);
+          (meetings.data?.length ?? 0) + (kpis.data?.length ?? 0) + (delibs.data?.length ?? 0) + (feedback.data?.length ?? 0);
         if (totalItems === 0) { results.push({ organization_id: org.id, lessons: 0 }); continue; }
 
         const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {

@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Brain, Crown, Users, Building2, Sparkles, Send, Loader2, ChevronRight, BookOpen, CheckSquare, ThumbsUp, ThumbsDown, MessageSquare } from "lucide-react";
+import { Brain, Crown, Users, Building2, Sparkles, Send, Loader2, ChevronRight, BookOpen, CheckSquare, ThumbsUp, ThumbsDown, MessageSquare, Shield, ShieldCheck, ShieldAlert, Activity } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
+import GovernancePanel from "@/components/cognition/GovernancePanel";
 
 interface Executive { id: string; role: string; title: string; mandate: string | null; tone: string | null; is_active: boolean; }
 interface Consultant { id: string; domain: string; title: string; expertise: string | null; is_active: boolean; reporting_executive_id: string | null; }
@@ -32,6 +33,8 @@ export default function CognitionModule() {
   const [feedbackComment, setFeedbackComment] = useState("");
   const [feedbackSaving, setFeedbackSaving] = useState<string | null>(null);
   const [feedbackDone, setFeedbackDone] = useState<Record<string, string>>({});
+  const [auditSteps, setAuditSteps] = useState<any[] | null>(null);
+  const [activeTab, setActiveTab] = useState("deliberations");
 
   const load = async () => {
     if (!org?.id) return;
@@ -92,6 +95,15 @@ export default function CognitionModule() {
     setActiveRequestId(r.id);
     setTrace({ request_id: r.id, ...r.outcome });
     setFeedbackComment("");
+    const { data } = await supabase.from("cognition_steps").select("*").eq("request_id", r.id).order("step_order");
+    setAuditSteps(data ?? []);
+  };
+
+  const openFromGovernance = async (id: string) => {
+    const r = requests.find((x) => x.id === id);
+    if (r) { await openHistoric(r); setActiveTab("deliberations"); return; }
+    const { data } = await supabase.from("cognition_requests").select("*").eq("id", id).maybeSingle();
+    if (data) { await openHistoric(data as RequestRow); setActiveTab("deliberations"); }
   };
 
   const sendFeedback = async (outcome: "approved" | "revised" | "rejected") => {
@@ -134,12 +146,13 @@ export default function CognitionModule() {
           </div>
         </motion.div>
 
-        <Tabs defaultValue="deliberations" className="space-y-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList className="bg-muted/50">
             <TabsTrigger value="deliberations" className="gap-1.5"><Sparkles className="w-4 h-4" /> Deliberations</TabsTrigger>
             <TabsTrigger value="executives" className="gap-1.5"><Crown className="w-4 h-4" /> Executive Team</TabsTrigger>
             <TabsTrigger value="consultants" className="gap-1.5"><Users className="w-4 h-4" /> Consultants</TabsTrigger>
             <TabsTrigger value="departments" className="gap-1.5"><Building2 className="w-4 h-4" /> Departments</TabsTrigger>
+            <TabsTrigger value="governance" className="gap-1.5"><Shield className="w-4 h-4" /> Governance</TabsTrigger>
           </TabsList>
 
           <TabsContent value="deliberations" className="space-y-4">
@@ -227,6 +240,44 @@ export default function CognitionModule() {
                       <div className="text-[10px] uppercase tracking-widest text-accent mb-1">CEO decision</div>
                       <p className="text-sm text-foreground">{trace.decision_summary}</p>
                     </div>
+                  )}
+                  {Array.isArray(trace.policy_checks) && trace.policy_checks.length > 0 && (
+                    <div className="rounded-xl border border-border p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Shield className="w-4 h-4 text-accent" />
+                        <div className="text-sm font-semibold text-foreground">Policy checks</div>
+                      </div>
+                      <ul className="space-y-1.5">
+                        {trace.policy_checks.map((c: any, i: number) => {
+                          const Icon = c.status === "violation" ? ShieldAlert : c.status === "caution" ? Shield : ShieldCheck;
+                          const color = c.status === "violation" ? "text-destructive" : c.status === "caution" ? "text-amber-500" : "text-emerald-500";
+                          return (
+                            <li key={i} className="flex items-start gap-2 text-xs">
+                              <Icon className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${color}`} />
+                              <div><span className="font-medium text-foreground">{c.policy}</span> — <span className="text-muted-foreground">{c.note}</span></div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  )}
+                  {auditSteps && auditSteps.length > 0 && (
+                    <details className="rounded-xl border border-border p-4">
+                      <summary className="text-sm font-semibold text-foreground cursor-pointer flex items-center gap-2">
+                        <Activity className="w-4 h-4 text-accent" /> Audit trail ({auditSteps.length} steps)
+                      </summary>
+                      <ol className="mt-3 space-y-2">
+                        {auditSteps.map((s: any) => (
+                          <li key={s.id} className="text-xs border-l-2 border-accent/30 pl-3">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-[10px] uppercase tracking-widest text-accent">{s.stage}</span>
+                              <span className="text-muted-foreground">· {s.actor_label}</span>
+                            </div>
+                            {s.reasoning && <p className="text-foreground/90 mt-0.5">{s.reasoning}</p>}
+                          </li>
+                        ))}
+                      </ol>
+                    </details>
                   )}
                   {Array.isArray(trace.tasks_created) && trace.tasks_created.length > 0 && (
                     <div className="rounded-xl border border-border p-4">
@@ -343,6 +394,10 @@ export default function CognitionModule() {
                 </div>
               ))}
             </div>
+          </TabsContent>
+
+          <TabsContent value="governance">
+            <GovernancePanel onSelectRequest={openFromGovernance} />
           </TabsContent>
         </Tabs>
       </div>

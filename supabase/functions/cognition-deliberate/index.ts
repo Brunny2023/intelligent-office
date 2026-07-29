@@ -12,6 +12,8 @@ const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
 
 const SYSTEM_PROMPT = `You are the Enterprise Cognition engine of Global Office. You do NOT respond as a single assistant. You run an organization's virtual leadership through a deliberate reasoning lifecycle grounded ONLY in the organization's own context provided below.
 
+You must respect the organization's governance_policies at all times. If a request violates a "blocking" policy, refuse and explain. If it triggers an "advisory" policy, proceed but surface the caution in risk/compliance.
+
 You must return STRICT JSON matching this shape (no prose, no markdown fences):
 {
   "intent": "<1 sentence summary of what the requester actually wants>",
@@ -27,7 +29,8 @@ You must return STRICT JSON matching this shape (no prose, no markdown fences):
   "success_criteria": ["<criterion 1>", "<criterion 2>"],
   "decision_summary": "<3-5 sentences the CEO would say back to the requester>",
   "memory_entry": { "title": "<short>", "content": "<what to remember for future decisions>", "tags": ["<tag>"] },
-  "follow_ups": ["<next likely question or request>", "<next step>"]
+  "follow_ups": ["<next likely question or request>", "<next step>"],
+  "policy_checks": [ { "policy": "<policy title>", "status": "pass|caution|violation", "note": "<1 sentence>" } ]
 }
 
 RULES:
@@ -60,7 +63,7 @@ Deno.serve(async (req) => {
     if (!request) return json({ error: "request required" }, 400);
 
     // Gather org context — memory is now relevance-ranked via full-text search
-    const [{ data: org }, { data: executives }, { data: consultants }, { data: departments }, { data: kpis }, memoryRes, { data: recentDecisions }] = await Promise.all([
+    const [{ data: org }, { data: executives }, { data: consultants }, { data: departments }, { data: kpis }, memoryRes, { data: recentDecisions }, { data: policies }] = await Promise.all([
       admin.from("organizations").select("name, mission, brand_tagline, core_values").eq("id", orgId).maybeSingle(),
       admin.from("ai_executives").select("role, title, mandate, focus_kpis").eq("organization_id", orgId).eq("is_active", true),
       admin.from("ai_consultants").select("domain, title, expertise").eq("organization_id", orgId).eq("is_active", true),
@@ -68,6 +71,7 @@ Deno.serve(async (req) => {
       admin.from("kpis").select("title, current_value, target_value, unit, status").eq("organization_id", orgId).limit(20),
       admin.rpc("search_memory", { _org: orgId, _query: request, _limit: 10 }),
       admin.from("cognition_requests").select("request, outcome").eq("organization_id", orgId).eq("status", "completed").order("completed_at", { ascending: false }).limit(6),
+      admin.from("cognition_policies").select("category, title, rule, severity").eq("organization_id", orgId).eq("is_active", true),
     ]);
     const memory = (memoryRes.data as Array<{ id: string; title: string; content: string; tags: string[] }> | null) ?? [];
     const referencedMemoryIds = memory.map((m) => m.id);
@@ -83,6 +87,7 @@ Deno.serve(async (req) => {
       kpis,
       recent_decisions: recentDecisions,
       organizational_memory: memory,
+      governance_policies: policies,
       requester: { name: profile?.full_name, title: profile?.job_title },
     };
 

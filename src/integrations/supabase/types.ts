@@ -575,6 +575,53 @@ export type Database = {
           },
         ]
       }
+      cognition_policies: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string
+          id: string
+          is_active: boolean
+          organization_id: string
+          rule: string
+          severity: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          created_by: string
+          id?: string
+          is_active?: boolean
+          organization_id: string
+          rule: string
+          severity?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          is_active?: boolean
+          organization_id?: string
+          rule?: string
+          severity?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cognition_policies_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cognition_requests: {
         Row: {
           completed_at: string | null
@@ -3266,6 +3313,10 @@ export type Database = {
     }
     Functions: {
       accept_invitation: { Args: { _token: string }; Returns: Json }
+      cognition_governance_scorecard: {
+        Args: { _days?: number; _org: string }
+        Returns: Json
+      }
       cognition_learn_dispatch: { Args: never; Returns: undefined }
       complete_onboarding: {
         Args: {
