@@ -58,8 +58,8 @@ const HeroSection = () => {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight text-primary-foreground leading-[1.1] text-balance"
           >
-            Run Your Entire Company{" "}
-            <span className="gradient-text">From Anywhere</span>
+            The Enterprise{" "}
+            <span className="gradient-text">Cognition Platform</span>
           </motion.h1>
 
           <motion.p
@@ -68,8 +68,9 @@ const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.25 }}
             className="mt-6 text-lg md:text-xl text-primary-foreground/60 max-w-2xl mx-auto text-balance leading-relaxed"
           >
-            AI-powered Digital Headquarters for Modern Organizations.
-            Unify attendance, execution, communication, and executive intelligence in one platform.
+            Global Office gives every organization a virtual C-suite, expert consultants,
+            and AI-run departments that reason, decide, and remember on your own data — so
+            your company gets smarter every day, not just more productive.
           </motion.p>
 
           <motion.div
