@@ -11,7 +11,7 @@ import {
   Megaphone, Brain, Crown, Workflow, Users, Target, Lock,
   ShieldCheck, Ticket, Settings, Globe, Sparkles, Network
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import NotificationBell from "@/components/notifications/NotificationBell";
 
@@ -47,6 +47,18 @@ const AppSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
+
+  // Persist sidebar scroll across route changes (AppLayout remounts the sidebar per page)
+  useEffect(() => {
+    const el = navRef.current;
+    if (!el) return;
+    const saved = sessionStorage.getItem("sidebar-scroll");
+    if (saved) el.scrollTop = parseInt(saved, 10) || 0;
+    const onScroll = () => sessionStorage.setItem("sidebar-scroll", String(el.scrollTop));
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
 
   const allItems = [
     ...(isPlatformAdmin ? [{ icon: Sparkles, label: "Super Admin", path: "/super-admin" }] : []),
@@ -95,7 +107,7 @@ const AppSidebar = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 py-3 px-2 space-y-0.5 overflow-y-auto">
+      <nav ref={navRef} className="flex-1 py-3 px-2 space-y-0.5 overflow-y-auto">
         {allItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
