@@ -312,7 +312,10 @@ const Investors = () => {
         <ProductProof />
         <DemoVideoBlock />
 
-        <Section id="category" eyebrow="11 — Category Definition" title="Global Office is not office software. It is the Organizational Intelligence Layer.">
+        <Section id="category" eyebrow="11 — Category Definition" title="Sold as an Intelligent Digital Office. Built as the Organizational Intelligence Layer.">
+          <p>
+            Two words matter here, and they are not interchangeable. <strong>Intelligent Digital Office</strong> is what a buyer signs for: a single place where their company operates end to end — presence, execution, meetings, documents, HR, finance, governance — without a physical office. <strong>Organizational Intelligence Layer</strong> is what we are building underneath it: the knowledge graph and cognition substrate that makes that office reason, decide, and remember. Buyers adopt the office; the layer is what makes them unable to leave.
+          </p>
           <p>
             Every prior category — ERP, CRM, collaboration, project management, HRIS, BI — was a surface for a function. Global Office is a substrate for the organization itself. The distinction is architectural, not marketing.
           </p>
