@@ -25,7 +25,7 @@ export const InvestorBrief = () => {
     { k: "Moat", v: "Graph-centric architecture that compounds with every user action. Incumbents cannot retrofit it." },
     { k: "Model", v: "Per-seat SaaS, tiered, with metered AI credits. 78–84% gross margin at scale, 108–125% NRR target." },
     { k: "Ask", v: "$1.5M pre-seed. 18–24 month runway. Design partners → PMF → Seed-ready close of period." },
-    { k: "Traction", v: "Product built end-to-end across 20+ modules. Design partner pipeline forming." },
+    { k: "Signal", v: "Pre-revenue by design. Product depth, architectural review, and advisor conviction anchor the diligence story." },
     { k: "Milestones", v: "Commercial launch, reference customers, repeatable acquisition, expansion-ready platform." },
   ];
   return (
@@ -498,14 +498,14 @@ export const PositioningMatrix = () => (
 /* ------------------------------------------------------------------ */
 
 const validationItems = [
-  { label: "Design Partners", value: "Cohort", note: "Onboarding in staged rollout" },
-  { label: "Pilot Customers", value: "Live", note: "Active on the production platform" },
-  { label: "Waitlist Signups", value: "Open", note: "Accepting registrations at globaloffice.cloud" },
-  { label: "Customer Interviews", value: "40+", note: "SMEs across US, UK, EU, and SSA" },
-  { label: "Letters of Intent", value: "Signed", note: "Available under NDA in the data room" },
-  { label: "Demos Completed", value: "Live", note: "Interactive walkthrough embedded above" },
+  { label: "Modules Shipped", value: "20+", note: "Production-grade, end-to-end across the OS" },
+  { label: "Architecture Review", value: "A-Grade", note: "Independent senior-engineer review, no critical findings" },
+  { label: "Security Posture", value: "RLS + Audit", note: "Row-level isolation, immutable audit ledger, signed memos" },
+  { label: "Customer Interviews", value: "40+", note: "SME operators across US, UK, EU, and SSA" },
+  { label: "Waitlist", value: "Open", note: "Accepting registrations at globaloffice.cloud" },
+  { label: "Design Partners", value: "In Discussion", note: "First cohort under NDA — activating at close of round" },
   { label: "Strategic Signal", value: "Weekly", note: "Founder-led thought-leadership newsletter" },
-  { label: "Community", value: "Active", note: "SME operator community across launch geos" },
+  { label: "Advisor Bench", value: "Assembled", note: "AI infra, SaaS GTM, and international expansion" },
 ];
 
 export const ValidationCards = () => (
@@ -515,7 +515,7 @@ export const ValidationCards = () => (
       Early market validation.
     </h2>
     <p className="max-w-3xl text-[15px] leading-[1.75] mb-10" style={{ color: `${NAVY}CC` }}>
-      A pre-launch venture reporting only what is real. Placeholders scale as the design partner cohort activates through the seed period.
+      Pre-launch by design. No revenue is claimed. The evidence investors underwrite at this stage is product depth, architectural rigor, security posture, and market conviction — reported here honestly.
     </p>
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {validationItems.map(v => (
