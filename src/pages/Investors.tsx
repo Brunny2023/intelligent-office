@@ -267,8 +267,8 @@ const Investors = () => {
               A decade of point solutions produced fatigue, sprawl, and negative net-retention pressure across the mid-market<Cite ns={[3]}/>. Buyers are now consolidating. The rebundling window — historically the moment new category leaders emerge — is open.
             </li>
             <li>
-              <span className="block text-sm tracking-[0.2em] uppercase mb-1" style={{ color: GOLD }}>iii. Emerging markets are digitizing at scale</span>
-              Sub-Saharan Africa alone will reach 692 million unique mobile subscribers and $210B in mobile economic value by 2030<Cite ns={[8]}/>. SME formalization is accelerating, but existing software (Microsoft, Google, Zoho, Odoo) was built for another market's shape of work.
+              <span className="block text-sm tracking-[0.2em] uppercase mb-1" style={{ color: GOLD }}>iii. The global operating model has been rewritten</span>
+              Modern organizations are distributed, multi-jurisdictional, and AI-augmented by default. Legacy suites were built for a co-located workforce and a single system of record. The new operating model rewards platforms that unify people, work, and intelligence across geographies — not those that assume one.
             </li>
           </ol>
         </Section>
@@ -281,7 +281,7 @@ const Investors = () => {
             The productivity cost is measurable — and the AI opportunity cost is larger. Any AI feature bolted onto a fragmented stack inherits its fragmentation. Real organizational intelligence requires a real organizational substrate.
           </p>
           <p>
-            For emerging-market SMEs, the problem is compounded: legacy suites are priced for Western enterprises, designed around desktop-first workflows, and offer no meaningful support for local context — payroll structures, tax regimes, hiring norms, connectivity conditions, or language.
+            The problem is universal. Whether an organization operates from New York, London, Singapore, São Paulo, or Lagos, the fragmentation is the same — different tools, different silos, different truths. Global Office is built for that reality from day one: multi-tenant, multi-currency, multi-language, and multi-jurisdiction as first-class properties, not localization afterthoughts.
           </p>
         </Section>
 
@@ -383,10 +383,7 @@ const Investors = () => {
             </div>
           </div>
           <p>
-            SMEs represent approximately 90% of businesses and more than 50% of employment worldwide<Cite ns={[5]}/>. In Africa alone, formal SMEs face a $331B annual finance gap<Cite ns={[6]}/> — a signal not of weakness but of untapped enterprise density. As these businesses formalize and digitize, they will not adopt the tools their Western predecessors used a decade ago. They will adopt what fits their shape of work — mobile-first, AI-native, priced correctly.
-          </p>
-          <p>
-            African venture funding stabilized at $3.5B across 547 rounds in 2023<Cite ns={[7]}/> — a durable base after the global correction. Software as a share of that capital is growing.
+            SMEs and mid-market enterprises represent approximately 90% of businesses and more than 50% of employment worldwide<Cite ns={[5]}/>. Across every major region — North America, EMEA, LATAM, APAC, and the emerging world — these organizations are actively consolidating fragmented stacks and re-underwriting their software estate for the AI era. Global Office is positioned to be the platform they consolidate onto.
           </p>
         </Section>
 
@@ -509,19 +506,44 @@ const Investors = () => {
 
         <Section id="team" eyebrow="23 — Team" title="A founding team with the operator scars to execute the plan.">
           <p>
-            <strong style={{ color: NAVY }}>Wisdom Jonathans — Founder &amp; CEO.</strong> Nigerian entrepreneur and AI systems strategist. Founder and CEO of Soteria AI Technologies Limited, developing AI-powered products for business operations, decision-making, capital access, education, and public safety. Publisher of <em>The Strategic Signal</em> — a weekly thought-leadership newsletter read by operators, founders, and investors on strategy, AI, and the future of organizations.
+            <strong style={{ color: NAVY }}>Wisdom Jonathans — Founder &amp; CEO.</strong> Entrepreneur and AI systems strategist. Founder and CEO of Soteria AI Technologies, developing AI-powered products for business operations, decision-making, capital access, education, and public safety. Publisher of <em>The Strategic Signal</em> — a weekly thought-leadership newsletter read by operators, founders, and investors on strategy, AI, and the future of organizations.
           </p>
           <p>
             Prior to Global Office, Wisdom founded and led Elevate AI, working directly with businesses to apply AI and workflow automation to real operational problems — the experience that surfaced the coherence problem this company was built to solve. He has served in governance and executive leadership across technology ventures, education (Vice Chairman, Exceeding Grace International Aviation College), nonprofit organizations, and faith-based institutions.
           </p>
           <p>
-            <strong style={{ color: NAVY }}>Oyewole Olufemi Emmanuel — Co-Founder &amp; COO.</strong> Operations executive with fifteen years scaling multi-country service businesses across West and East Africa. Previously Chief Operating Officer at a pan-African fintech where he built the operational playbook that grew the company from 40 to 380 staff across 6 countries and led it through ISO 27001, PCI-DSS, and SOC 2 Type II certification. Earlier, VP of Operations at a Lagos-headquartered enterprise-software firm serving banks and telcos, where he owned partner distribution across NG, KE, ZA, and GH. He owns commercial launch, channel partners, customer success, finance operations, and regulatory readiness — the exact surfaces that convert a $1.5M pre-seed into repeatable revenue.
+            <strong style={{ color: NAVY }}>Oyewole Olufemi Emmanuel — Co-Founder &amp; COO.</strong> Operations executive with fifteen years scaling multi-country service businesses across multiple regions. Previously Chief Operating Officer at a high-growth fintech where he built the operational playbook that grew the company from 40 to 380 staff across 6 countries and led it through ISO 27001, PCI-DSS, and SOC 2 Type II certification. Earlier, VP of Operations at an enterprise-software firm serving banks and telcos, where he owned partner distribution across multiple international markets. He owns commercial launch, channel partners, customer success, finance operations, and regulatory readiness — the exact surfaces that convert a $1.5M pre-seed into repeatable revenue.
           </p>
           <p>
-            <strong style={{ color: NAVY }}>David Whitmore — Co-Founder &amp; CFO.</strong> American finance executive with nineteen years across venture-backed SaaS and enterprise software. Previously CFO at Northbridge Systems, a vertical-SaaS company he took from $6M to $84M ARR through a Series C and a strategic exit; earlier VP Finance at Halcyon Cloud (multi-tenant infrastructure) where he built the FP&amp;A, revenue-recognition, and metered-billing architecture that carried the company from pre-revenue to IPO readiness. Chartered Financial Analyst, former audit senior at a Big Four firm, and a repeat operator on ASC 606 revenue recognition, SOC 2 financial controls, and cross-border tax structuring across US, UK, EU, and SSA. He owns the capital plan, unit-economics discipline, investor reporting cadence, board-grade financial controls, and the path from pre-seed dollars to seed-ready metrics.
+            <strong style={{ color: NAVY }}>David Whitmore — Co-Founder &amp; CFO.</strong> American finance executive with nineteen years across venture-backed SaaS and enterprise software. Previously CFO at Northbridge Systems, a vertical-SaaS company he took from $6M to $84M ARR through a Series C and a strategic exit; earlier VP Finance at Halcyon Cloud (multi-tenant infrastructure) where he built the FP&amp;A, revenue-recognition, and metered-billing architecture that carried the company from pre-revenue to IPO readiness. Chartered Financial Analyst, former audit senior at a Big Four firm, and a repeat operator on ASC 606 revenue recognition, SOC 2 financial controls, and cross-border tax structuring across US, UK, and EU jurisdictions. He owns the capital plan, unit-economics discipline, investor reporting cadence, board-grade financial controls, and the path from pre-seed dollars to seed-ready metrics.
           </p>
           <p>
             Together, the founding trio covers category creation and capital (CEO), commercial execution and operations (COO), and financial discipline and capital efficiency (CFO) — three of the chairs institutional investors underwrite at pre-seed. A senior engineering hire owns the platform and AI stack today and is scoped for a Head of Engineering elevation in the use-of-funds; founding-team hires across product, design, sales, and customer success are executed in the first six months post-close. Advisory bench across AI infrastructure, SaaS go-to-market, and international expansion is in place; individual advisors are disclosed under NDA in the data room.
+          </p>
+        </Section>
+
+        <Section id="corporate" eyebrow="23b — Corporate Structure" title="Two entities. One global operating model.">
+          <p>
+            Soteria AI Technologies operates through two registered corporate entities that function together as a unified global organization with complementary responsibilities.
+          </p>
+          <div className="not-prose grid md:grid-cols-2 gap-6 mt-6">
+            <div className="border-t pt-4" style={{ borderColor: NAVY }}>
+              <div className="text-xs tracking-[0.22em] uppercase mb-2" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Global corporate entity</div>
+              <div className="text-sm mb-2" style={{ color: NAVY, fontFamily: "'Space Grotesk', sans-serif" }}>Soteria AI Technologies Inc.</div>
+              <p className="text-sm leading-[1.7]" style={{ color: `${NAVY}CC` }}>
+                Delaware C-Corporation (USA). Responsible for corporate governance, intellectual property stewardship, strategic partnerships, capital formation, institutional readiness, and long-term global expansion.
+              </p>
+            </div>
+            <div className="border-t pt-4" style={{ borderColor: NAVY }}>
+              <div className="text-xs tracking-[0.22em] uppercase mb-2" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Engineering &amp; innovation affiliate</div>
+              <div className="text-sm mb-2" style={{ color: NAVY, fontFamily: "'Space Grotesk', sans-serif" }}>Soteria AI Technologies Limited</div>
+              <p className="text-sm leading-[1.7]" style={{ color: `${NAVY}CC` }}>
+                Registered Nigerian company. Contributes AI research, software engineering, product development, and operational execution across the company's technology ecosystem.
+              </p>
+            </div>
+          </div>
+          <p className="mt-6">
+            This dual-entity structure is a deliberate global operating model — combining institutional-grade corporate governance with world-class distributed engineering and innovation capabilities. Investment in this round is made into <strong style={{ color: NAVY }}>Soteria AI Technologies Inc.</strong>, and is specifically directed at the commercialization, growth, and global expansion of Global Office, the company's flagship enterprise platform.
           </p>
         </Section>
 
@@ -541,7 +563,7 @@ const Investors = () => {
             <div>
               <div className="text-xs tracking-[0.22em] uppercase mb-3" style={{ color: GOLD }}>Milestones to Seed</div>
               <ul className="text-sm space-y-2" style={{ color: `${NAVY}CC` }}>
-                <li>· Commercial launch across 4 SSA markets</li>
+                <li>· Global commercial launch with multi-region availability</li>
                 <li>· Design-partner cohort with reference cases</li>
                 <li>· Predictable, repeatable customer acquisition motion</li>
                 <li>· Measurable product-market fit signals (retention, NPS, NRR)</li>
@@ -563,8 +585,8 @@ const Investors = () => {
               ["Execution risk", "Broad module surface. Mitigation: architecture-first design, per-module quality gates, feature-flag rollout."],
               ["AI cost risk", "Model inference expense. Mitigation: model-agnostic layer, AI credit metering, on-tenant caching, small-model routing."],
               ["Regulatory risk", "NDPR, GDPR, and emerging AI regulation. Mitigation: privacy-by-design, tenant isolation, data residency options."],
-              ["Concentration risk", "SSA-only base early. Mitigation: geographic sequencing to UK/EU by Year 2; enterprise motion by Year 3."],
-              ["Talent risk", "Senior engineering and GTM hiring in Africa. Mitigation: remote-first hiring, diaspora pipeline, equity-heavy comp."],
+              ["Concentration risk", "Early customer base skewing to any single geography or vertical. Mitigation: multi-region GTM from launch; enterprise motion layered in by Year 3."],
+              ["Talent risk", "Senior engineering and GTM hiring in a competitive global market. Mitigation: distributed operating model across the US and engineering affiliate; remote-first hiring; equity-heavy comp."],
               ["Capital risk", "Correction in venture funding. Mitigation: capital-efficient milestones; DFI and strategic-investor optionality."],
             ].map(([t, d]) => (
               <div key={t} className="border-t pt-4" style={{ borderColor: NAVY }}>
@@ -580,9 +602,9 @@ const Investors = () => {
             Business-software M&amp;A remains the most active category of enterprise-tech consolidation<Cite ns={[11]}/>. Category-defining SaaS companies exit through strategic acquisition, PE-led buyout, or IPO on the back of durable ARR.
           </p>
           <ul className="list-disc pl-6 space-y-2">
-            <li><strong style={{ color: NAVY }}>Strategic acquirers.</strong> Microsoft, Google, Salesforce, Zoho, ServiceNow, SAP, Oracle, and regional telcos with SME-services ambitions<Cite ns={[12]}/>.</li>
-            <li><strong style={{ color: NAVY }}>Private equity.</strong> Vista, Thoma Bravo, and regional PE with vertical SaaS mandates once ARR crosses institutional thresholds.</li>
-            <li><strong style={{ color: NAVY }}>Public markets.</strong> Emerging-markets category leaders (Shopify, MELI, Nubank pattern) have demonstrated public-market appetite for durable ARR compounding at global scale.</li>
+              <li><strong style={{ color: NAVY }}>Strategic acquirers.</strong> Microsoft, Google, Salesforce, ServiceNow, SAP, Oracle, Zoho, and other enterprise-platform incumbents with organizational-intelligence gaps in their roadmap<Cite ns={[12]}/>.</li>
+              <li><strong style={{ color: NAVY }}>Private equity.</strong> Vista, Thoma Bravo, and other software-focused PE with vertical SaaS mandates once ARR crosses institutional thresholds.</li>
+              <li><strong style={{ color: NAVY }}>Public markets.</strong> Category-defining SaaS platforms have consistently demonstrated public-market appetite for durable ARR compounding at global scale.</li>
           </ul>
         </Section>
 
@@ -645,8 +667,9 @@ const Investors = () => {
           <div className="flex flex-wrap gap-8 justify-between items-end">
             <div>
               <div className="text-xs tracking-[0.22em] uppercase" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Global Office</div>
-              <div className="mt-2 text-sm" style={{ color: `${NAVY}99` }}>A product of Soteria AI Technologies Limited</div>
-              <div className="mt-1 text-sm" style={{ color: `${NAVY}99` }}>Founder: Wisdom Jonathans · Lagos · Nairobi · Johannesburg · Accra</div>
+              <div className="mt-2 text-sm" style={{ color: `${NAVY}99` }}>Flagship enterprise platform of Soteria AI Technologies Inc. (Delaware, USA)</div>
+              <div className="mt-1 text-sm" style={{ color: `${NAVY}99` }}>Engineering &amp; innovation affiliate: Soteria AI Technologies Limited</div>
+              <div className="mt-1 text-sm" style={{ color: `${NAVY}99` }}>Founder: Wisdom Jonathans</div>
             </div>
             <div className="text-xs text-right" style={{ color: `${NAVY}77` }}>
               Confidential — Prepared for prospective investors<br/>
