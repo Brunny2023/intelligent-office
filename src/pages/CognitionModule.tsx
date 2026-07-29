@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Brain, Crown, Users, Building2, Sparkles, Send, Loader2, ChevronRight, BookOpen, CheckSquare, ThumbsUp, ThumbsDown, MessageSquare, Shield, ShieldCheck, ShieldAlert } from "lucide-react";
+import { Brain, Crown, Users, Building2, Sparkles, Send, Loader2, ChevronRight, BookOpen, CheckSquare, ThumbsUp, ThumbsDown, MessageSquare, Shield, ShieldCheck, ShieldAlert, Activity } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import GovernancePanel from "@/components/cognition/GovernancePanel";
