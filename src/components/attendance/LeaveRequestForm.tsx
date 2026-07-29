@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useOrganization } from "@/hooks/useOrganization";
 import { useActivityLog } from "@/hooks/useActivityLog";
 import { supabase } from "@/integrations/supabase/client";
+import { triggerCognition } from "@/lib/cognition";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -68,6 +69,15 @@ const LeaveRequestForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         start_date: form.startDate,
         end_date: form.endDate,
       });
+      // Wave 5 rewire: long leaves route through the cognition layer so HR
+      // gets a policy-checked advisory (coverage, workload impact, precedent)
+      // in /cognition without blocking the requester's UX.
+      const days = Math.ceil((new Date(form.endDate).getTime() - new Date(form.startDate).getTime()) / 86400000) + 1;
+      if (days >= 5) {
+        void triggerCognition(
+          `Leave request: ${form.leaveType} for ${days} days (${form.startDate} → ${form.endDate}). Reason: ${form.reason || "not provided"}. Advise on approval, coverage, and precedent.`,
+        );
+      }
       setForm({ leaveType: "annual", startDate: "", endDate: "", reason: "" });
       onSuccess?.();
     }
