@@ -18,7 +18,7 @@ interface Executive { id: string; role: string; title: string; mandate: string |
 interface Consultant { id: string; domain: string; title: string; expertise: string | null; is_active: boolean; reporting_executive_id: string | null; }
 interface Department { id: string; name: string; charter: string | null; consultant_id: string | null; is_active: boolean; }
 interface RequestRow { id: string; request: string; intent: string | null; status: string; outcome: any; created_at: string; latency_ms: number | null; }
-interface MemoryRow { id: string; title: string; content: string; memory_type: string; tags: string[] | null; relevance_score: number | null; last_referenced_at: string | null; created_at: string; }
+interface MemoryRow { id: string; title: string; content: string; memory_type: string; tags: string[] | null; relevance_score: number | null; last_referenced_at?: string | null; created_at: string; }
 
 export default function CognitionModule() {
   const { org } = useOrganization();
