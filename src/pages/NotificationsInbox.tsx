@@ -5,13 +5,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bell, CheckCheck, Circle, ExternalLink, Filter, Archive, ArchiveRestore, Trash2 } from "lucide-react";
+import { Bell, CheckCheck, Circle, ExternalLink, Filter, Archive, ArchiveRestore, Search as SearchIcon, X } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
 type Row = {
@@ -37,7 +38,17 @@ export default function NotificationsInbox() {
   const [readState, setReadState] = useState<string>("all");
   const [view, setView] = useState<"inbox" | "archived">("inbox");
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [search, setSearch] = useState("");
+  const [searchDebounced, setSearchDebounced] = useState("");
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
   const [loading, setLoading] = useState(true);
+
+  // Debounce search input to avoid slamming the backend on every keystroke.
+  useEffect(() => {
+    const t = setTimeout(() => { setSearchDebounced(search.trim()); setPage(0); }, 250);
+    return () => clearTimeout(t);
+  }, [search]);
 
   const load = async () => {
     if (!user) return;
@@ -51,6 +62,16 @@ export default function NotificationsInbox() {
     if (readState === "read") q = q.eq("is_read", true);
     if (view === "inbox") q = q.is("archived_at", null);
     else q = q.not("archived_at", "is", null);
+    if (searchDebounced) {
+      const s = searchDebounced.replace(/[,%]/g, " ");
+      q = q.or(`title.ilike.%${s}%,message.ilike.%${s}%`);
+    }
+    if (dateFrom) q = q.gte("created_at", new Date(dateFrom).toISOString());
+    if (dateTo) {
+      const end = new Date(dateTo);
+      end.setHours(23, 59, 59, 999);
+      q = q.lte("created_at", end.toISOString());
+    }
     const { data, count } = await q;
     setRows((data as Row[]) || []);
     setTotal(count || 0);
@@ -58,7 +79,12 @@ export default function NotificationsInbox() {
     setLoading(false);
   };
 
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [user, page, filter, readState, view]);
+  useEffect(() => { load(); /* eslint-disable-next-line */ }, [user, page, filter, readState, view, searchDebounced, dateFrom, dateTo]);
+
+  const clearFilters = () => {
+    setSearch(""); setDateFrom(""); setDateTo(""); setFilter("all"); setReadState("all"); setPage(0);
+  };
+  const hasActiveFilters = !!(searchDebounced || dateFrom || dateTo || filter !== "all" || readState !== "all");
 
   const toggleRead = async (r: Row) => {
     await supabase.from("notifications").update({ is_read: !r.is_read }).eq("id", r.id);
@@ -138,6 +164,15 @@ export default function NotificationsInbox() {
         </header>
 
         <div className="glass-card rounded-xl p-3 flex flex-wrap items-center gap-2">
+          <div className="relative flex-1 min-w-[220px]">
+            <SearchIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search title or message…"
+              className="h-9 pl-8 rounded-xl"
+            />
+          </div>
           <Filter className="w-4 h-4 text-muted-foreground ml-1" />
           <Select value={view} onValueChange={(v) => { setPage(0); setView(v as any); }}>
             <SelectTrigger className="h-9 w-36"><SelectValue /></SelectTrigger>
@@ -163,6 +198,19 @@ export default function NotificationsInbox() {
               <SelectItem value="read">Read only</SelectItem>
             </SelectContent>
           </Select>
+          <label className="text-[11px] text-muted-foreground flex items-center gap-1">
+            From
+            <Input type="date" value={dateFrom} onChange={(e) => { setPage(0); setDateFrom(e.target.value); }} className="h-9 w-36 rounded-xl" />
+          </label>
+          <label className="text-[11px] text-muted-foreground flex items-center gap-1">
+            To
+            <Input type="date" value={dateTo} onChange={(e) => { setPage(0); setDateTo(e.target.value); }} className="h-9 w-36 rounded-xl" />
+          </label>
+          {hasActiveFilters && (
+            <Button size="sm" variant="ghost" onClick={clearFilters} className="h-9 gap-1 text-xs">
+              <X className="w-3.5 h-3.5" /> Clear
+            </Button>
+          )}
           <span className="text-xs text-muted-foreground ml-auto">{total} total</span>
         </div>
 
