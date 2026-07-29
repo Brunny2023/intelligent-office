@@ -88,6 +88,14 @@ const SupportModule = () => {
     }
     toast.success("Ticket created!");
     setDialogOpen(false);
+    // Wave 5 rewire: high/urgent tickets route to the cognition layer for a
+    // CX/COO advisory (severity, ownership, playbook) without slowing the user.
+    if (newPriority === "high" || newPriority === "urgent") {
+      const { triggerCognition } = await import("@/lib/cognition");
+      void triggerCognition(
+        `Support ticket [${newPriority}] "${newSubject.trim()}": ${newDescription.trim().slice(0, 500)}. Advise on triage, owner, SLA, and any systemic risk.`,
+      );
+    }
     setNewSubject("");
     setNewDescription("");
     setNewPriority("medium");
