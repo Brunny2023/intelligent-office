@@ -2100,6 +2100,48 @@ export type Database = {
           },
         ]
       }
+      memory_feedback_events: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          memory_id: string | null
+          memory_title: string | null
+          metadata: Json
+          new_score: number | null
+          organization_id: string
+          prev_score: number | null
+          reason: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          memory_id?: string | null
+          memory_title?: string | null
+          metadata?: Json
+          new_score?: number | null
+          organization_id: string
+          prev_score?: number | null
+          reason?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          memory_id?: string | null
+          memory_title?: string | null
+          metadata?: Json
+          new_score?: number | null
+          organization_id?: string
+          prev_score?: number | null
+          reason?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           attachment_name: string | null
@@ -2162,6 +2204,7 @@ export type Database = {
           in_app: boolean
           slack: boolean
           slack_webhook_url: string | null
+          snoozes: Json
           updated_at: string
           user_id: string
         }
@@ -2175,6 +2218,7 @@ export type Database = {
           in_app?: boolean
           slack?: boolean
           slack_webhook_url?: string | null
+          snoozes?: Json
           updated_at?: string
           user_id: string
         }
@@ -2188,6 +2232,7 @@ export type Database = {
           in_app?: boolean
           slack?: boolean
           slack_webhook_url?: string | null
+          snoozes?: Json
           updated_at?: string
           user_id?: string
         }
@@ -2195,6 +2240,7 @@ export type Database = {
       }
       notifications: {
         Row: {
+          archived_at: string | null
           created_at: string
           id: string
           is_read: boolean
@@ -2206,6 +2252,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          archived_at?: string | null
           created_at?: string
           id?: string
           is_read?: boolean
@@ -2217,6 +2264,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          archived_at?: string | null
           created_at?: string
           id?: string
           is_read?: boolean

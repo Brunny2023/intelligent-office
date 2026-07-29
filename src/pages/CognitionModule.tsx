@@ -8,11 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Brain, Crown, Users, Building2, Sparkles, Send, Loader2, ChevronRight, BookOpen, CheckSquare, ThumbsUp, ThumbsDown, MessageSquare, Shield, ShieldCheck, ShieldAlert, Activity, Search as SearchIcon, TrendingUp, TrendingDown, Trash2 } from "lucide-react";
+import { Brain, Crown, Users, Building2, Sparkles, Send, Loader2, ChevronRight, BookOpen, CheckSquare, ThumbsUp, ThumbsDown, MessageSquare, Shield, ShieldCheck, ShieldAlert, Activity, Search as SearchIcon, TrendingUp, TrendingDown, Trash2, Check, X, History } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import GovernancePanel from "@/components/cognition/GovernancePanel";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 interface Executive { id: string; role: string; title: string; mandate: string | null; tone: string | null; is_active: boolean; }
 interface Consultant { id: string; domain: string; title: string; expertise: string | null; is_active: boolean; reporting_executive_id: string | null; }
@@ -42,6 +43,8 @@ export default function CognitionModule() {
   const [auditSteps, setAuditSteps] = useState<any[] | null>(null);
   const [activeTab, setActiveTab] = useState("deliberations");
   const [searchParams, setSearchParams] = useSearchParams();
+  const [reviewTarget, setReviewTarget] = useState<{ memory: MemoryRow; action: "approve" | "reject" } | null>(null);
+  const [reviewReason, setReviewReason] = useState("");
 
   // Wave 6: honor ?prefill=… so proactive nominations and the Ask Leadership
   // FAB can land the user directly on the composer with the prompt loaded.
@@ -96,6 +99,23 @@ export default function CognitionModule() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, org?.id]);
 
+  const logMemoryEvent = async (m: MemoryRow | null, action: string, extras: { reason?: string | null; prev_score?: number | null; new_score?: number | null; }) => {
+    if (!org?.id) return;
+    const { data: userData } = await supabase.auth.getUser();
+    const uid = userData.user?.id;
+    if (!uid) return;
+    await supabase.from("memory_feedback_events" as any).insert({
+      organization_id: org.id,
+      memory_id: m?.id ?? null,
+      user_id: uid,
+      action,
+      reason: extras.reason ?? null,
+      prev_score: extras.prev_score ?? null,
+      new_score: extras.new_score ?? null,
+      memory_title: m?.title ?? null,
+    } as any);
+  };
+
   const rateMemory = async (m: MemoryRow, direction: "up" | "down") => {
     setMemorySaving(m.id);
     const delta = direction === "up" ? 0.5 : -0.5;
@@ -107,6 +127,7 @@ export default function CognitionModule() {
     setMemorySaving(null);
     if (error) return toast({ title: "Update failed", description: error.message, variant: "destructive" });
     setMemory(prev => prev.map(x => x.id === m.id ? { ...x, relevance_score: next } : x));
+    await logMemoryEvent(m, direction === "up" ? "boost" : "dampen", { prev_score: current, new_score: next });
     toast({ title: direction === "up" ? "Boosted" : "Dampened", description: "Leadership will weigh this memory accordingly." });
   };
 
@@ -128,6 +149,7 @@ export default function CognitionModule() {
     setMemorySaving(null);
     if (error) return toast({ title: "Feedback failed", description: error.message, variant: "destructive" });
     setMemoryComment(prev => ({ ...prev, [m.id]: "" }));
+    await logMemoryEvent(m, "comment", { reason: note });
     toast({ title: "Feedback saved", description: "Recorded as a new memory the leadership will consult." });
     loadMemory();
   };
@@ -139,7 +161,41 @@ export default function CognitionModule() {
     setMemorySaving(null);
     if (error) return toast({ title: "Delete failed", description: error.message, variant: "destructive" });
     setMemory(prev => prev.filter(x => x.id !== m.id));
+    await logMemoryEvent(m, "delete", { prev_score: m.relevance_score ?? null });
     toast({ title: "Memory removed" });
+  };
+
+  const openReview = (m: MemoryRow, action: "approve" | "reject") => {
+    setReviewTarget({ memory: m, action });
+    setReviewReason("");
+  };
+
+  const submitReview = async () => {
+    if (!reviewTarget) return;
+    const reason = reviewReason.trim();
+    if (!reason) {
+      toast({ title: "Reason required", description: "Tell leadership why this memory is being " + reviewTarget.action + "d.", variant: "destructive" });
+      return;
+    }
+    const { memory: m, action } = reviewTarget;
+    setMemorySaving(m.id);
+    const current = typeof m.relevance_score === "number" ? m.relevance_score : 1;
+    const next = action === "approve"
+      ? Math.min(10, current + 1.5)
+      : Math.max(0.1, current - 2.0);
+    const { error } = await supabase.from("organizational_memory")
+      .update({ relevance_score: next, last_referenced_at: new Date().toISOString() })
+      .eq("id", m.id);
+    if (error) {
+      setMemorySaving(null);
+      return toast({ title: "Review failed", description: error.message, variant: "destructive" });
+    }
+    await logMemoryEvent(m, action, { reason, prev_score: current, new_score: next });
+    setMemory(prev => prev.map(x => x.id === m.id ? { ...x, relevance_score: next } : x));
+    setMemorySaving(null);
+    setReviewTarget(null);
+    setReviewReason("");
+    toast({ title: action === "approve" ? "Memory approved" : "Memory rejected", description: "Recorded in the memory audit trail." });
   };
 
   useEffect(() => { load(); }, [org?.id]);
@@ -536,6 +592,14 @@ export default function CognitionModule() {
                           disabled={memorySaving === m.id} onClick={() => rateMemory(m, "down")}>
                           <TrendingDown className="w-3 h-3" /> Dampen
                         </Button>
+                        <Button size="sm" variant="outline" className="h-7 px-2 gap-1 text-xs text-emerald-500 hover:text-emerald-600"
+                          disabled={memorySaving === m.id} onClick={() => openReview(m, "approve")}>
+                          <Check className="w-3 h-3" /> Approve
+                        </Button>
+                        <Button size="sm" variant="outline" className="h-7 px-2 gap-1 text-xs text-destructive hover:text-destructive"
+                          disabled={memorySaving === m.id} onClick={() => openReview(m, "reject")}>
+                          <X className="w-3 h-3" /> Reject
+                        </Button>
                         <Button size="sm" variant="ghost" className="h-7 px-2 gap-1 text-xs ml-auto text-muted-foreground hover:text-destructive"
                           disabled={memorySaving === m.id} onClick={() => removeMemory(m)}>
                           <Trash2 className="w-3 h-3" />
@@ -562,7 +626,48 @@ export default function CognitionModule() {
             )}
           </TabsContent>
         </Tabs>
+        <div className="flex justify-end">
+          <Link to="/memory-audit" className="text-xs text-accent hover:underline inline-flex items-center gap-1">
+            <History className="w-3 h-3" /> View memory audit trail
+          </Link>
+        </div>
       </div>
+      <Dialog open={!!reviewTarget} onOpenChange={(open) => { if (!open) { setReviewTarget(null); setReviewReason(""); } }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {reviewTarget?.action === "approve" ? "Approve memory" : "Reject memory"}
+            </DialogTitle>
+            <DialogDescription>
+              {reviewTarget?.action === "approve"
+                ? "Leadership will weight this memory more heavily in future deliberations."
+                : "Leadership will avoid relying on this memory. A reason is required and recorded to the audit trail."}
+            </DialogDescription>
+          </DialogHeader>
+          {reviewTarget && (
+            <div className="space-y-3">
+              <div className="rounded-lg bg-muted/40 p-3">
+                <div className="text-xs font-medium text-foreground truncate">{reviewTarget.memory.title}</div>
+                <p className="text-xs text-muted-foreground line-clamp-3 mt-1">{reviewTarget.memory.content}</p>
+              </div>
+              <Textarea
+                value={reviewReason}
+                onChange={(e) => setReviewReason(e.target.value)}
+                placeholder="Reason (required) — explain why this memory should be trusted or avoided…"
+                className="min-h-[100px]"
+                autoFocus
+              />
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setReviewTarget(null); setReviewReason(""); }}>Cancel</Button>
+            <Button onClick={submitReview} disabled={!reviewReason.trim() || !!memorySaving}
+              className={reviewTarget?.action === "reject" ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : ""}>
+              {reviewTarget?.action === "approve" ? "Approve memory" : "Reject memory"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 }
