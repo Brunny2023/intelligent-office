@@ -213,8 +213,8 @@ const MeetingsModule = () => {
       mr.onstop = async () => {
         if (rescanRef.current) { clearInterval(rescanRef.current); rescanRef.current = null; }
         localStream.getTracks().forEach(t => t.stop());
-        sources.forEach(s => { try { s.disconnect(); } catch {} });
-        try { await ctx.close(); } catch {}
+        sources.forEach(s => { try { s.disconnect(); } catch { /* noop */ } });
+        try { await ctx.close(); } catch { /* noop */ }
         const blob = new Blob(chunksRef.current, { type: mime });
         await uploadRecording(blob);
       };
