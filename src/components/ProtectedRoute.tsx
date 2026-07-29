@@ -1,6 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate, useLocation } from "react-router-dom";
 import TenantGuard from "@/components/TenantGuard";
+import RoleGuard from "@/components/RoleGuard";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -18,7 +19,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/signin" state={{ from: location }} replace />;
   }
 
-  return <TenantGuard>{children}</TenantGuard>;
+  return (
+    <TenantGuard>
+      <RoleGuard>{children}</RoleGuard>
+    </TenantGuard>
+  );
 };
 
 export default ProtectedRoute;

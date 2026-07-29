@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useUserRole } from "@/hooks/useUserRole";
+import { usePlatformAdmin } from "@/hooks/usePlatformAdmin";
 import { isPathAllowed, roleLanding } from "@/lib/roleNav";
 
 /**
@@ -9,9 +10,10 @@ import { isPathAllowed, roleLanding } from "@/lib/roleNav";
  */
 const RoleGuard = ({ children }: { children: React.ReactNode }) => {
   const { role, loading } = useUserRole();
+  const { isPlatformAdmin, loading: paLoading } = usePlatformAdmin();
   const location = useLocation();
 
-  if (loading || !role) return <>{children}</>;
+  if (loading || paLoading || !role || isPlatformAdmin) return <>{children}</>;
 
   if (!isPathAllowed(role, location.pathname)) {
     return <Navigate to={roleLanding(role)} replace />;
