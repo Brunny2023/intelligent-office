@@ -14,6 +14,7 @@ import {
   Activity, Ticket, BarChart3, HeartPulse, Search, TrendingUp, AlertCircle, CheckCircle2, Video
 } from "lucide-react";
 import EgressHealthPanel from "@/components/superadmin/EgressHealthPanel";
+import AdoptionTelemetry from "@/components/superadmin/AdoptionTelemetry";
 import { format, formatDistanceToNow } from "date-fns";
 
 interface PlatformStats {
@@ -131,6 +132,7 @@ const SuperAdmin = () => {
           <TabsList className="bg-muted/50">
             <TabsTrigger value="tenants" className="gap-1.5"><Building2 className="w-4 h-4" /> Tenants</TabsTrigger>
             <TabsTrigger value="usage" className="gap-1.5"><BarChart3 className="w-4 h-4" /> Usage</TabsTrigger>
+            <TabsTrigger value="adoption" className="gap-1.5"><TrendingUp className="w-4 h-4" /> Adoption</TabsTrigger>
             <TabsTrigger value="health" className="gap-1.5"><HeartPulse className="w-4 h-4" /> System Health</TabsTrigger>
             <TabsTrigger value="egress" className="gap-1.5"><Video className="w-4 h-4" /> Egress</TabsTrigger>
             <TabsTrigger value="audit" className="gap-1.5"><Activity className="w-4 h-4" /> Audit</TabsTrigger>
@@ -209,6 +211,7 @@ const SuperAdmin = () => {
           </TabsContent>
 
           <TabsContent value="health">
+            {null}
             <Card>
               <CardHeader><CardTitle className="text-base flex items-center gap-2"><HeartPulse className="w-4 h-4" /> System Health Probes</CardTitle></CardHeader>
               <CardContent className="space-y-2">
