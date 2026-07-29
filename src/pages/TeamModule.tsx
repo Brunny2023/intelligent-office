@@ -70,7 +70,7 @@ const TeamModule = () => {
     }
     // Copy invite link
     const inviteLink = `${window.location.origin}/signup?invite=${data.token}`;
-    try { await navigator.clipboard.writeText(inviteLink); } catch {}
+    try { await navigator.clipboard.writeText(inviteLink); } catch { /* noop */ }
     toast.success("Invitation sent! Link copied to clipboard.");
     setDialogOpen(false);
     setForm({ email: "", role: "staff", departmentId: "", jobTitle: "" });
