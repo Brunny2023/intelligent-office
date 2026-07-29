@@ -151,7 +151,7 @@ const Investors = () => {
     };
 
     const undoRobots = setMeta("robots", "noindex,nofollow,noarchive,nosnippet");
-    const undoDesc = setMeta("description", "Confidential investor brief for Global Office — the Organizational Intelligence Layer: an AI-native cognition platform with a virtual C-suite, expert consultants, and AI-run departments reasoning on your own data.");
+    const undoDesc = setMeta("description", "Confidential investor brief for Global Office — the Intelligent Digital Office, built on the Organizational Intelligence Layer: an AI-native cognition platform with a virtual C-suite, expert consultants, and AI-run departments.");
 
     // Load editorial serif for this page only
     const link = document.createElement("link");
@@ -185,9 +185,12 @@ const Investors = () => {
               Global Office · Investor Brief · MMXXVI
             </p>
             <h1 className="mt-6 text-5xl md:text-7xl lg:text-8xl leading-[0.95] max-w-5xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontWeight: 400, letterSpacing: "-0.02em" }}>
-              The Organizational Intelligence Layer.
+              The Intelligent Digital Office.
             </h1>
-            <p className="mt-8 max-w-2xl text-lg md:text-xl leading-[1.6]" style={{ color: `${NAVY}CC` }}>
+            <p className="mt-6 max-w-2xl text-base md:text-lg leading-[1.6]" style={{ color: `${NAVY}99` }}>
+              Customers buy an <strong style={{ color: NAVY }}>Intelligent Digital Office</strong> — the place their whole company operates, without the bricks. What they are actually adopting is the <strong style={{ color: NAVY }}>Organizational Intelligence Layer</strong>: the graph and cognition substrate underneath. The office is the wedge; the intelligence layer is the moat.
+            </p>
+            <p className="mt-6 max-w-2xl text-lg md:text-xl leading-[1.6]" style={{ color: `${NAVY}CC` }}>
               Microsoft owns documents. Google owns communication. Salesforce owns customers. SAP owns resources. Notion owns knowledge. <strong style={{ color: NAVY }}>Global Office owns organizational intelligence</strong> — the cognition platform underneath, with a virtual C-suite, expert AI consultants, and AI-run departments that reason, decide, and remember on your organization's own data.
             </p>
           </div>
@@ -309,7 +312,10 @@ const Investors = () => {
         <ProductProof />
         <DemoVideoBlock />
 
-        <Section id="category" eyebrow="11 — Category Definition" title="Global Office is not office software. It is the Organizational Intelligence Layer.">
+        <Section id="category" eyebrow="11 — Category Definition" title="Sold as an Intelligent Digital Office. Built as the Organizational Intelligence Layer.">
+          <p>
+            Two words matter here, and they are not interchangeable. <strong>Intelligent Digital Office</strong> is what a buyer signs for: a single place where their company operates end to end — presence, execution, meetings, documents, HR, finance, governance — without a physical office. <strong>Organizational Intelligence Layer</strong> is what we are building underneath it: the knowledge graph and cognition substrate that makes that office reason, decide, and remember. Buyers adopt the office; the layer is what makes them unable to leave.
+          </p>
           <p>
             Every prior category — ERP, CRM, collaboration, project management, HRIS, BI — was a surface for a function. Global Office is a substrate for the organization itself. The distinction is architectural, not marketing.
           </p>

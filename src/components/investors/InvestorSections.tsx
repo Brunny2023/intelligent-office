@@ -20,7 +20,7 @@ const GOLD = "#B8892E";
 export const InvestorBrief = () => {
   const items = [
     { k: "Problem", v: "Organizations have data. They do not have intelligence. Work fragments across 10–30 disconnected tools." },
-    { k: "Solution", v: "The Organizational Intelligence Layer — delivered as an AI Business Operating System." },
+    { k: "Solution", v: "An Intelligent Digital Office for customers — the Organizational Intelligence Layer underneath it." },
     { k: "Market", v: "~$1.05T global enterprise software spend. ~$180B unified-suite SAM. Developed-market lead motion." },
     { k: "Why Now", v: "Generative AI has crossed utility; SaaS unbundling has run its course; the rebundling window is open." },
     { k: "Moat", v: "Graph-centric architecture that compounds with every user action. Incumbents cannot retrofit it." },

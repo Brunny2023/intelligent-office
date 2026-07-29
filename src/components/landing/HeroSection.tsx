@@ -48,7 +48,7 @@ const HeroSection = () => {
           >
             <div className="w-1.5 h-1.5 rounded-full bg-svo-gold animate-pulse" />
             <span className="text-xs font-medium text-svo-gold-light tracking-wide uppercase">
-              AI-Native Corporate OS
+              The Intelligent Digital Office
             </span>
           </motion.div>
 
@@ -58,8 +58,8 @@ const HeroSection = () => {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight text-primary-foreground leading-[1.1] text-balance"
           >
-            The Organizational{" "}
-            <span className="gradient-text">Intelligence Layer</span>
+            Run your whole company{" "}
+            <span className="gradient-text">without the bricks</span>
           </motion.h1>
 
           <motion.p
@@ -68,9 +68,10 @@ const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.25 }}
             className="mt-6 text-lg md:text-xl text-primary-foreground/60 max-w-2xl mx-auto text-balance leading-relaxed"
           >
-            Global Office is the enterprise cognition platform underneath — a virtual
-            C-suite, expert consultants, and AI-run departments that reason, decide,
-            and remember on your own data, so your organization gets smarter every day.
+            Global Office is the intelligent digital office where your business actually
+            operates — people, execution, meetings, HR and finance in one place, run on an
+            AI cognition layer with a virtual C-suite, expert consultants, and AI-run
+            departments that reason, decide, and remember on your own data.
           </motion.p>
 
           <motion.div
