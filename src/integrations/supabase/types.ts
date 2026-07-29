@@ -973,6 +973,124 @@ export type Database = {
           },
         ]
       }
+      investor_analytics: {
+        Row: {
+          event_type: string
+          id: string
+          meeting_id: string | null
+          metadata: Json
+          occurred_at: string
+          visitor_id: string | null
+        }
+        Insert: {
+          event_type: string
+          id?: string
+          meeting_id?: string | null
+          metadata?: Json
+          occurred_at?: string
+          visitor_id?: string | null
+        }
+        Update: {
+          event_type?: string
+          id?: string
+          meeting_id?: string | null
+          metadata?: Json
+          occurred_at?: string
+          visitor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_analytics_meeting_id_fkey"
+            columns: ["meeting_id"]
+            isOneToOne: false
+            referencedRelation: "investor_meetings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      investor_meeting_qa: {
+        Row: {
+          answer: Json
+          created_at: string
+          id: string
+          latency_ms: number | null
+          meeting_id: string | null
+          room_name: string
+          utterance: string
+        }
+        Insert: {
+          answer: Json
+          created_at?: string
+          id?: string
+          latency_ms?: number | null
+          meeting_id?: string | null
+          room_name: string
+          utterance: string
+        }
+        Update: {
+          answer?: Json
+          created_at?: string
+          id?: string
+          latency_ms?: number | null
+          meeting_id?: string | null
+          room_name?: string
+          utterance?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_meeting_qa_meeting_id_fkey"
+            columns: ["meeting_id"]
+            isOneToOne: false
+            referencedRelation: "investor_meetings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      investor_meetings: {
+        Row: {
+          access_token: string
+          created_at: string
+          host_user_id: string | null
+          id: string
+          investor_email: string
+          investor_name: string
+          investor_org: string | null
+          notes: string | null
+          room_name: string
+          scheduled_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          access_token?: string
+          created_at?: string
+          host_user_id?: string | null
+          id?: string
+          investor_email: string
+          investor_name: string
+          investor_org?: string | null
+          notes?: string | null
+          room_name: string
+          scheduled_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          host_user_id?: string | null
+          id?: string
+          investor_email?: string
+          investor_name?: string
+          investor_org?: string | null
+          notes?: string | null
+          room_name?: string
+          scheduled_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       invitations: {
         Row: {
           accepted_at: string | null
