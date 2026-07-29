@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2, Sparkles, CheckCircle2, FileText, ListChecks, Languages } from "lucide-react";
+import { Loader2, Sparkles, CheckCircle2, FileText, ListChecks, Languages, Download } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
@@ -67,6 +67,42 @@ export default function PostMeetingPanel({ recordingId, onDone }: Props) {
     load();
   };
 
+  const downloadSummary = (fmt: "md" | "txt") => {
+    if (!summary) return;
+    const decisions: string[] = summary.key_decisions ?? [];
+    const acts: any[] = summary.action_items ?? [];
+    const lines: string[] = [];
+    const H = (s: string) => fmt === "md" ? `# ${s}` : s.toUpperCase();
+    const H2 = (s: string) => fmt === "md" ? `## ${s}` : `\n${s}\n${"-".repeat(s.length)}`;
+    lines.push(H("Meeting Summary"));
+    lines.push(`Generated: ${new Date().toLocaleString()}`);
+    if (summary.sentiment) lines.push(`Sentiment: ${summary.sentiment}`);
+    lines.push("", H2("Summary"), summary.summary ?? "");
+    if (decisions.length) {
+      lines.push("", H2("Key Decisions"));
+      decisions.forEach((d) => lines.push(fmt === "md" ? `- ${d}` : `• ${d}`));
+    }
+    if (acts.length) {
+      lines.push("", H2("Action Items"));
+      acts.forEach((it, i) => {
+        const meta = [it.assignee_hint && `owner: ${it.assignee_hint}`, it.due_hint && `due: ${it.due_hint}`, it.priority && `priority: ${it.priority}`].filter(Boolean).join(" · ");
+        lines.push(fmt === "md"
+          ? `${i + 1}. **${it.title}**${meta ? ` _(${meta})_` : ""}${it.description ? `\n   - ${it.description}` : ""}`
+          : `${i + 1}. ${it.title}${meta ? ` (${meta})` : ""}${it.description ? `\n   ${it.description}` : ""}`);
+      });
+    }
+    if (transcript?.full_text) {
+      lines.push("", H2("Transcript"), transcript.full_text);
+    }
+    const blob = new Blob([lines.join("\n")], { type: fmt === "md" ? "text/markdown" : "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `meeting-summary-${recordingId.slice(0, 8)}.${fmt}`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  };
+
   if (loading) return <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin" /></div>;
 
   const items: any[] = summary?.action_items ?? [];
@@ -75,10 +111,10 @@ export default function PostMeetingPanel({ recordingId, onDone }: Props) {
     <div className="space-y-4">
       {!transcript && (
         <div className="glass-card rounded-xl p-4 flex items-center justify-between">
-          <div className="text-sm text-muted-foreground">Recording is uploaded but not yet analyzed.</div>
+          <div className="text-sm text-muted-foreground">Recording is uploaded. Generate an instant summary with action points.</div>
           <Button onClick={runAnalysis} disabled={processing} className="rounded-xl bg-svo-blue text-white">
             {processing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
-            Transcribe & Summarize
+            Summarize now
           </Button>
         </div>
       )}
@@ -95,7 +131,17 @@ export default function PostMeetingPanel({ recordingId, onDone }: Props) {
       {summary && (
         <>
           <div className="glass-card rounded-xl p-4 space-y-2">
-            <div className="text-sm font-semibold flex items-center gap-2"><Sparkles className="w-4 h-4 text-accent" /> Summary</div>
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-semibold flex items-center gap-2"><Sparkles className="w-4 h-4 text-accent" /> Summary</div>
+              <div className="flex gap-1">
+                <Button size="sm" variant="outline" onClick={() => downloadSummary("md")} className="rounded-lg h-8 text-xs">
+                  <Download className="w-3 h-3 mr-1" /> .md
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => downloadSummary("txt")} className="rounded-lg h-8 text-xs">
+                  <Download className="w-3 h-3 mr-1" /> .txt
+                </Button>
+              </div>
+            </div>
             <p className="text-sm text-muted-foreground">{summary.summary}</p>
             {summary.sentiment && <Badge variant="outline" className="text-[10px]">Sentiment: {summary.sentiment}</Badge>}
             <div className="flex gap-2 pt-1">
