@@ -50,10 +50,10 @@ const ValueSection = () => {
         >
           <span className="text-xs font-semibold text-svo-gold uppercase tracking-widest">Three Integrated Layers</span>
           <h2 className="mt-4 text-3xl md:text-5xl font-bold tracking-tight text-foreground text-balance">
-            One platform. Three power layers.
+            One digital office. Three power layers.
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Each layer feeds intelligence to the next — creating a self-aware organization.
+            Your office runs on all three at once — each layer feeds intelligence to the next, creating a self-aware organization.
           </p>
         </motion.div>
 
