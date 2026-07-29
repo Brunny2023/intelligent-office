@@ -47,6 +47,158 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_consultants: {
+        Row: {
+          created_at: string
+          domain: string
+          expertise: string | null
+          id: string
+          is_active: boolean
+          organization_id: string
+          playbook: string | null
+          reporting_executive_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          domain: string
+          expertise?: string | null
+          id?: string
+          is_active?: boolean
+          organization_id: string
+          playbook?: string | null
+          reporting_executive_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          domain?: string
+          expertise?: string | null
+          id?: string
+          is_active?: boolean
+          organization_id?: string
+          playbook?: string | null
+          reporting_executive_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_consultants_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_consultants_reporting_executive_id_fkey"
+            columns: ["reporting_executive_id"]
+            isOneToOne: false
+            referencedRelation: "ai_executives"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_departments: {
+        Row: {
+          charter: string | null
+          consultant_id: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          organization_id: string
+          staffing: Json
+          updated_at: string
+        }
+        Insert: {
+          charter?: string | null
+          consultant_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          organization_id: string
+          staffing?: Json
+          updated_at?: string
+        }
+        Update: {
+          charter?: string | null
+          consultant_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          organization_id?: string
+          staffing?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_departments_consultant_id_fkey"
+            columns: ["consultant_id"]
+            isOneToOne: false
+            referencedRelation: "ai_consultants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_departments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_executives: {
+        Row: {
+          created_at: string
+          focus_kpis: string[]
+          id: string
+          is_active: boolean
+          mandate: string | null
+          organization_id: string
+          role: string
+          title: string
+          tone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          focus_kpis?: string[]
+          id?: string
+          is_active?: boolean
+          mandate?: string | null
+          organization_id: string
+          role: string
+          title: string
+          tone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          focus_kpis?: string[]
+          id?: string
+          is_active?: boolean
+          mandate?: string | null
+          organization_id?: string
+          role?: string
+          title?: string
+          tone?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_executives_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_insights: {
         Row: {
           content: string
@@ -378,6 +530,117 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cognition_requests: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          intent: string | null
+          latency_ms: number | null
+          organization_id: string
+          outcome: Json | null
+          request: string
+          requested_by: string
+          status: string
+          target_department_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          intent?: string | null
+          latency_ms?: number | null
+          organization_id: string
+          outcome?: Json | null
+          request: string
+          requested_by: string
+          status?: string
+          target_department_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          intent?: string | null
+          latency_ms?: number | null
+          organization_id?: string
+          outcome?: Json | null
+          request?: string
+          requested_by?: string
+          status?: string
+          target_department_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cognition_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cognition_requests_target_department_id_fkey"
+            columns: ["target_department_id"]
+            isOneToOne: false
+            referencedRelation: "ai_departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cognition_steps: {
+        Row: {
+          actor_label: string | null
+          actor_type: string | null
+          created_at: string
+          id: string
+          organization_id: string
+          output: Json | null
+          reasoning: string | null
+          request_id: string
+          stage: string
+          step_order: number
+        }
+        Insert: {
+          actor_label?: string | null
+          actor_type?: string | null
+          created_at?: string
+          id?: string
+          organization_id: string
+          output?: Json | null
+          reasoning?: string | null
+          request_id: string
+          stage: string
+          step_order: number
+        }
+        Update: {
+          actor_label?: string | null
+          actor_type?: string | null
+          created_at?: string
+          id?: string
+          organization_id?: string
+          output?: Json | null
+          reasoning?: string | null
+          request_id?: string
+          stage?: string
+          step_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cognition_steps_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cognition_steps_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "cognition_requests"
             referencedColumns: ["id"]
           },
         ]
@@ -2030,6 +2293,57 @@ export type Database = {
           },
         ]
       }
+      organizational_memory: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          memory_type: string
+          organization_id: string
+          source_request_id: string | null
+          tags: string[]
+          title: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          memory_type: string
+          organization_id: string
+          source_request_id?: string | null
+          tags?: string[]
+          title: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          memory_type?: string
+          organization_id?: string
+          source_request_id?: string | null
+          tags?: string[]
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organizational_memory_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organizational_memory_source_request_id_fkey"
+            columns: ["source_request_id"]
+            isOneToOne: false
+            referencedRelation: "cognition_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           brand_tagline: string | null
@@ -2988,6 +3302,7 @@ export type Database = {
         }[]
       }
       retention_purge: { Args: never; Returns: Json }
+      seed_cognition_defaults: { Args: { _org: string }; Returns: undefined }
       sign_memo: { Args: { _memo_id: string }; Returns: Json }
       verify_memo_signature: { Args: { _memo_id: string }; Returns: Json }
       workflow_instantiate: {
