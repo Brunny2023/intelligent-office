@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, Sparkles, CheckCircle2, FileText, ListChecks, Languages, Download } from "lucide-react";
 import { toast } from "sonner";
+import { triggerCognition } from "@/lib/cognition";
+import { Brain } from "lucide-react";
 
 interface Props {
   recordingId: string;
@@ -73,6 +75,19 @@ export default function PostMeetingPanel({ recordingId, onDone }: Props) {
     if (error || (data as any)?.error) { toast.error((data as any)?.error ?? error?.message ?? "Translate failed"); return; }
     toast.success(`Translated to ${target}`);
     load();
+  };
+
+  const deliberateOnMeeting = async () => {
+    if (!summary) return;
+    const decisions: string[] = summary.key_decisions ?? [];
+    const acts: any[] = summary.action_items ?? [];
+    const brief =
+      `Meeting just concluded. Summary: ${summary.summary}\n` +
+      (decisions.length ? `Key decisions: ${decisions.join("; ")}\n` : "") +
+      (acts.length ? `Action items surfaced: ${acts.map((a: any) => a.title).join("; ")}\n` : "") +
+      `Deliberate on next steps, risks, owners, and any policy-relevant follow-ups.`;
+    await triggerCognition(brief);
+    toast.success("Leadership deliberating — see /cognition for the trace");
   };
 
   const downloadSummary = (fmt: "md" | "txt") => {
@@ -148,6 +163,9 @@ export default function PostMeetingPanel({ recordingId, onDone }: Props) {
                 <Button size="sm" variant="outline" onClick={() => downloadSummary("txt")} className="rounded-lg h-8 text-xs">
                   <Download className="w-3 h-3 mr-1" /> .txt
                 </Button>
+              <Button size="sm" onClick={deliberateOnMeeting} className="rounded-lg h-8 text-xs bg-accent text-accent-foreground">
+                <Brain className="w-3 h-3 mr-1" /> Deliberate
+              </Button>
               </div>
             </div>
             <p className="text-sm text-muted-foreground">{summary.summary}</p>
