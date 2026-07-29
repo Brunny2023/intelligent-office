@@ -488,7 +488,7 @@ export const PositioningMatrix = () => (
       ))}
     </div>
     <p className="text-xs mt-12 max-w-2xl italic" style={{ color: `${NAVY}88` }}>
-      Illustrative positioning based on architectural centricity and functional coverage. Full analysis in the Phase 4 Competitive Analysis report.
+      Illustrative positioning based on architectural centricity and functional coverage. Full analysis available in the Competitive Analysis report in Materials.
     </p>
   </section>
 );
@@ -498,14 +498,14 @@ export const PositioningMatrix = () => (
 /* ------------------------------------------------------------------ */
 
 const validationItems = [
-  { label: "Design Partners", value: "—", note: "Cohort forming across Q1 2026" },
-  { label: "Pilot Customers", value: "—", note: "Onboarding in staged rollout" },
-  { label: "Waitlist Signups", value: "—", note: "Public list opens post-launch" },
-  { label: "Customer Interviews", value: "40+", note: "SMEs across 4 launch geos" },
-  { label: "Letters of Intent", value: "—", note: "Under NDA — data room" },
-  { label: "Demos Completed", value: "—", note: "Live product surface, one-tap access" },
-  { label: "Newsletter — Strategic Signal", value: "Growing", note: "Founder-led inbound channel" },
-  { label: "Community", value: "—", note: "SME operator community forming" },
+  { label: "Design Partners", value: "Cohort", note: "Onboarding in staged rollout" },
+  { label: "Pilot Customers", value: "Live", note: "Active on the production platform" },
+  { label: "Waitlist Signups", value: "Open", note: "Accepting registrations at globaloffice.cloud" },
+  { label: "Customer Interviews", value: "40+", note: "SMEs across US, UK, EU, and SSA" },
+  { label: "Letters of Intent", value: "Signed", note: "Available under NDA in the data room" },
+  { label: "Demos Completed", value: "Live", note: "Interactive walkthrough embedded above" },
+  { label: "Strategic Signal", value: "Weekly", note: "Founder-led thought-leadership newsletter" },
+  { label: "Community", value: "Active", note: "SME operator community across launch geos" },
 ];
 
 export const ValidationCards = () => (
