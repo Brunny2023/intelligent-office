@@ -151,7 +151,7 @@ const Investors = () => {
     };
 
     const undoRobots = setMeta("robots", "noindex,nofollow,noarchive,nosnippet");
-    const undoDesc = setMeta("description", "Confidential investor brief for Global Office — the Organizational Intelligence Layer: an AI-native cognition platform with a virtual C-suite, expert consultants, and AI-run departments reasoning on your own data.");
+    const undoDesc = setMeta("description", "Confidential investor brief for Global Office — the Intelligent Digital Office, built on the Organizational Intelligence Layer: an AI-native cognition platform with a virtual C-suite, expert consultants, and AI-run departments.");
 
     // Load editorial serif for this page only
     const link = document.createElement("link");
