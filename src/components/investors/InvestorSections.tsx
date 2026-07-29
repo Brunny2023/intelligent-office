@@ -1,10 +1,12 @@
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
 import {
   ArrowDown, ArrowUp, Play, Building2, MessageSquare, Users, Database,
   Brain, Workflow, Target, TrendingUp, FileText, DollarSign, Sparkles,
-  CircleDot, Layers, Network, Zap
+  CircleDot, Layers, Network, Zap, Maximize2, Minimize2, Pause
 } from "lucide-react";
+import { MockupShell, type MockView } from "@/components/mockups/shell";
+import { VIEW_META } from "@/components/mockups/views";
 
 const NAVY = "#0B1533";
 const BONE = "#F5F1E8";
@@ -296,28 +298,134 @@ export const DemoVideoBlock = () => (
     <h2 className="text-3xl md:text-5xl leading-[1.05] mb-6 max-w-4xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: NAVY, fontWeight: 400, letterSpacing: "-0.01em" }}>
       See organizational intelligence in action.
     </h2>
-    <div
-      className="relative aspect-video max-w-4xl rounded-lg overflow-hidden group cursor-pointer"
-      style={{ background: NAVY, border: `1px solid ${GOLD}44` }}
-      onClick={() => window.open("/demo", "_blank")}
-    >
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-        <motion.div
-          whileHover={{ scale: 1.1 }}
-          transition={{ type: "spring", stiffness: 300 }}
-          className="w-20 h-20 rounded-full flex items-center justify-center"
-          style={{ background: GOLD, boxShadow: `0 0 40px ${GOLD}66` }}
-        >
-          <Play className="w-8 h-8 ml-1" style={{ color: NAVY }} fill={NAVY} />
-        </motion.div>
-        <p className="text-sm tracking-[0.2em] uppercase" style={{ color: BONE, fontFamily: "'Space Grotesk', sans-serif" }}>
-          90-second walkthrough
-        </p>
-        <p className="text-xs" style={{ color: `${BONE}77` }}>Click to open the live product demo →</p>
-      </div>
-    </div>
+    <p className="max-w-3xl text-[15px] leading-[1.75] mb-8" style={{ color: `${NAVY}CC` }}>
+      A live, continuously looping tour of the platform — sample org "Aurora Labs". Expand to fullscreen for a boardroom view.
+    </p>
+    <EmbeddedTour />
   </section>
 );
+
+/* ------------------------------------------------------------------ */
+/* Embedded auto-looping walkthrough                                   */
+/* ------------------------------------------------------------------ */
+
+const TOUR: MockView[] = [
+  "dashboard", "executive", "kpi", "graph", "ai",
+  "attendance", "planning", "tasks", "meetings",
+  "messages", "announcements", "workflows", "hr", "finance", "team",
+];
+const STEP_MS = 4600;
+
+const cx = (...parts: Array<string | false | undefined>) => parts.filter(Boolean).join(" ");
+
+const EmbeddedTour = () => {
+  const [view, setView] = useState<MockView>("dashboard");
+  const [autoplay, setAutoplay] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const [fullscreen, setFullscreen] = useState(false);
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!autoplay) return;
+    const start = Date.now();
+    const tick = setInterval(() => {
+      setProgress(Math.min(100, ((Date.now() - start) / STEP_MS) * 100));
+    }, 80);
+    const next = setTimeout(() => {
+      const idx = TOUR.indexOf(view);
+      setView(TOUR[(idx + 1) % TOUR.length]);
+      setProgress(0);
+    }, STEP_MS);
+    return () => { clearInterval(tick); clearTimeout(next); };
+  }, [view, autoplay]);
+
+  useEffect(() => {
+    const onFs = () => setFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", onFs);
+    return () => document.removeEventListener("fullscreenchange", onFs);
+  }, []);
+
+  const toggleFullscreen = async () => {
+    if (!wrapRef.current) return;
+    if (!document.fullscreenElement) {
+      await wrapRef.current.requestFullscreen().catch(() => {});
+    } else {
+      await document.exitFullscreen().catch(() => {});
+    }
+  };
+
+  const meta = VIEW_META[view];
+  const Comp = meta.Component;
+
+  return (
+    <div
+      ref={wrapRef}
+      className={cx(
+        "relative overflow-hidden border shadow-2xl bg-white",
+        fullscreen ? "w-screen h-screen rounded-none" : "rounded-xl aspect-[16/10] w-full max-w-5xl"
+      )}
+      style={{ borderColor: `${GOLD}44` }}
+    >
+      <div className="absolute top-3 right-3 z-20 flex items-center gap-2">
+        <button
+          onClick={() => setAutoplay((a) => !a)}
+          className="w-8 h-8 rounded-md bg-black/60 backdrop-blur text-white hover:bg-black/80 flex items-center justify-center transition"
+          aria-label={autoplay ? "Pause tour" : "Play tour"}
+        >
+          {autoplay ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+        </button>
+        <button
+          onClick={toggleFullscreen}
+          className="w-8 h-8 rounded-md bg-black/60 backdrop-blur text-white hover:bg-black/80 flex items-center justify-center transition"
+          aria-label={fullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+        >
+          {fullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+        </button>
+      </div>
+
+      <div className="absolute top-0 left-0 right-0 h-0.5 bg-black/10 z-20">
+        <div className="h-full transition-all duration-100" style={{ width: `${progress}%`, background: GOLD }} />
+      </div>
+
+      <div className="absolute inset-0">
+        <MockupShell
+          view={view}
+          onNav={(v) => { setAutoplay(false); setView(v); setProgress(0); }}
+          pageTitle={meta.title}
+          pageSubtitle={meta.subtitle}
+          headerIcon={meta.Icon ? <meta.Icon className="w-6 h-6 text-svo-gold" /> : undefined}
+        >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={view}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.22 }}
+            >
+              <Comp />
+            </motion.div>
+          </AnimatePresence>
+        </MockupShell>
+      </div>
+
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5">
+        {TOUR.map((v) => (
+          <button
+            key={v}
+            onClick={() => { setAutoplay(false); setView(v); setProgress(0); }}
+            className="h-1.5 rounded-full transition-all"
+            style={{
+              width: v === view ? 20 : 6,
+              background: v === view ? GOLD : "rgba(255,255,255,0.5)",
+            }}
+            aria-label={`Go to ${v}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
 
 /* ------------------------------------------------------------------ */
 /* Positioning Matrix                                                  */
