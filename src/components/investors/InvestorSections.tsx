@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { MockupShell, type MockView } from "@/components/mockups/shell";
 import { VIEW_META } from "@/components/mockups/views";
+import EmbeddedTour from "@/components/mockups/EmbeddedTour";
 
 const NAVY = "#0B1533";
 const BONE = "#F5F1E8";

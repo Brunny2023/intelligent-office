@@ -4,6 +4,7 @@ import SocialProofBar from "@/components/landing/SocialProofBar";
 import ProblemSection from "@/components/landing/ProblemSection";
 import ValueSection from "@/components/landing/ValueSection";
 import FeaturesShowcase from "@/components/landing/FeaturesShowcase";
+import LiveDemoSection from "@/components/landing/LiveDemoSection";
 import TrustSection from "@/components/landing/TrustSection";
 import PricingSection from "@/components/landing/PricingSection";
 import TestimonialsSection from "@/components/landing/TestimonialsSection";
@@ -21,6 +22,7 @@ const Index = () => {
         <ProblemSection />
         <ValueSection />
         <FeaturesShowcase />
+        <LiveDemoSection />
         <TrustSection />
         <PricingSection />
         <TestimonialsSection />
