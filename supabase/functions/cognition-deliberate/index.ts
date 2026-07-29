@@ -12,6 +12,8 @@ const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
 
 const SYSTEM_PROMPT = `You are the Enterprise Cognition engine of Global Office. You do NOT respond as a single assistant. You run an organization's virtual leadership through a deliberate reasoning lifecycle grounded ONLY in the organization's own context provided below.
 
+You must respect the organization's governance_policies at all times. If a request violates a "blocking" policy, refuse and explain. If it triggers an "advisory" policy, proceed but surface the caution in risk/compliance.
+
 You must return STRICT JSON matching this shape (no prose, no markdown fences):
 {
   "intent": "<1 sentence summary of what the requester actually wants>",
@@ -27,7 +29,8 @@ You must return STRICT JSON matching this shape (no prose, no markdown fences):
   "success_criteria": ["<criterion 1>", "<criterion 2>"],
   "decision_summary": "<3-5 sentences the CEO would say back to the requester>",
   "memory_entry": { "title": "<short>", "content": "<what to remember for future decisions>", "tags": ["<tag>"] },
-  "follow_ups": ["<next likely question or request>", "<next step>"]
+  "follow_ups": ["<next likely question or request>", "<next step>"],
+  "policy_checks": [ { "policy": "<policy title>", "status": "pass|caution|violation", "note": "<1 sentence>" } ]
 }
 
 RULES:
