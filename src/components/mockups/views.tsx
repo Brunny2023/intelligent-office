@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import {
   Users, Clock, CheckSquare, TrendingUp, BarChart3, Brain, Target,
   AlertTriangle, Sparkles, Plus, Send, Video, Megaphone, Activity,
