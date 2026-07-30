@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Shield, KeyRound, ArrowRight, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
+import { getDeviceFingerprint, getClientAgent } from "@/lib/deviceFingerprint";
 
 interface TokenPreview {
   valid: boolean;
@@ -14,7 +15,11 @@ interface TokenPreview {
   organization_slug?: string;
   role?: string;
   expires_at?: string;
+  rate_limited?: boolean;
+  reason?: string;
 }
+
+const CODE_RE = /^[0-9A-F]{12}$/;
 
 const Join = () => {
   const navigate = useNavigate();
@@ -26,17 +31,43 @@ const Join = () => {
   const [busy, setBusy] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ fullName: "", email: "", password: "" });
+  const [lockedUntil, setLockedUntil] = useState<number | null>(null);
+  const [attempts, setAttempts] = useState(0);
+
+  const locked = lockedUntil !== null && Date.now() < lockedUntil;
 
   const verify = async (raw: string) => {
     const value = raw.trim().toUpperCase();
     if (!value) { toast.error("Enter your access token"); return null; }
+    if (!CODE_RE.test(value)) {
+      toast.error("Access tokens are 12 characters (0-9, A-F)");
+      return null;
+    }
+    if (locked) {
+      toast.error("Too many attempts. Please wait a few minutes before trying again.");
+      return null;
+    }
     setChecking(true);
-    const { data, error } = await supabase.rpc("lookup_access_token", { _code: value });
+    const { data, error } = await supabase.rpc("lookup_access_token", {
+      _code: value,
+      _fingerprint: getDeviceFingerprint(),
+      _user_agent: getClientAgent(),
+    });
     setChecking(false);
     if (error) { toast.error(error.message); return null; }
     const result = data as unknown as TokenPreview;
     setPreview(result);
-    if (!result?.valid) toast.error("This access token is invalid, already used, or expired");
+    if (result?.rate_limited) {
+      setLockedUntil(Date.now() + 15 * 60 * 1000);
+      toast.error(result.reason || "Too many attempts. Please wait 15 minutes.");
+      return result;
+    }
+    if (!result?.valid) {
+      setAttempts(a => a + 1);
+      toast.error("This access token is invalid, already used, or expired");
+    } else {
+      setAttempts(0);
+    }
     return result;
   };
 
@@ -48,10 +79,15 @@ const Join = () => {
 
   const redeem = async () => {
     setBusy(true);
-    const { data, error } = await supabase.rpc("redeem_access_token", { _code: code.trim().toUpperCase() });
+    const { data, error } = await supabase.rpc("redeem_access_token", {
+      _code: code.trim().toUpperCase(),
+      _fingerprint: getDeviceFingerprint(),
+      _user_agent: getClientAgent(),
+    });
     setBusy(false);
     const result = data as any;
     if (error || result?.error) {
+      if (result?.rate_limited) setLockedUntil(Date.now() + 15 * 60 * 1000);
       toast.error(error?.message || result.error);
       return;
     }
@@ -112,6 +148,17 @@ const Join = () => {
                 {checking ? "…" : "Verify"}
               </Button>
             </div>
+            {locked && (
+              <p className="text-xs text-destructive">
+                Too many failed attempts from this device. Verification is paused for 15 minutes and your
+                organization's administrators have been alerted.
+              </p>
+            )}
+            {!locked && attempts >= 3 && (
+              <p className="text-xs text-muted-foreground">
+                {attempts} failed attempts. Repeated failures will temporarily lock this device.
+              </p>
+            )}
           </div>
 
           {valid && (
@@ -126,7 +173,7 @@ const Join = () => {
             </div>
           )}
 
-          {valid && !authLoading && (
+          {valid && !locked && !authLoading && (
             user ? (
               <Button className="w-full h-11 rounded-xl bg-accent text-accent-foreground" disabled={busy} onClick={redeem}>
                 <KeyRound className="w-4 h-4 mr-1" /> Join {preview?.organization_name}
