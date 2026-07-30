@@ -48,7 +48,9 @@ const AppSidebar = () => {
   const { isPlatformAdmin } = usePlatformAdmin();
   const navigate = useNavigate();
   const location = useLocation();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(
+    () => (typeof sessionStorage !== "undefined" ? sessionStorage.getItem("sidebar-collapsed") === "1" : false)
+  );
   const navRef = useRef<HTMLElement>(null);
 
   // Persist sidebar scroll across route changes (AppLayout remounts the sidebar per page)
@@ -61,6 +63,13 @@ const AppSidebar = () => {
     el.addEventListener("scroll", onScroll, { passive: true });
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
+
+  const toggleCollapsed = () => {
+    setCollapsed((c) => {
+      sessionStorage.setItem("sidebar-collapsed", c ? "0" : "1");
+      return !c;
+    });
+  };
 
   const allItems = [
     ...(isPlatformAdmin ? [{ icon: Sparkles, label: "Super Admin", path: "/super-admin" }] : []),
@@ -93,7 +102,7 @@ const AppSidebar = () => {
           </motion.div>
           <AnimatePresence>
             {!collapsed && (
-              <motion.div initial={{ opacity: 0, width: 0 }} animate={{ opacity: 1, width: "auto" }} exit={{ opacity: 0, width: 0 }}
+              <motion.div initial={false} animate={{ opacity: 1, width: "auto" }} exit={{ opacity: 0, width: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
                 className="ml-3 overflow-hidden whitespace-nowrap"
               >
@@ -134,7 +143,7 @@ const AppSidebar = () => {
               </motion.div>
               <AnimatePresence>
                 {!collapsed && (
-                  <motion.span initial={{ opacity: 0, width: 0 }} animate={{ opacity: 1, width: "auto" }} exit={{ opacity: 0, width: 0 }}
+                  <motion.span initial={false} animate={{ opacity: 1, width: "auto" }} exit={{ opacity: 0, width: 0 }}
                     transition={{ type: "spring", stiffness: 300, damping: 25 }}
                     className="overflow-hidden whitespace-nowrap"
                   >{item.label}</motion.span>
@@ -149,7 +158,7 @@ const AppSidebar = () => {
       <div className="border-t border-sidebar-border p-2 space-y-1">
         <AnimatePresence>
           {!collapsed && profile && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+            <motion.div initial={false} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
               className="px-3 py-2 overflow-hidden"
             >
@@ -161,7 +170,7 @@ const AppSidebar = () => {
         <div className="flex items-center gap-1">
           <motion.button whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}
             transition={{ type: "spring", stiffness: 400 }}
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={toggleCollapsed}
             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors"
           >
             <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ type: "spring", stiffness: 300 }}>
