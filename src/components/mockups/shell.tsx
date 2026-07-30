@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { photoFor } from "./people";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import {
   Home, Clock, Target, CheckSquare, MessageSquare, Video, Megaphone,
