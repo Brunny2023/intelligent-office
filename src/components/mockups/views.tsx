@@ -383,13 +383,13 @@ export const AnnouncementsView = () => (
       ].map((a) => (
         <Card key={a.t}>
           <div className="flex items-start gap-3">
-            <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
-              a.pri === "high" ? "bg-svo-gold text-svo-navy" : "bg-slate-100 text-slate-600")}>
-              <Megaphone className="w-4 h-4" />
-            </div>
+            <MockAvatar name={a.by.split(" · ")[0]} size={38} />
             <div className="flex-1">
               <div className="flex items-center justify-between mb-1">
-                <div className="text-[14px] font-semibold">{a.t}</div>
+                <div className="text-[14px] font-semibold flex items-center gap-2">
+                  {a.pri === "high" && <Megaphone className="w-3.5 h-3.5 text-svo-gold" />}
+                  {a.t}
+                </div>
                 <div className="text-[10px] text-slate-400">{a.when}</div>
               </div>
               <div className="text-[11px] text-slate-500 mb-2">{a.by}</div>
