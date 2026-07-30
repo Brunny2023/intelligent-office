@@ -74,16 +74,16 @@ export const DashboardView = () => (
     <Card title="Performance Overview" icon={BarChart3}>
       <div className="grid grid-cols-4 gap-3 text-center">
         {[
-          { l: "Task Completion", v: 94 },
-          { l: "Attendance",      v: 91 },
-          { l: "KPI Achievement", v: 86 },
-          { l: "Team Engagement", v: 82 },
+          { l: "Task Completion", v: 94, c: "hsl(214 84% 56%)" },
+          { l: "Attendance",      v: 91, c: "hsl(38 80% 55%)" },
+          { l: "KPI Achievement", v: 86, c: "hsl(152 48% 45%)" },
+          { l: "Team Engagement", v: 82, c: "hsl(214 84% 56%)" },
         ].map((m) => (
           <div key={m.l}>
             <div className="relative w-16 h-16 mx-auto">
               <svg viewBox="0 0 40 40" className="w-full h-full -rotate-90">
                 <circle cx="20" cy="20" r="16" fill="none" stroke="#E5E7EB" strokeWidth="3" />
-                <circle cx="20" cy="20" r="16" fill="none" stroke="hsl(38 80% 55%)" strokeWidth="3"
+                <circle cx="20" cy="20" r="16" fill="none" stroke={m.c} strokeWidth="3"
                   strokeDasharray={`${(m.v/100)*100.5} 100.5`} strokeLinecap="round" />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center text-sm font-bold">{m.v}%</div>
@@ -419,12 +419,12 @@ export const DocumentsView = () => (
 ===================================================================== */
 export const KpiView = () => {
   const kpis = [
-    { t: "Monthly Recurring Revenue", v: "$1.24M", d: "+18%", tone: "green", spark: [30,32,38,41,45,52,58,63,71,78,84,92] },
-    { t: "Customer Retention",        v: "97.2%", d: "+2.1pp", tone: "green", spark: [88,90,89,91,92,93,94,94,95,96,97,97] },
-    { t: "NPS Score",                 v: "68",    d: "+5",  tone: "green", spark: [40,45,48,52,55,58,60,62,64,66,68,68] },
-    { t: "Cost per Acquisition",      v: "$142",  d: "-12%", tone: "green", spark: [200,190,180,175,170,165,160,155,150,148,145,142] },
-    { t: "Feature Adoption",          v: "72%",   d: "+8pp", tone: "green", spark: [40,44,48,52,56,60,62,65,67,69,71,72] },
-    { t: "Sales Cycle Length (days)", v: "24",    d: "-3d", tone: "green", spark: [40,38,36,35,33,32,30,29,27,26,25,24] },
+    { t: "Monthly Recurring Revenue", v: "$1.24M", c: "hsl(214 84% 56%)", d: "+18%", spark: [30,32,38,41,45,52,58,63,71,78,84,92] },
+    { t: "Customer Retention",        v: "97.2%", c: "hsl(38 80% 55%)",  d: "+2.1pp", spark: [88,90,89,91,92,93,94,94,95,96,97,97] },
+    { t: "NPS Score",                 v: "68",    c: "hsl(152 48% 45%)", d: "+5",  spark: [40,45,48,52,55,58,60,62,64,66,68,68] },
+    { t: "Cost per Acquisition",      v: "$142",  c: "hsl(214 84% 56%)", d: "-12%", spark: [200,190,180,175,170,165,160,155,150,148,145,142] },
+    { t: "Feature Adoption",          v: "72%",   c: "hsl(38 80% 55%)",  d: "+8pp", spark: [40,44,48,52,56,60,62,65,67,69,71,72] },
+    { t: "Sales Cycle Length (days)", v: "24",    c: "hsl(152 48% 45%)", d: "-3d", spark: [40,38,36,35,33,32,30,29,27,26,25,24] },
   ];
   return (
     <div className="grid grid-cols-3 gap-4">
@@ -437,10 +437,10 @@ export const KpiView = () => {
           </div>
           <svg viewBox="0 0 120 30" className="w-full h-10">
             <polyline
-              fill="none" stroke="hsl(38 80% 55%)" strokeWidth="2" strokeLinecap="round"
+              fill="none" stroke={k.c} strokeWidth="2" strokeLinecap="round"
               points={k.spark.map((v,i) => `${(i/11)*120},${30 - (v/100)*28}`).join(" ")} />
             <polyline
-              fill="hsl(38 80% 55% / 0.15)" stroke="none"
+              fill={k.c} opacity={0.14} stroke="none"
               points={`0,30 ${k.spark.map((v,i) => `${(i/11)*120},${30 - (v/100)*28}`).join(" ")} 120,30`} />
           </svg>
         </Card>
