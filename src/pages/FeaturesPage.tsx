@@ -339,7 +339,7 @@ const MOCK_BY_ID: Record<string, MockView> = {
   hr: "hr",
   finance: "finance",
   team: "team",
-  support: "partner",
+  support: "support",
   admin: "admin",
   security: "graph",
   settings: "dashboard",
