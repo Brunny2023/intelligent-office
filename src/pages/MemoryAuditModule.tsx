@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import AppLayout from "@/components/layout/AppLayout";
+import { PageHeader } from "@/components/dashboard/kit";
 import { supabase } from "@/integrations/supabase/client";
 import { useOrganization } from "@/hooks/useOrganization";
 import { useProfileNames } from "@/hooks/useProfileNames";
@@ -175,19 +176,13 @@ ${rows.map(r => {
   return (
     <AppLayout title="Memory Audit">
       <div className="p-4 sm:p-6 md:p-8 max-w-5xl mx-auto space-y-4">
-        <header className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
-            <History className="w-5 h-5 text-accent" />
-          </div>
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold text-foreground">Memory audit trail</h1>
-            <p className="text-sm text-muted-foreground">
-              Every boost, dampen, approve, reject, comment, and deletion of organizational memory —
-              with who changed what, when, and how it shifted leadership's reasoning weight.
-            </p>
-          </div>
-          <Link to="/cognition" className="text-xs text-accent hover:underline">Back to Cognition →</Link>
-        </header>
+        <PageHeader
+          eyebrow="Governance"
+          icon={History}
+          title="Memory audit trail"
+          subtitle="Every boost, dampen, approve, reject, comment, and deletion of organizational memory — who changed what, when, and how it shifted leadership's reasoning weight."
+          actions={<Link to="/cognition" className="text-xs text-accent hover:underline">Back to Cognition →</Link>}
+        />
 
         <div className="glass-card rounded-xl p-3 flex flex-wrap items-center gap-2">
           <SearchIcon className="w-4 h-4 text-muted-foreground ml-1" />

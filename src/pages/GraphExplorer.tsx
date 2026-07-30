@@ -4,6 +4,7 @@ import "@xyflow/react/dist/style.css";
 import { supabase } from "@/integrations/supabase/client";
 import { useOrganization } from "@/hooks/useOrganization";
 import AppLayout from "@/components/layout/AppLayout";
+import { PageHeader } from "@/components/dashboard/kit";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -198,20 +199,18 @@ export default function GraphExplorer() {
   return (
     <AppLayout title="Knowledge Graph">
       <div className="p-6 space-y-4">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <h1 className="text-2xl font-bold flex items-center gap-2">
-              <Network className="w-6 h-6 text-accent" /> Organizational Knowledge Graph
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {entities.length} entities · {edges.length} relationships · live from your org
-            </p>
-          </div>
-          <Button variant="outline" size="sm" onClick={runIsolationCheck} disabled={checking}>
-            <ShieldCheck className="w-4 h-4 mr-2" />
-            {checking ? "Checking…" : "Run isolation check"}
-          </Button>
-        </div>
+        <PageHeader
+          eyebrow="Intelligence"
+          icon={Network}
+          title="Organizational Knowledge Graph"
+          subtitle={`${entities.length} entities · ${edges.length} relationships · live from your org`}
+          actions={
+            <Button variant="outline" size="sm" onClick={runIsolationCheck} disabled={checking}>
+              <ShieldCheck className="w-4 h-4 mr-2" />
+              {checking ? "Checking…" : "Run isolation check"}
+            </Button>
+          }
+        />
 
         {isolation && (
           <div className={`text-xs rounded-md p-3 border ${isolation.isolated ? "border-emerald-500/40 bg-emerald-500/10" : "border-red-500/40 bg-red-500/10"}`}>

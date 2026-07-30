@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useOrganization } from "@/hooks/useOrganization";
 import { supabase } from "@/integrations/supabase/client";
 import AppLayout from "@/components/layout/AppLayout";
+import { PageHeader } from "@/components/dashboard/kit";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -222,13 +223,12 @@ const SupportModule = () => {
   return (
     <AppLayout title="Support">
       <div className="p-4 sm:p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
-              <Ticket className="w-6 h-6 text-accent" /> Support
-            </h1>
-            <p className="text-muted-foreground text-sm mt-1">Submit tickets and get help from your organization admins</p>
-          </div>
+        <PageHeader
+          eyebrow="Help Desk"
+          icon={Ticket}
+          title="Support"
+          subtitle="Submit tickets and get help from your organization admins"
+          actions={
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button className="gap-2"><Plus className="w-4 h-4" /> New Ticket</Button>
@@ -253,7 +253,8 @@ const SupportModule = () => {
               </div>
             </DialogContent>
           </Dialog>
-        </motion.div>
+          }
+        />
 
         {loading ? (
           <div className="space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-20 rounded-xl bg-muted animate-pulse" />)}</div>

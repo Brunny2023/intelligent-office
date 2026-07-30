@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlatformAdmin } from "@/hooks/usePlatformAdmin";
 import AppLayout from "@/components/layout/AppLayout";
+import { PageHeader } from "@/components/dashboard/kit";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -100,15 +101,12 @@ const SuperAdmin = () => {
   return (
     <AppLayout title="Super Admin">
       <div className="p-4 sm:p-6 md:p-8 space-y-6 max-w-[1400px] mx-auto">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <div className="flex items-center gap-2 mb-1">
-            <Badge variant="outline" className="text-[10px] uppercase tracking-wider border-accent text-accent">Platform</Badge>
-          </div>
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground flex items-center gap-2">
-            <ShieldCheck className="w-7 h-7 text-accent" /> Super Admin Console
-          </h1>
-          <p className="text-muted-foreground text-sm mt-1">Cross-tenant oversight · usage monitoring · system health</p>
-        </motion.div>
+        <PageHeader
+          eyebrow="Platform"
+          icon={ShieldCheck}
+          title="Super Admin Console"
+          subtitle="Cross-tenant oversight · usage monitoring · system health"
+        />
 
         {/* Platform metrics */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">

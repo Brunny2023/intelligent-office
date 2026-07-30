@@ -1,8 +1,9 @@
 import { useOrganization } from "@/hooks/useOrganization";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useAuth } from "@/contexts/AuthContext";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { PersonAvatar } from "@/components/dashboard/kit";
-import { Building2 } from "lucide-react";
+import { Building2, LogOut } from "lucide-react";
 
 /**
  * Sticky command bar shown above every module page: org identity on the left,
@@ -11,6 +12,7 @@ import { Building2 } from "lucide-react";
 const AppTopBar = ({ title }: { title?: string }) => {
   const { org, profile } = useOrganization();
   const { role } = useUserRole();
+  const { signOut } = useAuth();
 
   const today = new Date().toLocaleDateString(undefined, {
     weekday: "short",
@@ -37,7 +39,7 @@ const AppTopBar = ({ title }: { title?: string }) => {
       <div className="flex-1" />
 
       <span className="text-xs text-muted-foreground hidden lg:inline">{today}</span>
-      <NotificationBell />
+      <NotificationBell className="text-foreground/70 hover:bg-muted hover:text-foreground border border-border/60" />
       <div className="flex items-center gap-2 pl-3 border-l border-border/60">
         <PersonAvatar name={profile?.full_name} src={(profile as any)?.avatar_url} size={32} />
         <div className="hidden lg:block leading-tight">
@@ -46,6 +48,15 @@ const AppTopBar = ({ title }: { title?: string }) => {
           </p>
           <p className="text-[10px] text-muted-foreground capitalize">{role?.replace("_", " ") || ""}</p>
         </div>
+        <button
+          onClick={signOut}
+          aria-label="Sign out"
+          title="Sign out"
+          className="ml-1 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-foreground/70 border border-border/60 hover:bg-destructive/10 hover:text-destructive transition-colors"
+        >
+          <LogOut className="w-4 h-4" />
+          <span className="hidden lg:inline">Sign out</span>
+        </button>
       </div>
     </header>
   );
