@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { photoFor } from "./people";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import {
   Home, Clock, Target, CheckSquare, MessageSquare, Video, Megaphone,
@@ -91,9 +92,12 @@ export function MockupShell({
           })}
         </nav>
         {/* User */}
-        <div className="px-4 py-3 border-t border-white/10">
-          <p className="text-xs font-semibold text-white">Alex Rivera</p>
-          <p className="text-[10px] text-svo-gold/80">Executive</p>
+        <div className="px-4 py-3 border-t border-white/10 flex items-center gap-2.5">
+          <MockAvatar name="Alex Rivera" size={32} />
+          <div className="min-w-0">
+            <p className="text-xs font-semibold text-white truncate">Alex Rivera</p>
+            <p className="text-[10px] text-svo-gold/80">Executive</p>
+          </div>
         </div>
       </aside>
 
@@ -164,10 +168,24 @@ export const StatTile = ({ icon: Icon, value, label, tone = "gold", progress, de
   );
 };
 
-/** Gradient initials avatar — mirrors in-app PersonAvatar. */
+/** Headshot avatar with gradient initials fallback — mirrors in-app PersonAvatar. */
 export const MockAvatar = ({ name, size = 36 }: { name: string; size?: number }) => {
   const initials = name.split(" ").filter(Boolean).slice(0, 2).map((p) => p[0].toUpperCase()).join("");
   const hue = Array.from(name).reduce((a, ch) => a + ch.charCodeAt(0), 0) % 360;
+  const photo = photoFor(name) ?? photoFor(initials);
+  if (photo) {
+    return (
+      <img
+        src={photo}
+        alt={name}
+        loading="lazy"
+        width={size}
+        height={size}
+        className="rounded-full object-cover ring-2 ring-white shadow-sm shrink-0"
+        style={{ width: size, height: size }}
+      />
+    );
+  }
   return (
     <div
       className="rounded-full flex items-center justify-center font-semibold text-white ring-2 ring-white shadow-sm shrink-0"
