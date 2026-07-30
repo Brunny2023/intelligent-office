@@ -183,12 +183,12 @@ const WorkflowsModule = () => {
   return (
     <AppLayout title="Workflows">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2"><Workflow className="w-7 h-7 text-accent" /> Workflow Automation</h1>
-            <p className="text-muted-foreground mt-1">Automated approvals, escalations & conditional logic</p>
-          </div>
-          <div className="flex items-center gap-2">
+        <PageHeader
+          eyebrow="Automation"
+          icon={Workflow}
+          title="Workflow Automation"
+          subtitle="Automated approvals, escalations & conditional logic"
+          actions={<>
             <Button variant="outline" className="rounded-xl" onClick={() => runEngine("process_org")}><Zap className="w-4 h-4 mr-1" /> Advance engine</Button>
             <Button variant="outline" className="rounded-xl" onClick={() => runEngine("escalate")}><AlertTriangle className="w-4 h-4 mr-1" /> Escalate stale</Button>
             <Button variant="outline" className="rounded-xl" onClick={runSuggest}><Sparkles className="w-4 h-4 mr-1" /> AI Suggest</Button>
