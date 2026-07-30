@@ -69,6 +69,19 @@ export default {
           surface: "hsl(var(--svo-surface))",
           glass: "hsl(var(--svo-glass))",
         },
+        chart: {
+          1: "hsl(var(--chart-1))",
+          2: "hsl(var(--chart-2))",
+          3: "hsl(var(--chart-3))",
+          4: "hsl(var(--chart-4))",
+          5: "hsl(var(--chart-5))",
+        },
+        status: {
+          todo: "hsl(var(--status-todo))",
+          progress: "hsl(var(--status-progress))",
+          review: "hsl(var(--status-review))",
+          done: "hsl(var(--status-done))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
