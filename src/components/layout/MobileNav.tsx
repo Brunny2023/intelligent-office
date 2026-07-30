@@ -1,9 +1,10 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Clock, CheckSquare, MessageSquare, Target, Menu, X, BarChart3, Shield, Users, FileText, Video, Megaphone, Brain, Crown, Workflow, Briefcase, DollarSign, Activity, Ticket, ShieldCheck, Settings, Globe } from "lucide-react";
+import { Home, Clock, CheckSquare, MessageSquare, Target, Menu, X, BarChart3, Shield, Users, FileText, Video, Megaphone, Brain, Crown, Workflow, Briefcase, DollarSign, Activity, Ticket, ShieldCheck, Settings, Globe, LogOut } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useAuth } from "@/contexts/AuthContext";
 import { isPathAllowed } from "@/lib/roleNav";
 
 const mainTabs = [
@@ -39,6 +40,7 @@ const MobileNav = () => {
   const location = useLocation();
   const [moreOpen, setMoreOpen] = useState(false);
   const { role } = useUserRole();
+  const { signOut } = useAuth();
   const visibleTabs = mainTabs.filter((t) => t.path === "__more" || isPathAllowed(role, t.path));
   const visibleMore = moreItems.filter((i) => isPathAllowed(role, i.path));
 
@@ -82,6 +84,12 @@ const MobileNav = () => {
                 );
               })}
             </div>
+            <button
+              onClick={() => { setMoreOpen(false); signOut(); }}
+              className="mt-3 w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-destructive bg-destructive/10 hover:bg-destructive/15 transition-colors"
+            >
+              <LogOut className="w-4 h-4" /> Sign out
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
