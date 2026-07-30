@@ -164,10 +164,24 @@ export const StatTile = ({ icon: Icon, value, label, tone = "gold", progress, de
   );
 };
 
-/** Gradient initials avatar — mirrors in-app PersonAvatar. */
+/** Headshot avatar with gradient initials fallback — mirrors in-app PersonAvatar. */
 export const MockAvatar = ({ name, size = 36 }: { name: string; size?: number }) => {
   const initials = name.split(" ").filter(Boolean).slice(0, 2).map((p) => p[0].toUpperCase()).join("");
   const hue = Array.from(name).reduce((a, ch) => a + ch.charCodeAt(0), 0) % 360;
+  const photo = photoFor(name) ?? photoFor(initials);
+  if (photo) {
+    return (
+      <img
+        src={photo}
+        alt={name}
+        loading="lazy"
+        width={size}
+        height={size}
+        className="rounded-full object-cover ring-2 ring-white shadow-sm shrink-0"
+        style={{ width: size, height: size }}
+      />
+    );
+  }
   return (
     <div
       className="rounded-full flex items-center justify-center font-semibold text-white ring-2 ring-white shadow-sm shrink-0"
