@@ -234,13 +234,14 @@ export const IncumbentGrid = () => (
 /* Product Proof — placeholder device mockups                         */
 /* ------------------------------------------------------------------ */
 
-import { ExecutiveView, WorkflowsView, GraphView, DashboardView } from "@/components/mockups/views";
+import type { MockView } from "@/components/mockups/shell";
+import MockupPreview from "@/components/mockups/MockupPreview";
 
-const products = [
-  { title: "AI Executive Control Center", desc: "Weighted health scores, anomaly detection, and cross-module signal in one command surface.", Preview: ExecutiveView },
-  { title: "Workflow Builder",             desc: "Visual IF/THEN automation across every module — composed by operators, not engineers.",              Preview: WorkflowsView },
-  { title: "Knowledge Graph Explorer",     desc: "Every person, task, message, and decision as a node — queryable and reasoned over.",                  Preview: GraphView },
-  { title: "Organization Health Dashboard",desc: "Real activity, not self-reported dashboards. Attendance, execution, and coordination in one glance.", Preview: DashboardView },
+const products: { title: string; desc: string; view: MockView }[] = [
+  { title: "AI Executive Control Center", desc: "Weighted health scores, anomaly detection, and cross-module signal in one command surface.", view: "executive" },
+  { title: "Workflow Builder",             desc: "Visual IF/THEN automation across every module — composed by operators, not engineers.",              view: "workflows" },
+  { title: "Knowledge Graph Explorer",     desc: "Every person, task, message, and decision as a node — queryable and reasoned over.",                  view: "graph" },
+  { title: "Organization Health Dashboard",desc: "Real activity, not self-reported dashboards. Attendance, execution, and coordination in one glance.", view: "dashboard" },
 ];
 
 export const ProductProof = () => (
@@ -271,11 +272,7 @@ export const ProductProof = () => (
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
               </div>
-              <div className="aspect-[16/10] overflow-hidden relative bg-[#F5F6F8]">
-                <div className="absolute inset-0 origin-top-left" style={{ transform: "scale(0.42)", width: "238%", height: "238%" }}>
-                  <div className="p-6"><p.Preview /></div>
-                </div>
-              </div>
+              <MockupPreview view={p.view} className="rounded-none border-0 shadow-none" />
             </div>
           </div>
           <div className="p-6">
