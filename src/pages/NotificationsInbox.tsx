@@ -146,23 +146,22 @@ export default function NotificationsInbox() {
   return (
     <AppLayout title="Notifications">
       <div className="p-4 sm:p-6 md:p-8 max-w-4xl mx-auto space-y-4">
-        <header className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
-            <Bell className="w-5 h-5 text-accent" />
-          </div>
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold text-foreground">Notifications</h1>
-            <p className="text-sm text-muted-foreground">Every cognition and insight escalation event, with deep links back into context.</p>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={markFilterRead} className="gap-1.5">
-              <Filter className="w-4 h-4" /> Mark filter read
-            </Button>
-            <Button variant="outline" size="sm" onClick={markAllInboxRead} className="gap-1.5">
-              <CheckCheck className="w-4 h-4" /> Mark all read
-            </Button>
-          </div>
-        </header>
+        <PageHeader
+          eyebrow="Inbox"
+          icon={Bell}
+          title="Notifications"
+          subtitle="Every cognition and insight escalation event, with deep links back into context."
+          actions={
+            <>
+              <Button variant="outline" size="sm" onClick={markFilterRead} className="gap-1.5">
+                <Filter className="w-4 h-4" /> Mark filter read
+              </Button>
+              <Button variant="outline" size="sm" onClick={markAllInboxRead} className="gap-1.5">
+                <CheckCheck className="w-4 h-4" /> Mark all read
+              </Button>
+            </>
+          }
+        />
 
         <div className="glass-card rounded-xl p-3 flex flex-wrap items-center gap-2">
           <div className="relative flex-1 min-w-[220px]">
