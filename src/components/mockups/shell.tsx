@@ -92,9 +92,12 @@ export function MockupShell({
           })}
         </nav>
         {/* User */}
-        <div className="px-4 py-3 border-t border-white/10">
-          <p className="text-xs font-semibold text-white">Alex Rivera</p>
-          <p className="text-[10px] text-svo-gold/80">Executive</p>
+        <div className="px-4 py-3 border-t border-white/10 flex items-center gap-2.5">
+          <MockAvatar name="Alex Rivera" size={32} />
+          <div className="min-w-0">
+            <p className="text-xs font-semibold text-white truncate">Alex Rivera</p>
+            <p className="text-[10px] text-svo-gold/80">Executive</p>
+          </div>
         </div>
       </aside>
 
