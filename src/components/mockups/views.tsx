@@ -3,7 +3,7 @@ import {
   Users, Clock, CheckSquare, TrendingUp, BarChart3, Brain, Target,
   AlertTriangle, Sparkles, Plus, Send, Video, Megaphone, Activity,
   Workflow, Briefcase, DollarSign, Building2, Network, Play, ArrowUpRight,
-  MapPin, Calendar, FileText, Crown, Shield,
+  MapPin, Calendar, FileText, Crown, Shield, MicOff,
   Home, MessageSquare,
 } from "lucide-react";
 import { StatTile, Card, MockAvatar, MockGauge, MockTrend } from "./shell";
