@@ -5,7 +5,9 @@ import AttendanceDashboard from "@/components/attendance/AttendanceDashboard";
 import LeaveRequestForm from "@/components/attendance/LeaveRequestForm";
 import LeaveRequestsList from "@/components/attendance/LeaveRequestsList";
 import AppLayout from "@/components/layout/AppLayout";
+import { PageHeader } from "@/components/dashboard/kit";
 import { motion } from "framer-motion";
+import { CalendarClock } from "lucide-react";
 
 const AttendanceModule = () => {
   const { loading } = useOrganization();
@@ -24,10 +26,12 @@ const AttendanceModule = () => {
   return (
     <AppLayout title="Attendance">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-2xl font-bold text-foreground">Attendance & Presence</h1>
-          <p className="text-muted-foreground mt-1">Manage your workforce presence and leave requests</p>
-        </motion.div>
+        <PageHeader
+          eyebrow="Workforce"
+          icon={CalendarClock}
+          title="Attendance & Presence"
+          subtitle="Manage your workforce presence and leave requests"
+        />
 
         <div className="grid lg:grid-cols-2 gap-6">
           <motion.div

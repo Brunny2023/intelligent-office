@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useOrganization } from "@/hooks/useOrganization";
 import { supabase } from "@/integrations/supabase/client";
 import AppLayout from "@/components/layout/AppLayout";
+import { PageHeader, StatCard, type Tone } from "@/components/dashboard/kit";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -151,14 +152,12 @@ const AIInsightsModule = () => {
   return (
     <AppLayout title="AI Intelligence">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-              <Brain className="w-7 h-7 text-accent" /> AI Intelligence Center
-            </h1>
-            <p className="text-muted-foreground mt-1">AI-powered insights, anomaly detection & performance analysis</p>
-          </div>
-          <div className="flex gap-2">
+        <PageHeader
+          eyebrow="Cognition"
+          icon={Brain}
+          title="AI Intelligence Center"
+          subtitle="AI-powered insights, anomaly detection & performance analysis"
+          actions={<>
             <Button
               variant="outline"
               onClick={async () => {
@@ -172,22 +171,18 @@ const AIInsightsModule = () => {
             <Button onClick={generateInsights} disabled={generating} className="rounded-xl bg-accent text-accent-foreground">
               {generating ? <><RefreshCw className="w-4 h-4 mr-1 animate-spin" /> Analyzing...</> : <><Sparkles className="w-4 h-4 mr-1" /> Generate Insights</>}
             </Button>
-          </div>
-        </motion.div>
+          </>}
+        />
 
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {[
-            { label: "Open", value: openCount, icon: Inbox, color: "text-accent" },
-            { label: "Escalated", value: escalatedCount, icon: ShieldAlert, color: "text-destructive" },
-            { label: "Anomalies", value: insights.filter(i => i.insight_type === "anomaly").length, icon: AlertTriangle, color: "text-destructive" },
-            { label: "Performance", value: insights.filter(i => i.insight_type === "performance").length, icon: BarChart3, color: "text-svo-blue" },
-            { label: "Unread", value: unreadCount, icon: Bell, color: "text-svo-gold" },
+            { label: "Open", value: openCount, icon: Inbox, tone: "blue" as Tone },
+            { label: "Escalated", value: escalatedCount, icon: ShieldAlert, tone: "rose" as Tone },
+            { label: "Anomalies", value: insights.filter(i => i.insight_type === "anomaly").length, icon: AlertTriangle, tone: "rose" as Tone },
+            { label: "Performance", value: insights.filter(i => i.insight_type === "performance").length, icon: BarChart3, tone: "emerald" as Tone },
+            { label: "Unread", value: unreadCount, icon: Bell, tone: "gold" as Tone },
           ].map((stat, i) => (
-            <motion.div key={stat.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: i * 0.05 } }} className="glass-card rounded-xl p-4">
-              <stat.icon className={`w-5 h-5 ${stat.color} mb-2`} />
-              <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-              <p className="text-xs text-muted-foreground">{stat.label}</p>
-            </motion.div>
+            <StatCard key={stat.label} index={i} label={stat.label} value={stat.value} icon={stat.icon} tone={stat.tone} />
           ))}
         </div>
 

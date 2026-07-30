@@ -12,6 +12,7 @@ import AIInsightWidget from "@/components/dashboard/AIInsightWidget";
 import OnboardingChecklist from "@/components/dashboard/OnboardingChecklist";
 import CognitionPulseWidget from "@/components/dashboard/CognitionPulseWidget";
 import AppLayout from "@/components/layout/AppLayout";
+import { PageHeader, StatCard, type Tone } from "@/components/dashboard/kit";
 import { motion } from "framer-motion";
 import {
   Users, CheckSquare, MessageSquare, BarChart3,
@@ -20,10 +21,10 @@ import {
 } from "lucide-react";
 
 const STAT_META = [
-  { key: "team", label: "Team Members", icon: Users },
-  { key: "tasks", label: "Active Tasks", icon: CheckSquare },
-  { key: "messages", label: "Messages (7d)", icon: MessageSquare },
-  { key: "health", label: "Health Score", icon: BarChart3 },
+  { key: "team", label: "Team Members", icon: Users, tone: "blue" as Tone },
+  { key: "tasks", label: "Active Tasks", icon: CheckSquare, tone: "gold" as Tone },
+  { key: "messages", label: "Messages (7d)", icon: MessageSquare, tone: "violet" as Tone },
+  { key: "health", label: "Health Score", icon: BarChart3, tone: "emerald" as Tone },
 ] as const;
 
 const modules = [
@@ -149,12 +150,12 @@ const Dashboard = () => {
           </motion.div>
         )}
 
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
-            Welcome back, {profile?.full_name?.split(" ")[0] || "there"} 👋
-          </h1>
-          <p className="text-muted-foreground text-sm mt-1">{roleGreeting(role)}</p>
-        </motion.div>
+        <PageHeader
+          eyebrow="Command Center"
+          icon={Sparkles}
+          title={`Welcome back, ${profile?.full_name?.split(" ")[0] || "there"}`}
+          subtitle={roleGreeting(role)}
+        />
 
         <OnboardingChecklist />
 
@@ -164,17 +165,15 @@ const Dashboard = () => {
           </motion.div>
           <div className="md:col-span-1 lg:col-span-2 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
             {STAT_META.map((stat, i) => (
-              <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.15 + i * 0.05 } }}
-                whileHover={{ y: -4, boxShadow: "0 8px 24px hsl(var(--svo-navy) / 0.1)", transition: { type: "spring", stiffness: 400, damping: 20 } }}
-                whileTap={{ scale: 0.97 }}
-                className="glass-card rounded-xl p-4 cursor-default"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <stat.icon className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-xs text-muted-foreground">{stat.label}</span>
-                </div>
-                <p className="text-2xl font-bold text-foreground">{stats[stat.key]}</p>
-              </motion.div>
+              <StatCard
+                key={stat.label}
+                index={i}
+                label={stat.label}
+                value={stats[stat.key]}
+                icon={stat.icon}
+                tone={stat.tone}
+                progress={stat.key === "health" && stats.health.endsWith("%") ? parseInt(stats.health, 10) : undefined}
+              />
             ))}
           </div>
         </div>

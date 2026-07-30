@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useOrganization } from "@/hooks/useOrganization";
 import { supabase } from "@/integrations/supabase/client";
 import AppLayout from "@/components/layout/AppLayout";
+import { PageHeader, StatCard, PersonAvatar, type Tone } from "@/components/dashboard/kit";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -160,11 +161,12 @@ const TeamModule = () => {
   return (
     <AppLayout title="Team">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2"><Users className="w-6 sm:w-7 h-6 sm:h-7 text-accent" /> Team Management</h1>
-            <p className="text-muted-foreground text-sm mt-1">Manage members & send invitations</p>
-          </div>
+        <PageHeader
+          eyebrow="People"
+          icon={Users}
+          title="Team Management"
+          subtitle="Manage members, invitations & access tokens"
+          actions={<>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button className="rounded-xl bg-accent text-accent-foreground w-full sm:w-auto"><UserPlus className="w-4 h-4 mr-1" /> Invite Member</Button>
@@ -251,20 +253,17 @@ const TeamModule = () => {
               </form>
             </DialogContent>
           </Dialog>
-        </motion.div>
+          </>}
+        />
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            { label: "Team Members", value: members.length, icon: Users },
-            { label: "Pending Invites", value: invitations.filter(i => i.status === "pending").length, icon: Mail },
-            { label: "Departments", value: departments.length, icon: CheckCircle },
+            { label: "Team Members", value: members.length, icon: Users, tone: "blue" as Tone },
+            { label: "Pending Invites", value: invitations.filter(i => i.status === "pending").length, icon: Mail, tone: "gold" as Tone },
+            { label: "Departments", value: departments.length, icon: CheckCircle, tone: "emerald" as Tone },
           ].map((s, i) => (
-            <motion.div key={s.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: i * 0.05 } }} className="glass-card rounded-xl p-4">
-              <s.icon className="w-5 h-5 text-accent mb-2" />
-              <p className="text-2xl font-bold text-foreground">{s.value}</p>
-              <p className="text-xs text-muted-foreground">{s.label}</p>
-            </motion.div>
+            <StatCard key={s.label} index={i} label={s.label} value={s.value} icon={s.icon} tone={s.tone} />
           ))}
         </div>
 
@@ -284,11 +283,7 @@ const TeamModule = () => {
                   <motion.div key={m.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: i * 0.03 } }}
                     className="glass-card-strong rounded-xl p-4 flex items-center gap-4"
                   >
-                    <Avatar className="h-10 w-10">
-                      <AvatarFallback className="bg-accent/10 text-accent text-sm font-semibold">
-                        {m.full_name?.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase() || "?"}
-                      </AvatarFallback>
-                    </Avatar>
+                    <PersonAvatar name={m.full_name} src={m.avatar_url} size={44} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <h4 className="font-medium text-foreground truncate">{m.full_name}</h4>

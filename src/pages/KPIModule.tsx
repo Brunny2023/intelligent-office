@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useOrganization } from "@/hooks/useOrganization";
 import { supabase } from "@/integrations/supabase/client";
 import AppLayout from "@/components/layout/AppLayout";
+import { PageHeader } from "@/components/dashboard/kit";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -159,10 +160,12 @@ const KPIModule = () => {
   return (
     <AppLayout title="Intelligence">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-2xl font-bold text-foreground">Performance & Intelligence</h1>
-          <p className="text-muted-foreground mt-1">KPIs, goals & performance analytics</p>
-        </motion.div>
+        <PageHeader
+          eyebrow="Analytics"
+          icon={Target}
+          title="Performance & Intelligence"
+          subtitle="KPIs, goals & performance analytics"
+        />
 
         <Tabs defaultValue="kpis" className="space-y-4">
           <TabsList className="bg-muted/50 rounded-xl p-1">

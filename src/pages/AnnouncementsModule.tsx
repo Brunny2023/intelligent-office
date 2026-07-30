@@ -4,6 +4,7 @@ import { useOrganization } from "@/hooks/useOrganization";
 import { useProfileNames } from "@/hooks/useProfileNames";
 import { supabase } from "@/integrations/supabase/client";
 import AppLayout from "@/components/layout/AppLayout";
+import { PageHeader, StatCard } from "@/components/dashboard/kit";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -147,11 +148,12 @@ const AnnouncementsModule = () => {
   return (
     <AppLayout title="Announcements">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Announcements</h1>
-            <p className="text-muted-foreground mt-1">Corporate broadcasts & mandatory notifications</p>
-          </div>
+        <PageHeader
+          eyebrow="Broadcast"
+          icon={Megaphone}
+          title="Announcements"
+          subtitle="Corporate broadcasts & mandatory notifications"
+          actions={
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button className="rounded-xl bg-accent text-accent-foreground"><Plus className="w-4 h-4 mr-1" /> Broadcast</Button>
@@ -203,25 +205,14 @@ const AnnouncementsModule = () => {
               </form>
             </DialogContent>
           </Dialog>
-        </motion.div>
+          }
+        />
 
         {/* Stats bar */}
         <div className="grid grid-cols-3 gap-4">
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card rounded-xl p-4">
-            <Megaphone className="w-5 h-5 text-accent mb-2" />
-            <p className="text-2xl font-bold text-foreground">{announcements.length}</p>
-            <p className="text-xs text-muted-foreground">Total Broadcasts</p>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.05 } }} className="glass-card rounded-xl p-4">
-            <Bell className="w-5 h-5 text-svo-blue mb-2" />
-            <p className="text-2xl font-bold text-foreground">{unreadCount}</p>
-            <p className="text-xs text-muted-foreground">Unread</p>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }} className="glass-card rounded-xl p-4">
-            <AlertTriangle className="w-5 h-5 text-destructive mb-2" />
-            <p className="text-2xl font-bold text-foreground">{mandatoryUnacked}</p>
-            <p className="text-xs text-muted-foreground">Pending Acknowledgement</p>
-          </motion.div>
+          <StatCard index={0} label="Total Broadcasts" value={announcements.length} icon={Megaphone} tone="gold" />
+          <StatCard index={1} label="Unread" value={unreadCount} icon={Bell} tone="blue" />
+          <StatCard index={2} label="Pending Acknowledgement" value={mandatoryUnacked} icon={AlertTriangle} tone="rose" />
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
