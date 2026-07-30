@@ -234,7 +234,6 @@ export const IncumbentGrid = () => (
 /* Product Proof — placeholder device mockups                         */
 /* ------------------------------------------------------------------ */
 
-import type { MockView } from "@/components/mockups/shell";
 import MockupPreview from "@/components/mockups/MockupPreview";
 
 const products: { title: string; desc: string; view: MockView }[] = [
