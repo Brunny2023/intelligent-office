@@ -319,10 +319,37 @@ const features = [
   },
 ];
 
+import MockupPreview from "@/components/mockups/MockupPreview";
+import type { MockView } from "@/components/mockups/shell";
+
+/** Real product dashboards (same mockups used in the live walkthrough demo). */
+const MOCK_BY_ID: Record<string, MockView> = {
+  attendance: "attendance",
+  "job-planning": "planning",
+  execution: "tasks",
+  communication: "messages",
+  meetings: "meetings",
+  announcements: "announcements",
+  activity: "activity",
+  documents: "documents",
+  intelligence: "kpi",
+  "ai-insights": "ai",
+  executive: "executive",
+  workflows: "workflows",
+  hr: "hr",
+  finance: "finance",
+  team: "team",
+  support: "partner",
+  admin: "admin",
+  security: "graph",
+  settings: "dashboard",
+};
+
 const FeatureBlock = ({ feature, index }: { feature: typeof features[0]; index: number }) => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const isLeft = feature.align === "left";
+  const mockView = MOCK_BY_ID[feature.id];
 
   return (
     <section
@@ -371,15 +398,18 @@ const FeatureBlock = ({ feature, index }: { feature: typeof features[0]; index: 
             transition={{ duration: 0.6, delay: 0.2 }}
             className="flex-1 w-full max-w-2xl"
           >
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50 bg-card">
-              <img
-                src={feature.image}
-                alt={`${feature.title} dashboard screenshot`}
-                className="w-full h-auto"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
-            </div>
+            {mockView ? (
+              <MockupPreview view={mockView} />
+            ) : (
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50 bg-card">
+                <img
+                  src={feature.image}
+                  alt={`${feature.title} dashboard screenshot`}
+                  className="w-full h-auto"
+                  loading="lazy"
+                />
+              </div>
+            )}
           </motion.div>
         </div>
       </div>
