@@ -7,6 +7,7 @@ import {
   Home, MessageSquare,
 } from "lucide-react";
 import { StatTile, Card, MockAvatar, MockGauge, MockTrend } from "./shell";
+import { photoFor } from "./people";
 import type { MockView } from "./shell";
 import { cn } from "@/lib/utils";
 
@@ -35,6 +36,15 @@ const PRESENCE_TREND = [
   { label: "25", value: 43 }, { label: "26", value: 39 }, { label: "27", value: 44 },
   { label: "28", value: 42 },
 ];
+
+/** Video tile that shows the participant's headshot as their camera feed. */
+const MockVideoTile = ({ name }: { name: string }) => {
+  const photo = photoFor(name);
+  if (!photo) {
+    return <div className="w-full h-full flex items-center justify-center"><MockAvatar name={name} size={44} /></div>;
+  }
+  return <img src={photo} alt={name} loading="lazy" className="w-full h-full object-cover" />;
+};
 
 /* =====================================================================
    DASHBOARD
@@ -302,17 +312,49 @@ export const MeetingsView = () => (
         <div className="text-[11px] text-slate-600">Auto-extracted decisions, action items, sentiment.</div>
       </Card>
     </div>
+    <Card title="Live Room — Weekly Leadership Sync" icon={Video} className="mb-6">
+      <div className="grid grid-cols-3 gap-3">
+        {[
+          { n: "Alex Rivera", r: "Speaking", live: true },
+          { n: "Sarah Chen", r: "Camera on" },
+          { n: "Marcus Lee", r: "Camera on" },
+          { n: "Ana Costa", r: "Muted" },
+          { n: "Jade Wright", r: "Camera on" },
+          { n: "Tom Park", r: "Muted" },
+        ].map((p) => (
+          <div
+            key={p.n}
+            className={cn(
+              "relative rounded-xl overflow-hidden aspect-video bg-slate-900 ring-1 ring-slate-200",
+              p.live && "ring-2 ring-svo-gold",
+            )}
+          >
+            <MockVideoTile name={p.n} />
+            <div className="absolute inset-x-0 bottom-0 px-2 py-1 bg-gradient-to-t from-black/70 to-transparent flex items-center justify-between">
+              <span className="text-[10px] font-medium text-white truncate">{p.n}</span>
+              <span className={cn("text-[9px]", p.live ? "text-svo-gold" : "text-white/60")}>{p.r}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 flex items-center gap-2 text-[11px] text-slate-500">
+        <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" /> Recording · live transcription on · AI summary queued
+      </div>
+    </Card>
     <Card title="Recent Meetings" icon={Video}>
       <div className="divide-y divide-slate-100">
         {[
-          { t: "Weekly Leadership Sync",       d: "Today · 09:00", n: 6, s: "Series A milestones · Q3 hiring plan" },
-          { t: "Product ↔ Design Review",     d: "Yesterday · 15:30", n: 4, s: "Approved new onboarding · 3 action items" },
-          { t: "Investor Update — Vertex VC", d: "Mon · 11:00", n: 3, s: "Follow-up: send financial model + trust report" },
+          { t: "Weekly Leadership Sync",       d: "Today · 09:00", n: 6, s: "Series A milestones · Q3 hiring plan", p: ["Alex Rivera","Sarah Chen","Marcus Lee","Jade Wright"] },
+          { t: "Product ↔ Design Review",     d: "Yesterday · 15:30", n: 4, s: "Approved new onboarding · 3 action items", p: ["Sarah Chen","Ana Costa","Marcus Lee"] },
+          { t: "Investor Update — Vertex VC", d: "Mon · 11:00", n: 3, s: "Follow-up: send financial model + trust report", p: ["Alex Rivera","Tom Park","Daniel Osei"] },
         ].map((m) => (
           <div key={m.t} className="py-3 flex items-center gap-4">
             <div className="w-10 h-10 rounded-lg bg-svo-gold/15 text-svo-gold flex items-center justify-center"><Video className="w-4 h-4" /></div>
             <div className="flex-1"><div className="text-[13px] font-semibold">{m.t}</div>
               <div className="text-[11px] text-slate-500">{m.d} · {m.n} attendees · <span className="text-svo-gold font-medium">{m.s}</span></div>
+            </div>
+            <div className="flex -space-x-2">
+              {m.p.map((n) => <MockAvatar key={n} name={n} size={26} />)}
             </div>
             <button className="text-[11px] px-2.5 py-1 rounded-md border border-slate-200 hover:bg-slate-50 inline-flex items-center gap-1">Summary <ArrowUpRight className="w-3 h-3" /></button>
           </div>
