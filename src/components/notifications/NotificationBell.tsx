@@ -13,7 +13,7 @@ const typeIcons: Record<string, typeof Info> = {
   message: MessageSquare,
 };
 
-const NotificationBell = () => {
+const NotificationBell = ({ className }: { className?: string }) => {
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -38,7 +38,11 @@ const NotificationBell = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setOpen(!open)}
-        className="relative p-2 rounded-xl text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors"
+        aria-label="Notifications"
+        className={cn(
+          "relative p-2 rounded-xl transition-colors",
+          className ?? "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+        )}
       >
         <Bell className="w-[18px] h-[18px]" />
         {unreadCount > 0 && (
