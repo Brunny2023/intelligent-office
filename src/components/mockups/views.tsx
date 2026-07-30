@@ -6,7 +6,7 @@ import {
   MapPin, Calendar, FileText, Crown, Shield,
   Home, MessageSquare,
 } from "lucide-react";
-import { StatTile, Card } from "./shell";
+import { StatTile, Card, MockAvatar, MockGauge, MockTrend } from "./shell";
 import type { MockView } from "./shell";
 import { cn } from "@/lib/utils";
 
@@ -20,16 +20,46 @@ const TEAM = [
   { n: "Daniel Osei",  r: "Sales",               i: "DO", c: "bg-cyan-500/15 text-cyan-700",   s: "off" },
 ];
 
+const HEALTH_TREND = [
+  { label: "M", value: 78, tasks: 62 },
+  { label: "T", value: 81, tasks: 68 },
+  { label: "W", value: 79, tasks: 71 },
+  { label: "T", value: 84, tasks: 74 },
+  { label: "F", value: 86, tasks: 80 },
+  { label: "S", value: 85, tasks: 78 },
+  { label: "S", value: 87, tasks: 84 },
+];
+
+const PRESENCE_TREND = [
+  { label: "Jul 22", value: 38 }, { label: "23", value: 41 }, { label: "24", value: 40 },
+  { label: "25", value: 43 }, { label: "26", value: 39 }, { label: "27", value: 44 },
+  { label: "28", value: 42 },
+];
+
 /* =====================================================================
    DASHBOARD
 ===================================================================== */
 export const DashboardView = () => (
   <>
     <div className="grid grid-cols-4 gap-4 mb-6">
-      <StatTile icon={TrendingUp} value="87%" label="Health Score" tone="gold" />
-      <StatTile icon={Users}      value="42/46" label="Present Today" tone="green" />
-      <StatTile icon={CheckSquare} value="94%"  label="Task Completion" tone="blue" />
-      <StatTile icon={BarChart3}  value="A−"   label="KPI Achievement" tone="gold" />
+      <StatTile icon={TrendingUp} value="87%" label="Health Score" tone="gold" progress={87} delta="+4 pts this week" />
+      <StatTile icon={Users}      value="42/46" label="Present Today" tone="green" progress={91} delta="91% attendance" />
+      <StatTile icon={CheckSquare} value="94%"  label="Task Completion" tone="blue" progress={94} delta="+6% vs last sprint" />
+      <StatTile icon={BarChart3}  value="A−"   label="KPI Achievement" tone="violet" progress={86} delta="86% of targets" />
+    </div>
+
+    <div className="grid grid-cols-3 gap-4 mb-6">
+      <Card title="Organizational Health — 7 days" icon={TrendingUp} className="col-span-2">
+        <MockTrend data={HEALTH_TREND} dataKey="value" secondKey="tasks" tone="gold" secondTone="blue" height={168} />
+      </Card>
+      <Card title="Performance" icon={BarChart3}>
+        <div className="grid grid-cols-2 gap-3 place-items-center">
+          <MockGauge value={94} label="Tasks" tone="blue" size={86} />
+          <MockGauge value={91} label="Attendance" tone="gold" size={86} />
+          <MockGauge value={86} label="KPIs" tone="green" size={86} />
+          <MockGauge value={82} label="Engagement" tone="violet" size={86} />
+        </div>
+      </Card>
     </div>
 
     <div className="grid grid-cols-3 gap-4 mb-6">
@@ -43,9 +73,7 @@ export const DashboardView = () => (
             { u: "Tom Park",    t: "approved Q3 budget for Marketing",       ago: "1h" },
           ].map((r, idx) => (
             <div key={idx} className="flex items-center gap-3 py-2.5 text-[13px]">
-              <div className="w-7 h-7 rounded-full bg-svo-gold/15 text-svo-gold flex items-center justify-center text-[10px] font-bold">
-                {r.u.split(" ").map(x=>x[0]).join("")}
-              </div>
+              <MockAvatar name={r.u} size={30} />
               <div className="flex-1"><span className="font-semibold">{r.u}</span> <span className="text-slate-500">{r.t}</span></div>
               <span className="text-[10px] text-slate-400">{r.ago}</span>
             </div>
@@ -71,28 +99,6 @@ export const DashboardView = () => (
       </Card>
     </div>
 
-    <Card title="Performance Overview" icon={BarChart3}>
-      <div className="grid grid-cols-4 gap-3 text-center">
-        {[
-          { l: "Task Completion", v: 94, c: "hsl(214 84% 56%)" },
-          { l: "Attendance",      v: 91, c: "hsl(38 80% 55%)" },
-          { l: "KPI Achievement", v: 86, c: "hsl(152 48% 45%)" },
-          { l: "Team Engagement", v: 82, c: "hsl(214 84% 56%)" },
-        ].map((m) => (
-          <div key={m.l}>
-            <div className="relative w-16 h-16 mx-auto">
-              <svg viewBox="0 0 40 40" className="w-full h-full -rotate-90">
-                <circle cx="20" cy="20" r="16" fill="none" stroke="#E5E7EB" strokeWidth="3" />
-                <circle cx="20" cy="20" r="16" fill="none" stroke={m.c} strokeWidth="3"
-                  strokeDasharray={`${(m.v/100)*100.5} 100.5`} strokeLinecap="round" />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center text-sm font-bold">{m.v}%</div>
-            </div>
-            <div className="text-[11px] text-slate-500 mt-1">{m.l}</div>
-          </div>
-        ))}
-      </div>
-    </Card>
   </>
 );
 
@@ -132,11 +138,14 @@ export const AttendanceView = () => (
         </div>
       </Card>
     </div>
+    <Card title="Presence Trend — 7 days" icon={TrendingUp} className="mb-6">
+      <MockTrend data={PRESENCE_TREND} dataKey="value" tone="green" height={150} />
+    </Card>
     <Card title="Today's Presence" icon={Users}>
       <div className="grid grid-cols-3 gap-3">
         {TEAM.map((u) => (
           <div key={u.n} className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50">
-            <div className={cn("w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold", u.c)}>{u.i}</div>
+            <MockAvatar name={u.n} size={36} />
             <div className="flex-1 min-w-0">
               <div className="text-[13px] font-medium truncate">{u.n}</div>
               <div className="text-[11px] text-slate-500 truncate">{u.r}</div>
