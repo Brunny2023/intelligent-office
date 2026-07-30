@@ -80,12 +80,12 @@ const SettingsModule = () => {
   return (
     <AppLayout title="Settings">
       <div className="p-4 sm:p-6 md:p-8 max-w-3xl mx-auto space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
-            <Settings className="w-6 h-6 text-accent" /> Organization Settings
-          </h1>
-          <p className="text-muted-foreground text-sm mt-1">Manage your organization's branding and identity</p>
-        </motion.div>
+        <PageHeader
+          eyebrow="Workspace"
+          icon={Settings}
+          title="Organization Settings"
+          subtitle="Manage your organization's branding and identity"
+        />
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.05 } }}>
           <NotificationPreferences />
