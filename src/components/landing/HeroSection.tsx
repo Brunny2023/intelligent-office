@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Users, BarChart3, Brain, Clock } from "lucide-react";
 
 const floatingCards = [
-  { icon: Users, label: "12 Online", sub: "3 departments active", side: "left" as const, x: "0px", y: "26%", delay: 0.8 },
-  { icon: BarChart3, label: "94%", sub: "Team efficiency", side: "right" as const, x: "0px", y: "22%", delay: 1.0 },
-  { icon: Clock, label: "09:01 AM", sub: "Sarah checked in", side: "right" as const, x: "0px", y: "60%", delay: 1.2 },
-  { icon: Brain, label: "AI Insight", sub: "2 risks detected", side: "left" as const, x: "0px", y: "64%", delay: 1.4 },
+  { icon: Users, label: "12 Online", sub: "3 departments active", side: "left" as const, x: "1.5rem", y: "52%", delay: 0.8 },
+  { icon: BarChart3, label: "94%", sub: "Team efficiency", side: "right" as const, x: "1.5rem", y: "48%", delay: 1.0 },
+  { icon: Clock, label: "09:01 AM", sub: "Sarah checked in", side: "right" as const, x: "1.5rem", y: "72%", delay: 1.2 },
+  { icon: Brain, label: "AI Insight", sub: "2 risks detected", side: "left" as const, x: "1.5rem", y: "76%", delay: 1.4 },
 ];
 
 const HeroSection = () => {
@@ -116,8 +116,36 @@ const HeroSection = () => {
           </motion.div>
         </div>
 
-        {/* Floating dashboard preview cards — only on wide screens, pinned to the viewport edges */}
-        <div className="hidden 2xl:block pointer-events-none">
+        {/* Compact stat strip for small/medium screens — same content, no overlap */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          className="xl:hidden mt-12 grid grid-cols-2 gap-3 max-w-2xl mx-auto"
+        >
+          {floatingCards.map((card, i) => (
+            <div
+              key={i}
+              className="rounded-xl px-3 py-2.5 flex items-center gap-2.5"
+              style={{
+                background: "hsl(0 0% 100% / 0.07)",
+                backdropFilter: "blur(20px)",
+                border: "1px solid hsl(0 0% 100% / 0.1)",
+              }}
+            >
+              <div className="w-8 h-8 rounded-lg bg-svo-gold/15 flex items-center justify-center shrink-0">
+                <card.icon className="w-4 h-4 text-svo-gold" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-primary-foreground truncate">{card.label}</p>
+                <p className="text-xs text-primary-foreground/50 truncate">{card.sub}</p>
+              </div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Floating dashboard preview cards — wide screens only, kept below the headline band */}
+        <div className="hidden xl:block pointer-events-none">
           {floatingCards.map((card, i) => (
             <motion.div
               key={i}
