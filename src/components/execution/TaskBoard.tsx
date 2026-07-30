@@ -16,11 +16,11 @@ import { toast } from "sonner";
 import TaskDetailPanel from "./TaskDetailPanel";
 
 const statusColumns = [
-  { key: "todo", label: "To Do", color: "bg-muted text-muted-foreground" },
-  { key: "in_progress", label: "In Progress", color: "bg-svo-blue/10 text-svo-blue" },
-  { key: "review", label: "Review", color: "bg-accent/10 text-accent" },
-  { key: "approved", label: "Approved", color: "bg-green-500/10 text-green-600" },
-  { key: "completed", label: "Completed", color: "bg-green-600/10 text-green-700" },
+  { key: "todo", label: "To Do", color: "bg-status-todo/10 text-status-todo" },
+  { key: "in_progress", label: "In Progress", color: "bg-status-progress/15 text-status-progress" },
+  { key: "review", label: "Review", color: "bg-status-review/12 text-status-review" },
+  { key: "approved", label: "Approved", color: "bg-status-review/15 text-status-review" },
+  { key: "completed", label: "Completed", color: "bg-status-done/15 text-status-done" },
   { key: "blocked", label: "Blocked", color: "bg-destructive/10 text-destructive" },
 ] as const;
 

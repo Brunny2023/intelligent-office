@@ -1,17 +1,32 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Shield } from "lucide-react";
 
 const navLinks = [
   { label: "Features", href: "/features" },
-  { label: "Security", href: "#trust" },
-  { label: "Pricing", href: "#pricing" },
+  { label: "Security", href: "/#trust" },
+  { label: "Pricing", href: "/#pricing" },
 ];
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Hash links must work from any route: scroll in place when already on the
+  // landing page, otherwise navigate home and let ScrollToTop handle the hash.
+  const handleHashLink = (href: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    setOpen(false);
+    const id = href.split("#")[1];
+    if (location.pathname === "/") {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    navigate(`/#${id}`);
+  };
 
   return (
     <motion.nav
@@ -21,16 +36,16 @@ const Navbar = () => {
       className="fixed top-0 left-0 right-0 z-50 glass-card-strong border-b border-border/30"
     >
       <div className="container mx-auto flex items-center justify-between h-16 px-4 md:px-8">
-        <a href="#" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2">
           <img src="/globaloffice-logo.png" alt="Global Office" className="w-8 h-8 object-contain" />
           <span className="text-lg font-bold font-['Space_Grotesk'] text-foreground tracking-tight">
             Global Office<span className="text-svo-gold">.</span>
           </span>
-        </a>
+        </Link>
 
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            link.href.startsWith("/") ? (
+            !link.href.includes("#") ? (
               <Link
                 key={link.label}
                 to={link.href}
@@ -42,6 +57,7 @@ const Navbar = () => {
               <a
                 key={link.label}
                 href={link.href}
+                onClick={handleHashLink(link.href)}
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 {link.label}
@@ -74,7 +90,7 @@ const Navbar = () => {
           >
             <div className="px-4 py-4 flex flex-col gap-3">
               {navLinks.map((link) => (
-                link.href.startsWith("/") ? (
+                !link.href.includes("#") ? (
                   <Link
                     key={link.label}
                     to={link.href}
@@ -87,7 +103,7 @@ const Navbar = () => {
                   <a
                     key={link.label}
                     href={link.href}
-                    onClick={() => setOpen(false)}
+                    onClick={handleHashLink(link.href)}
                     className="text-sm font-medium text-muted-foreground py-2"
                   >
                     {link.label}

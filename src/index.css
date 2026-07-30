@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 220 13% 97%;
+    --background: 220 12% 96%;
     --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
@@ -36,32 +36,45 @@
 
     --radius: 0.75rem;
 
-    --sidebar-background: 222 47% 11%;
+    --sidebar-background: 225 65% 12%;
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 38 80% 55%;
     --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 222 40% 16%;
+    --sidebar-accent: 225 45% 18%;
     --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 222 30% 20%;
+    --sidebar-border: 225 35% 22%;
     --sidebar-ring: 38 80% 55%;
 
     /* SVO custom tokens */
-    --svo-navy: 222 60% 18%;
-    --svo-navy-light: 222 45% 25%;
+    --svo-navy: 225 65% 12%;
+    --svo-navy-light: 224 48% 22%;
     --svo-charcoal: 220 15% 12%;
     --svo-gold: 38 80% 55%;
     --svo-gold-light: 38 90% 70%;
-    --svo-blue: 210 90% 55%;
+    --svo-blue: 214 84% 56%;
     --svo-blue-light: 210 80% 70%;
-    --svo-surface: 220 20% 97%;
+    --svo-surface: 220 14% 96%;
     --svo-glass: 0 0% 100%;
 
-    --gradient-hero: linear-gradient(135deg, hsl(222 60% 18%), hsl(222 45% 25%), hsl(210 60% 20%));
+    /* Data-visualisation palette (matches product dashboards) */
+    --chart-1: 214 84% 56%;   /* steel blue   */
+    --chart-2: 38 80% 55%;    /* signature gold */
+    --chart-3: 160 60% 40%;   /* emerald      */
+    --chart-4: 215 20% 45%;   /* slate        */
+    --chart-5: 210 60% 78%;   /* pale blue    */
+
+    /* Workflow status palette (kanban / pipelines) */
+    --status-todo: 214 84% 56%;
+    --status-progress: 38 88% 55%;
+    --status-review: 152 55% 45%;
+    --status-done: 8 80% 63%;
+
+    --gradient-hero: linear-gradient(135deg, hsl(225 65% 12%), hsl(224 48% 22%), hsl(214 55% 20%));
     --gradient-gold: linear-gradient(135deg, hsl(38 80% 55%), hsl(38 90% 65%));
     --gradient-card: linear-gradient(180deg, hsl(0 0% 100% / 0.8), hsl(0 0% 100% / 0.4));
 
-    --shadow-soft: 0 4px 24px -4px hsl(222 60% 18% / 0.08);
-    --shadow-elevated: 0 12px 40px -8px hsl(222 60% 18% / 0.12);
+    --shadow-soft: 0 4px 24px -4px hsl(225 65% 12% / 0.08);
+    --shadow-elevated: 0 12px 40px -8px hsl(225 65% 12% / 0.12);
     --shadow-gold: 0 8px 32px -8px hsl(38 80% 55% / 0.25);
   }
 
@@ -94,24 +107,35 @@
     --input: 222 30% 18%;
     --ring: 38 80% 55%;
 
-    --sidebar-background: 222 47% 8%;
+    --sidebar-background: 225 62% 8%;
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 38 80% 55%;
     --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 222 40% 14%;
+    --sidebar-accent: 225 45% 14%;
     --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 222 30% 16%;
+    --sidebar-border: 225 35% 16%;
     --sidebar-ring: 38 80% 55%;
 
-    --svo-navy: 222 60% 18%;
-    --svo-navy-light: 222 45% 25%;
+    --svo-navy: 225 65% 12%;
+    --svo-navy-light: 224 48% 22%;
     --svo-charcoal: 220 15% 8%;
     --svo-gold: 38 80% 55%;
     --svo-gold-light: 38 90% 70%;
-    --svo-blue: 210 90% 55%;
+    --svo-blue: 214 84% 56%;
     --svo-blue-light: 210 80% 70%;
     --svo-surface: 222 40% 10%;
     --svo-glass: 222 40% 12%;
+
+    --chart-1: 214 84% 62%;
+    --chart-2: 38 80% 58%;
+    --chart-3: 160 55% 48%;
+    --chart-4: 215 20% 60%;
+    --chart-5: 210 60% 72%;
+
+    --status-todo: 214 84% 62%;
+    --status-progress: 38 88% 58%;
+    --status-review: 152 50% 50%;
+    --status-done: 8 75% 66%;
   }
 }
 
@@ -146,7 +170,7 @@
   }
 
   .gradient-hero-bg {
-    background: linear-gradient(135deg, hsl(var(--svo-navy)), hsl(var(--svo-navy-light)), hsl(210 60% 20%));
+    background: linear-gradient(135deg, hsl(var(--svo-navy)), hsl(var(--svo-navy-light)), hsl(214 55% 20%));
   }
 
   .text-balance {

@@ -74,16 +74,16 @@ export const DashboardView = () => (
     <Card title="Performance Overview" icon={BarChart3}>
       <div className="grid grid-cols-4 gap-3 text-center">
         {[
-          { l: "Task Completion", v: 94 },
-          { l: "Attendance",      v: 91 },
-          { l: "KPI Achievement", v: 86 },
-          { l: "Team Engagement", v: 82 },
+          { l: "Task Completion", v: 94, c: "hsl(214 84% 56%)" },
+          { l: "Attendance",      v: 91, c: "hsl(38 80% 55%)" },
+          { l: "KPI Achievement", v: 86, c: "hsl(152 48% 45%)" },
+          { l: "Team Engagement", v: 82, c: "hsl(214 84% 56%)" },
         ].map((m) => (
           <div key={m.l}>
             <div className="relative w-16 h-16 mx-auto">
               <svg viewBox="0 0 40 40" className="w-full h-full -rotate-90">
                 <circle cx="20" cy="20" r="16" fill="none" stroke="#E5E7EB" strokeWidth="3" />
-                <circle cx="20" cy="20" r="16" fill="none" stroke="hsl(38 80% 55%)" strokeWidth="3"
+                <circle cx="20" cy="20" r="16" fill="none" stroke={m.c} strokeWidth="3"
                   strokeDasharray={`${(m.v/100)*100.5} 100.5`} strokeLinecap="round" />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center text-sm font-bold">{m.v}%</div>
@@ -190,24 +190,24 @@ export const PlanningView = () => (
 ===================================================================== */
 export const TasksView = () => {
   const cols = [
-    { l: "To Do",       n: 5, c: "text-slate-600",
+    { l: "To Do",       n: 5, c: "text-white", bar: "bg-[hsl(214_84%_56%)]",
       items: [{t:"Draft Q3 hiring plan",o:"JW",p:"High"},{t:"Prep board deck",o:"AR",p:"High"},{t:"Redesign onboarding email",o:"AC",p:"Med"}] },
-    { l: "In Progress", n: 4, c: "text-blue-600",
+    { l: "In Progress", n: 4, c: "text-[#4A3A00]", bar: "bg-[hsl(38_88%_60%)]",
       items: [{t:"Payment gateway v2",o:"ML",p:"High"},{t:"Series A model",o:"TP",p:"High"},{t:"Trust Center v1",o:"SC",p:"Med"}] },
-    { l: "In Review",   n: 2, c: "text-amber-600",
+    { l: "In Review",   n: 2, c: "text-white", bar: "bg-[hsl(152_48%_50%)]",
       items: [{t:"Terms of Service update",o:"JW",p:"Med"},{t:"Security audit report",o:"ML",p:"High"}] },
-    { l: "Done",        n: 8, c: "text-emerald-600",
+    { l: "Done",        n: 8, c: "text-white", bar: "bg-[hsl(8_78%_65%)]",
       items: [{t:"Sprint 24 retro",o:"ML",p:"Low"},{t:"Onboard 2 engineers",o:"JW",p:"Med"},{t:"Q2 all-hands recap",o:"AR",p:"Low"}] },
   ];
   return (
     <div className="grid grid-cols-4 gap-4">
       {cols.map((col) => (
-        <div key={col.l} className="rounded-xl bg-white border border-slate-200/70 p-3 shadow-sm">
-          <div className="flex items-center justify-between mb-3 px-1">
-            <span className={cn("text-xs font-semibold", col.c)}>{col.l}</span>
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">{col.n}</span>
+        <div key={col.l} className="rounded-xl bg-white border border-slate-200/70 shadow-sm overflow-hidden">
+          <div className={cn("flex items-center justify-between px-3 py-2.5", col.bar)}>
+            <span className={cn("text-xs font-bold tracking-wide", col.c)}>{col.l}</span>
+            <span className={cn("text-[10px] px-2 py-0.5 rounded-full bg-white/25 font-semibold", col.c)}>{col.n}</span>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2 p-3">
             {col.items.map((t, i) => (
               <div key={i} className="p-3 rounded-lg bg-slate-50 border border-slate-100">
                 <div className="text-[12.5px] font-medium mb-2 leading-snug">{t.t}</div>
@@ -419,12 +419,12 @@ export const DocumentsView = () => (
 ===================================================================== */
 export const KpiView = () => {
   const kpis = [
-    { t: "Monthly Recurring Revenue", v: "$1.24M", d: "+18%", tone: "green", spark: [30,32,38,41,45,52,58,63,71,78,84,92] },
-    { t: "Customer Retention",        v: "97.2%", d: "+2.1pp", tone: "green", spark: [88,90,89,91,92,93,94,94,95,96,97,97] },
-    { t: "NPS Score",                 v: "68",    d: "+5",  tone: "green", spark: [40,45,48,52,55,58,60,62,64,66,68,68] },
-    { t: "Cost per Acquisition",      v: "$142",  d: "-12%", tone: "green", spark: [200,190,180,175,170,165,160,155,150,148,145,142] },
-    { t: "Feature Adoption",          v: "72%",   d: "+8pp", tone: "green", spark: [40,44,48,52,56,60,62,65,67,69,71,72] },
-    { t: "Sales Cycle Length (days)", v: "24",    d: "-3d", tone: "green", spark: [40,38,36,35,33,32,30,29,27,26,25,24] },
+    { t: "Monthly Recurring Revenue", v: "$1.24M", c: "hsl(214 84% 56%)", d: "+18%", spark: [30,32,38,41,45,52,58,63,71,78,84,92] },
+    { t: "Customer Retention",        v: "97.2%", c: "hsl(38 80% 55%)",  d: "+2.1pp", spark: [88,90,89,91,92,93,94,94,95,96,97,97] },
+    { t: "NPS Score",                 v: "68",    c: "hsl(152 48% 45%)", d: "+5",  spark: [40,45,48,52,55,58,60,62,64,66,68,68] },
+    { t: "Cost per Acquisition",      v: "$142",  c: "hsl(214 84% 56%)", d: "-12%", spark: [200,190,180,175,170,165,160,155,150,148,145,142] },
+    { t: "Feature Adoption",          v: "72%",   c: "hsl(38 80% 55%)",  d: "+8pp", spark: [40,44,48,52,56,60,62,65,67,69,71,72] },
+    { t: "Sales Cycle Length (days)", v: "24",    c: "hsl(152 48% 45%)", d: "-3d", spark: [40,38,36,35,33,32,30,29,27,26,25,24] },
   ];
   return (
     <div className="grid grid-cols-3 gap-4">
@@ -437,10 +437,10 @@ export const KpiView = () => {
           </div>
           <svg viewBox="0 0 120 30" className="w-full h-10">
             <polyline
-              fill="none" stroke="hsl(38 80% 55%)" strokeWidth="2" strokeLinecap="round"
+              fill="none" stroke={k.c} strokeWidth="2" strokeLinecap="round"
               points={k.spark.map((v,i) => `${(i/11)*120},${30 - (v/100)*28}`).join(" ")} />
             <polyline
-              fill="hsl(38 80% 55% / 0.15)" stroke="none"
+              fill={k.c} opacity={0.14} stroke="none"
               points={`0,30 ${k.spark.map((v,i) => `${(i/11)*120},${30 - (v/100)*28}`).join(" ")} 120,30`} />
           </svg>
         </Card>
