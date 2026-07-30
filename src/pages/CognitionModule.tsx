@@ -322,21 +322,18 @@ export default function CognitionModule() {
   return (
     <AppLayout title="Cognition Center">
       <div className="p-4 sm:p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
-            <Brain className="w-6 h-6 text-accent" />
-          </div>
-          <div className="flex-1">
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">Enterprise Cognition</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Your organization's virtual leadership, consultants, and departments — reasoning, planning, and remembering on your own knowledge.
-            </p>
-          </div>
-          <div className="hidden md:flex flex-col items-end text-right">
-            <span className="text-xs text-muted-foreground">Organizational memory</span>
-            <span className="text-2xl font-bold text-accent">{memoryCount}</span>
-          </div>
-        </motion.div>
+        <PageHeader
+          eyebrow="Cognition"
+          icon={Brain}
+          title="Enterprise Cognition"
+          subtitle="Your organization's virtual leadership, consultants, and departments — reasoning, planning, and remembering on your own knowledge."
+          actions={
+            <div className="flex flex-col items-end text-right">
+              <span className="text-xs text-muted-foreground">Organizational memory</span>
+              <span className="text-2xl font-bold text-[hsl(var(--svo-gold))] tabular-nums">{memoryCount}</span>
+            </div>
+          }
+        />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList className="bg-muted/50">
