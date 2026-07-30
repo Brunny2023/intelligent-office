@@ -420,10 +420,12 @@ const FinanceModule = () => {
   return (
     <AppLayout title="Finance">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-2xl font-bold text-foreground">Finance & Accounting</h1>
-          <p className="text-muted-foreground mt-1">Payroll management, expense tracking & financial reports</p>
-        </motion.div>
+        <PageHeader
+          eyebrow="Operations"
+          icon={DollarSign}
+          title="Finance & Accounting"
+          subtitle="Payroll management, expense tracking & financial reports"
+        />
 
         <Tabs defaultValue="payroll" className="space-y-4">
           <TabsList className="bg-muted/50 rounded-xl p-1">
