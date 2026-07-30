@@ -103,12 +103,12 @@ const SecurityModule = () => {
   return (
     <AppLayout title="Security">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Shield className="w-7 h-7 text-accent" /> Security & Compliance
-          </h1>
-          <p className="text-muted-foreground mt-1">Data protection, audit trails & regulatory compliance</p>
-        </motion.div>
+        <PageHeader
+          eyebrow="Trust"
+          icon={Shield}
+          title="Security & Compliance"
+          subtitle="Data protection, audit trails & regulatory compliance"
+        />
 
         {/* Quick stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
