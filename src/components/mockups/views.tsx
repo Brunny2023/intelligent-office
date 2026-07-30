@@ -190,24 +190,24 @@ export const PlanningView = () => (
 ===================================================================== */
 export const TasksView = () => {
   const cols = [
-    { l: "To Do",       n: 5, c: "text-slate-600",
+    { l: "To Do",       n: 5, c: "text-white", bar: "bg-[hsl(214_84%_56%)]",
       items: [{t:"Draft Q3 hiring plan",o:"JW",p:"High"},{t:"Prep board deck",o:"AR",p:"High"},{t:"Redesign onboarding email",o:"AC",p:"Med"}] },
-    { l: "In Progress", n: 4, c: "text-blue-600",
+    { l: "In Progress", n: 4, c: "text-[#4A3A00]", bar: "bg-[hsl(38_88%_60%)]",
       items: [{t:"Payment gateway v2",o:"ML",p:"High"},{t:"Series A model",o:"TP",p:"High"},{t:"Trust Center v1",o:"SC",p:"Med"}] },
-    { l: "In Review",   n: 2, c: "text-amber-600",
+    { l: "In Review",   n: 2, c: "text-white", bar: "bg-[hsl(152_48%_50%)]",
       items: [{t:"Terms of Service update",o:"JW",p:"Med"},{t:"Security audit report",o:"ML",p:"High"}] },
-    { l: "Done",        n: 8, c: "text-emerald-600",
+    { l: "Done",        n: 8, c: "text-white", bar: "bg-[hsl(8_78%_65%)]",
       items: [{t:"Sprint 24 retro",o:"ML",p:"Low"},{t:"Onboard 2 engineers",o:"JW",p:"Med"},{t:"Q2 all-hands recap",o:"AR",p:"Low"}] },
   ];
   return (
     <div className="grid grid-cols-4 gap-4">
       {cols.map((col) => (
-        <div key={col.l} className="rounded-xl bg-white border border-slate-200/70 p-3 shadow-sm">
-          <div className="flex items-center justify-between mb-3 px-1">
-            <span className={cn("text-xs font-semibold", col.c)}>{col.l}</span>
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">{col.n}</span>
+        <div key={col.l} className="rounded-xl bg-white border border-slate-200/70 shadow-sm overflow-hidden">
+          <div className={cn("flex items-center justify-between px-3 py-2.5", col.bar)}>
+            <span className={cn("text-xs font-bold tracking-wide", col.c)}>{col.l}</span>
+            <span className={cn("text-[10px] px-2 py-0.5 rounded-full bg-white/25 font-semibold", col.c)}>{col.n}</span>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2 p-3">
             {col.items.map((t, i) => (
               <div key={i} className="p-3 rounded-lg bg-slate-50 border border-slate-100">
                 <div className="text-[12.5px] font-medium mb-2 leading-snug">{t.t}</div>
