@@ -12,10 +12,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { motion, AnimatePresence } from "framer-motion";
-import { UserPlus, Mail, Users, Clock, CheckCircle, XCircle, Send, Copy, Trash2, KeyRound, ShieldCheck } from "lucide-react";
+import { UserPlus, Mail, Users, Clock, CheckCircle, XCircle, Send, Copy, Trash2, KeyRound, ShieldCheck, ScrollText } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { buildTenantUrl, getTenantSlug } from "@/lib/tenant";
+import AccessTokenAudit from "@/components/team/AccessTokenAudit";
 
 const roleLabels: Record<string, string> = {
   owner: "Owner", executive: "Executive", manager: "Manager",
@@ -131,6 +132,16 @@ const TeamModule = () => {
     await navigator.clipboard.writeText(joinLink(code));
     toast.success("Join link copied!");
   };
+
+  const revokeAccessToken = async (id: string) => {
+    const { data, error } = await supabase.rpc("revoke_access_token", { _invitation_id: id });
+    const result = data as any;
+    if (error || result?.error) { toast.error(error?.message || result.error); return; }
+    toast.success("Access token revoked");
+    fetchData();
+  };
+
+  const memberNames: Record<string, string> = Object.fromEntries(members.map(m => [m.id, m.full_name]));
 
   const emailInvites = invitations.filter(i => !i.access_code);
   const accessTokens = invitations.filter(i => i.access_code);
@@ -262,6 +273,7 @@ const TeamModule = () => {
             <TabsTrigger value="members" className="rounded-lg data-[state=active]:bg-card"><Users className="w-3.5 h-3.5 mr-1" />Members</TabsTrigger>
             <TabsTrigger value="invitations" className="rounded-lg data-[state=active]:bg-card"><Mail className="w-3.5 h-3.5 mr-1" />Invitations</TabsTrigger>
             <TabsTrigger value="tokens" className="rounded-lg data-[state=active]:bg-card"><KeyRound className="w-3.5 h-3.5 mr-1" />Access Tokens</TabsTrigger>
+            <TabsTrigger value="audit" className="rounded-lg data-[state=active]:bg-card"><ScrollText className="w-3.5 h-3.5 mr-1" />Audit Trail</TabsTrigger>
           </TabsList>
 
           <TabsContent value="members" className="mt-4 space-y-3">
@@ -359,12 +371,16 @@ const TeamModule = () => {
                   {inv.status === "pending" && (
                     <>
                       <Button size="sm" variant="ghost" className="h-7 rounded-lg" onClick={() => copyAccessLink(inv.access_code)}><Copy className="w-3 h-3" /></Button>
-                      <Button size="sm" variant="ghost" className="h-7 rounded-lg text-destructive" onClick={() => revokeInvite(inv.id)}><Trash2 className="w-3 h-3" /></Button>
+                      <Button size="sm" variant="ghost" className="h-7 rounded-lg text-destructive" onClick={() => revokeAccessToken(inv.id)}><Trash2 className="w-3 h-3" /></Button>
                     </>
                   )}
                 </div>
               </motion.div>
             ))}
+          </TabsContent>
+
+          <TabsContent value="audit" className="mt-4">
+            <AccessTokenAudit organizationId={org?.id} memberNames={memberNames} />
           </TabsContent>
         </Tabs>
       </div>
