@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { Shield, Lock, ScrollText, Users, Server, KeyRound, FileCheck, ArrowLeft, Clock, Fingerprint, GitBranch, DatabaseBackup, LifeBuoy } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
+import StatusPanel from "@/components/trust/StatusPanel";
+import SecurityPackButton from "@/components/trust/SecurityPackButton";
 
 const pillars = [
   {
@@ -80,6 +82,12 @@ export default function TrustCenter() {
               <span className="text-foreground font-medium"> actually implemented in the product today</span> -
               not aspirations. It is not an independent certification.
             </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <SecurityPackButton className="bg-accent text-accent-foreground hover:bg-accent/90" />
+              <a href="#status" className="inline-flex items-center px-4 py-2 rounded-xl border border-border text-sm text-foreground hover:bg-muted">
+                Live platform status
+              </a>
+            </div>
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-4 mt-10">
@@ -117,6 +125,15 @@ export default function TrustCenter() {
               </div>
             </div>
           </motion.div>
+
+          <section id="status" className="mt-14 scroll-mt-24">
+            <h2 className="text-2xl font-bold text-foreground">Uptime & incident history</h2>
+            <p className="text-sm text-muted-foreground mt-1.5 mb-6 max-w-2xl">
+              Availability checked live from your own browser against the platform's core services, alongside our
+              published incident history and monthly reliability statistics.
+            </p>
+            <StatusPanel />
+          </section>
 
           <div className="mt-8 flex flex-wrap gap-3 text-xs text-muted-foreground">
             <span>Security contact: security@globaloffice.cloud</span>
