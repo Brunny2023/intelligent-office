@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export type Tone = "gold" | "blue" | "emerald" | "violet" | "rose" | "slate";
 
@@ -254,6 +255,72 @@ export const PersonAvatar = ({
       aria-hidden
     >
       {initials}
+    </div>
+  );
+};
+
+/** Premium glowing area/line trend chart used across analytics surfaces. */
+export const TrendChart = ({
+  data,
+  dataKey = "value",
+  xKey = "label",
+  tone = "gold",
+  height = 180,
+  secondKey,
+  secondTone = "blue",
+}: {
+  data: Array<Record<string, number | string>>;
+  dataKey?: string;
+  xKey?: string;
+  tone?: Tone;
+  height?: number;
+  secondKey?: string;
+  secondTone?: Tone;
+}) => {
+  const t = TONES[tone];
+  const t2 = TONES[secondTone];
+  const id = `grad-${dataKey}-${tone}`;
+  const id2 = `grad-${secondKey}-${secondTone}`;
+  return (
+    <div style={{ height }} className="w-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
+          <defs>
+            <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={t.ring} stopOpacity={0.45} />
+              <stop offset="100%" stopColor={t.ring} stopOpacity={0} />
+            </linearGradient>
+            <linearGradient id={id2} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={t2.ring} stopOpacity={0.35} />
+              <stop offset="100%" stopColor={t2.ring} stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+          <XAxis dataKey={xKey} tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickLine={false} axisLine={false} />
+          <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickLine={false} axisLine={false} allowDecimals={false} width={34} />
+          <Tooltip
+            contentStyle={{
+              background: "hsl(var(--card))",
+              border: "1px solid hsl(var(--border))",
+              borderRadius: 12,
+              fontSize: 12,
+              color: "hsl(var(--foreground))",
+            }}
+          />
+          <Area
+            type="monotone"
+            dataKey={dataKey}
+            stroke={t.ring}
+            strokeWidth={2.5}
+            fill={`url(#${id})`}
+            dot={false}
+            activeDot={{ r: 4, strokeWidth: 2, stroke: "hsl(var(--card))" }}
+          />
+          {secondKey && (
+            <Area type="monotone" dataKey={secondKey} stroke={t2.ring} strokeWidth={2} fill={`url(#${id2})`} dot={false} />
+          )}
+        </AreaChart>
+      </ResponsiveContainer>
     </div>
   );
 };
