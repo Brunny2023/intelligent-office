@@ -12,7 +12,7 @@ import AIInsightWidget from "@/components/dashboard/AIInsightWidget";
 import OnboardingChecklist from "@/components/dashboard/OnboardingChecklist";
 import CognitionPulseWidget from "@/components/dashboard/CognitionPulseWidget";
 import AppLayout from "@/components/layout/AppLayout";
-import { PageHeader, StatCard, type Tone } from "@/components/dashboard/kit";
+import { PageHeader, StatCard, PersonAvatar, type Tone } from "@/components/dashboard/kit";
 import { motion } from "framer-motion";
 import {
   Users, CheckSquare, MessageSquare, BarChart3,
@@ -153,6 +153,7 @@ const Dashboard = () => {
         <PageHeader
           eyebrow="Command Center"
           icon={Sparkles}
+          avatar={<PersonAvatar name={profile?.full_name} src={profile?.avatar_url} size={56} />}
           title={`Welcome back, ${profile?.full_name?.split(" ")[0] || "there"}`}
           subtitle={roleGreeting(role)}
         />

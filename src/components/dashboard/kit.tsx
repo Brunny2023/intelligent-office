@@ -52,12 +52,15 @@ export const PageHeader = ({
   subtitle,
   icon: Icon,
   actions,
+  avatar,
 }: {
   eyebrow?: string;
   title: string;
   subtitle?: string;
   icon?: LucideIcon;
   actions?: ReactNode;
+  /** Optional leading media (e.g. member headshot) shown instead of the icon. */
+  avatar?: ReactNode;
 }) => (
   <motion.header
     initial={{ opacity: 0, y: -10 }}
@@ -67,11 +70,13 @@ export const PageHeader = ({
     <div className="absolute inset-x-0 top-0 h-1 gold-rule" />
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-start gap-4 min-w-0">
-        {Icon && (
+        {avatar ? (
+          <div className="hidden sm:block shrink-0">{avatar}</div>
+        ) : Icon ? (
           <div className="hidden sm:flex w-12 h-12 rounded-2xl bg-[hsl(var(--svo-navy))] items-center justify-center shrink-0 shadow-md">
             <Icon className="w-6 h-6 text-[hsl(var(--svo-gold))]" />
           </div>
-        )}
+        ) : null}
         <div className="min-w-0">
           {eyebrow && (
             <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--svo-gold))]">
