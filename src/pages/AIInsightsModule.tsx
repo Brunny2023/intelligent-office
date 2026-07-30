@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useOrganization } from "@/hooks/useOrganization";
 import { supabase } from "@/integrations/supabase/client";
 import AppLayout from "@/components/layout/AppLayout";
-import { PageHeader, StatCard, type Tone } from "@/components/dashboard/kit";
+import { PageHeader, StatCard, SectionCard, TrendChart, type Tone } from "@/components/dashboard/kit";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { Brain, Sparkles, AlertTriangle, TrendingUp, RefreshCw, Zap, BarChart3, Users, CheckCircle, Inbox, Filter, Search, ExternalLink, ShieldAlert, Bell } from "lucide-react";
 import { toast } from "sonner";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, format, subDays, startOfDay } from "date-fns";
 import { useNavigate } from "react-router-dom";
 
 const severityColors: Record<string, string> = {
@@ -149,6 +149,27 @@ const AIInsightsModule = () => {
     return <AppLayout title="AI Intelligence"><div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" /></div></AppLayout>;
   }
 
+  const trend = Array.from({ length: 14 }, (_, idx) => {
+    const day = startOfDay(subDays(new Date(), 13 - idx));
+    const next = new Date(day.getTime() + 86400000);
+    const rows = insights.filter(i => {
+      const t = new Date(i.generated_at);
+      return t >= day && t < next;
+    });
+    return {
+      label: format(day, "MMM d"),
+      alerts: rows.length,
+      critical: rows.filter(r => r.severity === "critical" || r.severity === "high").length,
+    };
+  });
+
+  const severityMix = [
+    { label: "critical", value: insights.filter(i => i.severity === "critical").length, bar: "bg-destructive" },
+    { label: "warning", value: insights.filter(i => i.severity === "warning" || i.severity === "high").length, bar: "bg-[hsl(var(--svo-gold))]" },
+    { label: "info", value: insights.filter(i => i.severity === "info" || i.severity === "medium").length, bar: "bg-[hsl(var(--svo-blue))]" },
+    { label: "success", value: insights.filter(i => i.severity === "success").length, bar: "bg-[hsl(160_60%_40%)]" },
+  ];
+
   return (
     <AppLayout title="AI Intelligence">
       <div className="p-6 md:p-8 space-y-6">
@@ -184,6 +205,32 @@ const AIInsightsModule = () => {
           ].map((stat, i) => (
             <StatCard key={stat.label} index={i} label={stat.label} value={stat.value} icon={stat.icon} tone={stat.tone} />
           ))}
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-4">
+          <SectionCard title="Signal Volume — Last 14 Days" icon={TrendingUp} className="lg:col-span-2">
+            <TrendChart data={trend} dataKey="alerts" secondKey="critical" tone="gold" secondTone="rose" height={200} />
+          </SectionCard>
+          <SectionCard title="Severity Mix" icon={BarChart3}>
+            <div className="space-y-3">
+              {severityMix.map((row) => (
+                <div key={row.label}>
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <span className="text-muted-foreground capitalize">{row.label}</span>
+                    <span className="font-semibold text-foreground tabular-nums">{row.value}</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-muted overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${insights.length ? (row.value / insights.length) * 100 : 0}%` }}
+                      transition={{ duration: 0.7, ease: "easeOut" }}
+                      className={`h-full rounded-full ${row.bar}`}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </SectionCard>
         </div>
 
         {/* Inbox filters */}

@@ -6,7 +6,9 @@ import { supabase } from "@/integrations/supabase/client";
  */
 export const useProfileNames = () => {
   const cache = useRef<Record<string, string>>({});
+  const avatarCache = useRef<Record<string, string | null>>({});
   const [names, setNames] = useState<Record<string, string>>({});
+  const [avatars, setAvatars] = useState<Record<string, string | null>>({});
 
   const resolve = useCallback(async (userIds: string[]) => {
     const missing = userIds.filter(id => !cache.current[id]);
@@ -14,16 +16,20 @@ export const useProfileNames = () => {
 
     const { data } = await supabase
       .from("profiles")
-      .select("id, full_name")
+      .select("id, full_name, avatar_url")
       .in("id", missing);
 
     if (data) {
       const newEntries: Record<string, string> = {};
+      const newAvatars: Record<string, string | null> = {};
       data.forEach(p => {
         cache.current[p.id] = p.full_name;
+        avatarCache.current[p.id] = p.avatar_url;
         newEntries[p.id] = p.full_name;
+        newAvatars[p.id] = p.avatar_url;
       });
       setNames(prev => ({ ...prev, ...newEntries }));
+      setAvatars(prev => ({ ...prev, ...newAvatars }));
     }
   }, []);
 
@@ -31,5 +37,9 @@ export const useProfileNames = () => {
     return cache.current[userId] || names[userId] || userId.slice(0, 8) + "…";
   }, [names]);
 
-  return { resolve, getName, names: { ...cache.current, ...names } };
+  const getAvatar = useCallback((userId: string) => {
+    return avatarCache.current[userId] || avatars[userId] || null;
+  }, [avatars]);
+
+  return { resolve, getName, getAvatar, names: { ...cache.current, ...names }, avatars: { ...avatarCache.current, ...avatars } };
 };
