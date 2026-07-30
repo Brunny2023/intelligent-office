@@ -353,7 +353,28 @@ export const MessagesView = () => (
 /* =====================================================================
    MEETINGS
 ===================================================================== */
-export const MeetingsView = () => (
+const ROOM = [
+  { n: "Alex Rivera", muted: false },
+  { n: "Sarah Chen", muted: false },
+  { n: "Marcus Lee", muted: false },
+  { n: "Ana Costa", muted: true },
+  { n: "Jade Wright", muted: false },
+  { n: "Tom Park", muted: true },
+];
+
+export const MeetingsView = () => {
+  const [speaker, setSpeaker] = useState(0);
+  useEffect(() => {
+    const unmuted = ROOM.map((p, i) => (p.muted ? -1 : i)).filter((i) => i >= 0);
+    const id = setInterval(() => {
+      setSpeaker((s) => {
+        const pos = unmuted.indexOf(s);
+        return unmuted[(pos + 1) % unmuted.length];
+      });
+    }, 3600);
+    return () => clearInterval(id);
+  }, []);
+  return (
   <>
     <div className="grid grid-cols-3 gap-4 mb-6">
       <Card className="!p-4 border-svo-gold/40 bg-gradient-to-br from-svo-gold/10 to-white">
@@ -372,28 +393,28 @@ export const MeetingsView = () => (
     </div>
     <Card title="Live Room — Weekly Leadership Sync" icon={Video} className="mb-6">
       <div className="grid grid-cols-3 gap-3">
-        {[
-          { n: "Alex Rivera", r: "Speaking", live: true },
-          { n: "Sarah Chen", r: "Camera on" },
-          { n: "Marcus Lee", r: "Camera on" },
-          { n: "Ana Costa", r: "Muted" },
-          { n: "Jade Wright", r: "Camera on" },
-          { n: "Tom Park", r: "Muted" },
-        ].map((p) => (
-          <div
-            key={p.n}
-            className={cn(
-              "relative rounded-xl overflow-hidden aspect-video bg-slate-900 ring-1 ring-slate-200",
-              p.live && "ring-2 ring-svo-gold",
-            )}
-          >
-            <MockVideoTile name={p.n} />
-            <div className="absolute inset-x-0 bottom-0 px-2 py-1 bg-gradient-to-t from-black/70 to-transparent flex items-center justify-between">
-              <span className="text-[10px] font-medium text-white truncate">{p.n}</span>
-              <span className={cn("text-[9px]", p.live ? "text-svo-gold" : "text-white/60")}>{p.r}</span>
-            </div>
-          </div>
-        ))}
+        {ROOM.map((p, i) => {
+          const live = i === speaker;
+          return (
+            <motion.div
+              key={p.n}
+              animate={{ scale: live ? 1.03 : 1 }}
+              transition={{ type: "spring", stiffness: 220, damping: 22 }}
+              className={cn(
+                "relative rounded-xl overflow-hidden aspect-video bg-slate-900 ring-1 ring-slate-200",
+                live && "ring-2 ring-svo-gold z-10 shadow-lg",
+              )}
+            >
+              <MockVideoTile name={p.n} index={i} speaking={live} muted={p.muted} />
+              <div className="absolute inset-x-0 bottom-0 px-2 py-1 bg-gradient-to-t from-black/70 to-transparent flex items-center justify-between">
+                <span className="text-[10px] font-medium text-white truncate">{p.n}</span>
+                <span className={cn("text-[9px]", live ? "text-svo-gold" : "text-white/60")}>
+                  {live ? "Speaking" : p.muted ? "Muted" : "Camera on"}
+                </span>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
       <div className="mt-3 flex items-center gap-2 text-[11px] text-slate-500">
         <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" /> Recording · live transcription on · AI summary queued
@@ -420,7 +441,8 @@ export const MeetingsView = () => (
       </div>
     </Card>
   </>
-);
+  );
+};
 
 /* =====================================================================
    ANNOUNCEMENTS
