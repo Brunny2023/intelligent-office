@@ -102,7 +102,7 @@ const AppSidebar = () => {
           </motion.div>
           <AnimatePresence>
             {!collapsed && (
-              <motion.div initial={{ opacity: 0, width: 0 }} animate={{ opacity: 1, width: "auto" }} exit={{ opacity: 0, width: 0 }}
+              <motion.div initial={false} animate={{ opacity: 1, width: "auto" }} exit={{ opacity: 0, width: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
                 className="ml-3 overflow-hidden whitespace-nowrap"
               >
@@ -143,7 +143,7 @@ const AppSidebar = () => {
               </motion.div>
               <AnimatePresence>
                 {!collapsed && (
-                  <motion.span initial={{ opacity: 0, width: 0 }} animate={{ opacity: 1, width: "auto" }} exit={{ opacity: 0, width: 0 }}
+                  <motion.span initial={false} animate={{ opacity: 1, width: "auto" }} exit={{ opacity: 0, width: 0 }}
                     transition={{ type: "spring", stiffness: 300, damping: 25 }}
                     className="overflow-hidden whitespace-nowrap"
                   >{item.label}</motion.span>
@@ -158,7 +158,7 @@ const AppSidebar = () => {
       <div className="border-t border-sidebar-border p-2 space-y-1">
         <AnimatePresence>
           {!collapsed && profile && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+            <motion.div initial={false} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
               className="px-3 py-2 overflow-hidden"
             >
