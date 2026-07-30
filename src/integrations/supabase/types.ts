@@ -14,6 +14,62 @@ export type Database = {
   }
   public: {
     Tables: {
+      access_token_events: {
+        Row: {
+          access_code: string | null
+          actor_email: string | null
+          actor_id: string | null
+          created_at: string
+          detail: Json
+          event_type: string
+          fingerprint: string | null
+          id: string
+          invitation_id: string | null
+          organization_id: string | null
+          role: string | null
+          success: boolean
+          user_agent: string | null
+        }
+        Insert: {
+          access_code?: string | null
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          detail?: Json
+          event_type: string
+          fingerprint?: string | null
+          id?: string
+          invitation_id?: string | null
+          organization_id?: string | null
+          role?: string | null
+          success?: boolean
+          user_agent?: string | null
+        }
+        Update: {
+          access_code?: string | null
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          detail?: Json
+          event_type?: string
+          fingerprint?: string | null
+          id?: string
+          invitation_id?: string | null
+          organization_id?: string | null
+          role?: string | null
+          success?: boolean
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "access_token_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       activity_logs: {
         Row: {
           action: string
@@ -2862,6 +2918,42 @@ export type Database = {
           },
         ]
       }
+      status_incidents: {
+        Row: {
+          body: string | null
+          component: string
+          created_at: string
+          id: string
+          resolved_at: string | null
+          severity: string
+          started_at: string
+          status: string
+          title: string
+        }
+        Insert: {
+          body?: string | null
+          component?: string
+          created_at?: string
+          id?: string
+          resolved_at?: string | null
+          severity?: string
+          started_at?: string
+          status?: string
+          title: string
+        }
+        Update: {
+          body?: string | null
+          component?: string
+          created_at?: string
+          id?: string
+          resolved_at?: string | null
+          severity?: string
+          started_at?: string
+          status?: string
+          title?: string
+        }
+        Relationships: []
+      }
       support_tickets: {
         Row: {
           assigned_to: string | null
@@ -3379,6 +3471,10 @@ export type Database = {
     }
     Functions: {
       accept_invitation: { Args: { _token: string }; Returns: Json }
+      alert_suspicious_token_activity: {
+        Args: { _code: string; _fingerprint: string; _org: string }
+        Returns: undefined
+      }
       cognition_governance_scorecard: {
         Args: { _days?: number; _org: string }
         Returns: Json
@@ -3482,7 +3578,25 @@ export type Database = {
       }
       intelligence_isolation_probe: { Args: never; Returns: Json }
       is_platform_admin: { Args: { _user_id: string }; Returns: boolean }
-      lookup_access_token: { Args: { _code: string }; Returns: Json }
+      log_token_event: {
+        Args: {
+          _actor: string
+          _code: string
+          _detail: Json
+          _event: string
+          _fingerprint: string
+          _invitation: string
+          _org: string
+          _role: string
+          _success: boolean
+          _user_agent: string
+        }
+        Returns: undefined
+      }
+      lookup_access_token: {
+        Args: { _code: string; _fingerprint?: string; _user_agent?: string }
+        Returns: Json
+      }
       move_to_dlq: {
         Args: {
           dlq_name: string
@@ -3500,8 +3614,12 @@ export type Database = {
           read_ct: number
         }[]
       }
-      redeem_access_token: { Args: { _code: string }; Returns: Json }
+      redeem_access_token: {
+        Args: { _code: string; _fingerprint?: string; _user_agent?: string }
+        Returns: Json
+      }
       retention_purge: { Args: never; Returns: Json }
+      revoke_access_token: { Args: { _invitation_id: string }; Returns: Json }
       search_memory: {
         Args: { _limit?: number; _org: string; _query: string }
         Returns: {
@@ -3517,6 +3635,10 @@ export type Database = {
       }
       seed_cognition_defaults: { Args: { _org: string }; Returns: undefined }
       sign_memo: { Args: { _memo_id: string }; Returns: Json }
+      token_attempt_blocked: {
+        Args: { _code: string; _fingerprint: string }
+        Returns: boolean
+      }
       touch_memory: { Args: { _memory_ids: string[] }; Returns: undefined }
       verify_memo_signature: { Args: { _memo_id: string }; Returns: Json }
       workflow_instantiate: {
