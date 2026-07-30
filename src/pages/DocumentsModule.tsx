@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Plus, Download, Search, FolderOpen, File, FileImage, FileSpreadsheet, Upload, Eye, Trash2 } from "lucide-react";
+import { FileText, Plus, Download, Search, FolderOpen, File, FileImage, FileSpreadsheet, FileArchive, FileType2, Presentation, Upload, Eye, Trash2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import InternalMemos from "@/components/documents/InternalMemos";
 import { toast } from "sonner";
@@ -28,11 +28,24 @@ const categoryColors: Record<string, string> = {
   contract: "bg-destructive/10 text-destructive",
 };
 
-const fileIcon = (type: string | null) => {
-  if (!type) return File;
-  if (type.includes("image")) return FileImage;
-  if (type.includes("sheet") || type.includes("csv")) return FileSpreadsheet;
-  return FileText;
+type FileVisual = { icon: typeof File; label: string; grad: string; tint: string };
+
+const fileVisual = (type: string | null, name?: string): FileVisual => {
+  const t = (type || "").toLowerCase();
+  const ext = (name || "").split(".").pop()?.toLowerCase() || "";
+  if (t.includes("pdf") || ext === "pdf")
+    return { icon: FileType2, label: "PDF", grad: "linear-gradient(145deg, hsl(8 78% 56%), hsl(20 84% 64%))", tint: "hsl(8 78% 56%)" };
+  if (t.includes("image") || ["png", "jpg", "jpeg", "gif", "webp", "svg"].includes(ext))
+    return { icon: FileImage, label: "IMG", grad: "linear-gradient(145deg, hsl(265 62% 56%), hsl(285 72% 68%))", tint: "hsl(265 62% 56%)" };
+  if (t.includes("sheet") || t.includes("csv") || ["xls", "xlsx", "csv"].includes(ext))
+    return { icon: FileSpreadsheet, label: "SHEET", grad: "linear-gradient(145deg, hsl(160 62% 38%), hsl(152 58% 52%))", tint: "hsl(160 62% 38%)" };
+  if (t.includes("word") || ["doc", "docx", "rtf", "odt"].includes(ext))
+    return { icon: FileText, label: "DOC", grad: "linear-gradient(145deg, hsl(var(--svo-blue)), hsl(var(--svo-blue-light)))", tint: "hsl(var(--svo-blue))" };
+  if (t.includes("presentation") || ["ppt", "pptx", "key"].includes(ext))
+    return { icon: Presentation, label: "SLIDES", grad: "linear-gradient(145deg, hsl(var(--svo-gold)), hsl(var(--svo-gold-light)))", tint: "hsl(var(--svo-gold))" };
+  if (t.includes("zip") || ["zip", "rar", "7z", "tar", "gz"].includes(ext))
+    return { icon: FileArchive, label: "ZIP", grad: "linear-gradient(145deg, hsl(38 60% 45%), hsl(45 70% 58%))", tint: "hsl(38 60% 45%)" };
+  return { icon: File, label: ext ? ext.toUpperCase().slice(0, 5) : "FILE", grad: "linear-gradient(145deg, hsl(var(--svo-navy)), hsl(var(--svo-navy-light)))", tint: "hsl(var(--svo-navy))" };
 };
 
 const DocumentsModule = () => {
@@ -222,7 +235,8 @@ const DocumentsModule = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <AnimatePresence mode="popLayout">
               {filtered.map((doc, i) => {
-                const Icon = fileIcon(doc.file_type);
+                const visual = fileVisual(doc.file_type, doc.file_name);
+                const Icon = visual.icon;
                 return (
                   <motion.div
                     key={doc.id}
@@ -234,8 +248,13 @@ const DocumentsModule = () => {
                     className="glass-card-strong rounded-xl p-4 cursor-pointer"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                        <Icon className="w-5 h-5 text-muted-foreground" />
+                      <div
+                        className="w-14 h-16 rounded-xl flex flex-col items-center justify-center shrink-0 shadow-md text-white relative overflow-hidden"
+                        style={{ background: visual.grad }}
+                      >
+                        <div className="absolute top-0 right-0 w-4 h-4 bg-white/25 [clip-path:polygon(0_0,100%_100%,100%_0)]" />
+                        <Icon className="w-6 h-6" />
+                        <span className="mt-1 text-[9px] font-bold tracking-wider">{visual.label}</span>
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-foreground text-sm truncate">{doc.title}</h4>
