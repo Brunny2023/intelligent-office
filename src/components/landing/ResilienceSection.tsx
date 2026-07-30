@@ -124,9 +124,18 @@ const ResilienceSection = () => {
               These are product controls maintained by Global Office, not an independent certification.
             </p>
           </div>
-          <Link to="/trust" className="shrink-0 inline-flex items-center gap-1 text-sm font-semibold text-svo-gold hover:underline">
-            Read the Trust Center <ArrowRight className="w-4 h-4" />
-          </Link>
+          <div className="shrink-0 flex flex-wrap items-center gap-4">
+            <button
+              type="button"
+              onClick={generateSecurityPack}
+              className="inline-flex items-center gap-1 text-sm font-semibold text-svo-gold hover:underline"
+            >
+              <FileDown className="w-4 h-4" /> Security &amp; Continuity Pack (PDF)
+            </button>
+            <Link to="/trust" className="inline-flex items-center gap-1 text-sm font-semibold text-svo-gold hover:underline">
+              Read the Trust Center <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto mt-10">
