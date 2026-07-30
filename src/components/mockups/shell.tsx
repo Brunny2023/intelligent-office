@@ -5,7 +5,7 @@ import { Area, AreaChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } fro
 import {
   Home, Clock, Target, CheckSquare, MessageSquare, Video, Megaphone,
   Activity, FileText, BarChart3, Network, Brain, Crown, Workflow,
-  Briefcase, DollarSign, Users, Shield, Building2, Bell,
+  Briefcase, DollarSign, Users, Shield, Building2, Bell, Ticket,
 } from "lucide-react";
 
 export const AURORA_LOGO = (
@@ -36,6 +36,7 @@ export const MOCK_NAV = [
   { icon: Briefcase,   label: "HR",              v: "hr" },
   { icon: DollarSign,  label: "Finance",         v: "finance" },
   { icon: Users,       label: "Team",            v: "team" },
+  { icon: Ticket,      label: "Support",         v: "support" },
   { icon: Building2,   label: "Partner Connect", v: "partner" },
 ] as const;
 
