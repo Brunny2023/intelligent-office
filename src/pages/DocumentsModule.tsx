@@ -4,6 +4,7 @@ import { useOrganization } from "@/hooks/useOrganization";
 import { useProfileNames } from "@/hooks/useProfileNames";
 import { supabase } from "@/integrations/supabase/client";
 import AppLayout from "@/components/layout/AppLayout";
+import { PageHeader, StatCard } from "@/components/dashboard/kit";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -120,10 +121,12 @@ const DocumentsModule = () => {
   return (
     <AppLayout title="Documents">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-2xl font-bold text-foreground">Documents & Knowledge Base</h1>
-          <p className="text-muted-foreground mt-1">Organization files, SOPs, policies & templates</p>
-        </motion.div>
+        <PageHeader
+          eyebrow="Knowledge"
+          icon={FolderOpen}
+          title="Documents & Knowledge Base"
+          subtitle="Organization files, SOPs, policies & templates"
+        />
 
         <Tabs defaultValue="files" className="space-y-4">
           <TabsList className="bg-muted/50 rounded-xl p-1">
@@ -143,21 +146,15 @@ const DocumentsModule = () => {
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4">
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card rounded-xl p-4">
-            <FileText className="w-5 h-5 text-accent mb-2" />
-            <p className="text-2xl font-bold text-foreground">{documents.length}</p>
-            <p className="text-xs text-muted-foreground">Total Documents</p>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.05 } }} className="glass-card rounded-xl p-4">
-            <FolderOpen className="w-5 h-5 text-svo-blue mb-2" />
-            <p className="text-2xl font-bold text-foreground">{new Set(documents.map(d => d.category)).size}</p>
-            <p className="text-xs text-muted-foreground">Categories</p>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }} className="glass-card rounded-xl p-4">
-            <Upload className="w-5 h-5 text-svo-gold mb-2" />
-            <p className="text-2xl font-bold text-foreground">{documents.length > 0 ? Math.round(documents.reduce((s, d) => s + Number(d.file_size || 0), 0) / 1024 / 1024) : 0} MB</p>
-            <p className="text-xs text-muted-foreground">Total Size</p>
-          </motion.div>
+          <StatCard index={0} label="Total Documents" value={documents.length} icon={FileText} tone="blue" />
+          <StatCard index={1} label="Categories" value={new Set(documents.map(d => d.category)).size} icon={FolderOpen} tone="violet" />
+          <StatCard
+            index={2}
+            label="Total Size"
+            value={`${documents.length > 0 ? Math.round(documents.reduce((s, d) => s + Number(d.file_size || 0), 0) / 1024 / 1024) : 0} MB`}
+            icon={Upload}
+            tone="gold"
+          />
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3">

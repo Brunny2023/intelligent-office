@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { motion } from "framer-motion";
 import AppSidebar from "./AppSidebar";
 import MobileNav from "./MobileNav";
+import AppTopBar from "./AppTopBar";
 import AskLeadershipFAB from "@/components/cognition/AskLeadershipFAB";
 import NotificationBell from "@/components/notifications/NotificationBell";
 
@@ -13,7 +14,7 @@ const pageVariants = {
 
 const AppLayout = ({ children, title }: { children: ReactNode; title?: string }) => {
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-background app-surface">
       <div className="hidden md:block">
         <AppSidebar />
       </div>
@@ -25,6 +26,7 @@ const AppLayout = ({ children, title }: { children: ReactNode; title?: string })
         exit="exit"
         className="flex-1 overflow-auto pb-20 md:pb-0"
       >
+        <AppTopBar title={title} />
         {children}
       </motion.main>
       <MobileNav />

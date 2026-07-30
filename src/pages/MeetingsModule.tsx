@@ -4,6 +4,7 @@ import { useOrganization } from "@/hooks/useOrganization";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import AppLayout from "@/components/layout/AppLayout";
+import { PageHeader } from "@/components/dashboard/kit";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -322,10 +323,12 @@ const MeetingsModule = () => {
   return (
     <AppLayout title="Meetings">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-2xl font-bold text-foreground">Video Meetings</h1>
-          <p className="text-muted-foreground mt-1">Real-time video conferencing with AI capabilities</p>
-        </motion.div>
+        <PageHeader
+          eyebrow="Collaboration"
+          icon={Video}
+          title="Video Meetings"
+          subtitle="Real-time video conferencing with AI capabilities"
+        />
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <motion.div

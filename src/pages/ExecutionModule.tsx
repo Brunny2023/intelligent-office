@@ -4,6 +4,8 @@ import AppLayout from "@/components/layout/AppLayout";
 import ProjectList from "@/components/execution/ProjectList";
 import TaskBoard from "@/components/execution/TaskBoard";
 import { motion, AnimatePresence } from "framer-motion";
+import { PageHeader } from "@/components/dashboard/kit";
+import { KanbanSquare } from "lucide-react";
 
 const ExecutionModule = () => {
   const { loading } = useOrganization();
@@ -22,10 +24,12 @@ const ExecutionModule = () => {
   return (
     <AppLayout title="Execution">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-2xl font-bold text-foreground">Execution Engine</h1>
-          <p className="text-muted-foreground mt-1">Manage projects, tasks & workflows</p>
-        </motion.div>
+        <PageHeader
+          eyebrow="Delivery"
+          icon={KanbanSquare}
+          title="Execution Engine"
+          subtitle="Manage projects, tasks & workflows"
+        />
 
         <div className="grid lg:grid-cols-[320px_1fr] gap-4 md:gap-6">
           <div>

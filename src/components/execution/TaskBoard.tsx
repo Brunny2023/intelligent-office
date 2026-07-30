@@ -14,14 +14,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Plus, GripVertical, MessageSquare, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import TaskDetailPanel from "./TaskDetailPanel";
+import { PersonAvatar } from "@/components/dashboard/kit";
+import { useProfileNames } from "@/hooks/useProfileNames";
 
 const statusColumns = [
-  { key: "todo", label: "To Do", color: "bg-status-todo/10 text-status-todo" },
-  { key: "in_progress", label: "In Progress", color: "bg-status-progress/15 text-status-progress" },
-  { key: "review", label: "Review", color: "bg-status-review/12 text-status-review" },
-  { key: "approved", label: "Approved", color: "bg-status-review/15 text-status-review" },
-  { key: "completed", label: "Completed", color: "bg-status-done/15 text-status-done" },
-  { key: "blocked", label: "Blocked", color: "bg-destructive/10 text-destructive" },
+  { key: "todo", label: "To Do", color: "bg-status-todo/10 text-status-todo", bar: "bg-status-todo" },
+  { key: "in_progress", label: "In Progress", color: "bg-status-progress/15 text-status-progress", bar: "bg-status-progress" },
+  { key: "review", label: "Review", color: "bg-status-review/12 text-status-review", bar: "bg-status-review" },
+  { key: "approved", label: "Approved", color: "bg-status-review/15 text-status-review", bar: "bg-[hsl(var(--svo-gold))]" },
+  { key: "completed", label: "Completed", color: "bg-status-done/15 text-status-done", bar: "bg-status-done" },
+  { key: "blocked", label: "Blocked", color: "bg-destructive/10 text-destructive", bar: "bg-destructive" },
 ] as const;
 
 const priorityColors: Record<string, string> = {
@@ -49,6 +51,7 @@ const TaskBoard = ({ projectId }: { projectId?: string }) => {
   const { user } = useAuth();
   const { org } = useOrganization();
   const { logActivity } = useActivityLog();
+  const { resolve, getName } = useProfileNames();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -75,6 +78,11 @@ const TaskBoard = ({ projectId }: { projectId?: string }) => {
   };
 
   useEffect(() => { fetchTasks(); }, [org, projectId]);
+
+  useEffect(() => {
+    const ids = Array.from(new Set(tasks.map((t) => t.assigned_to).filter(Boolean))) as string[];
+    if (ids.length) resolve(ids);
+  }, [tasks, resolve]);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -216,11 +224,12 @@ const TaskBoard = ({ projectId }: { projectId?: string }) => {
           const columnTasks = getTasksByStatus(col.key);
           return (
             <div key={col.key} className="min-w-[200px]">
-              <div className="flex items-center gap-2 mb-3 px-1">
-                <Badge variant="outline" className={`${col.color} text-xs font-medium`}>
-                  {col.label}
-                </Badge>
-                <span className="text-xs text-muted-foreground">{columnTasks.length}</span>
+              <div className="mb-3 rounded-xl overflow-hidden border border-border/60 bg-card/70">
+                <div className={`h-1 w-full ${col.bar}`} />
+                <div className="flex items-center justify-between gap-2 px-3 py-2">
+                  <span className="text-xs font-semibold text-foreground">{col.label}</span>
+                  <Badge variant="outline" className={`${col.color} text-[10px] px-1.5 py-0`}>{columnTasks.length}</Badge>
+                </div>
               </div>
               <div className="space-y-2 min-h-[100px]">
                 <AnimatePresence mode="popLayout">
@@ -245,6 +254,11 @@ const TaskBoard = ({ projectId }: { projectId?: string }) => {
                         <Badge variant="outline" className={`text-[10px] px-1.5 py-0 ${priorityColors[task.priority]}`}>
                           {task.priority}
                         </Badge>
+                        {task.assigned_to && (
+                          <div className="ml-auto flex items-center gap-1.5 min-w-0">
+                            <PersonAvatar name={getName(task.assigned_to)} size={22} />
+                          </div>
+                        )}
                       </div>
                     </motion.div>
                   ))}

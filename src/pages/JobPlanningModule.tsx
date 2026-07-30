@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useOrganization } from "@/hooks/useOrganization";
 import { supabase } from "@/integrations/supabase/client";
 import AppLayout from "@/components/layout/AppLayout";
+import { PageHeader, StatCard, type Tone } from "@/components/dashboard/kit";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -130,13 +131,12 @@ const JobPlanningModule = () => {
   return (
     <AppLayout title="Job Planning">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-              <Target className="w-7 h-7 text-accent" /> Job Planning
-            </h1>
-            <p className="text-muted-foreground mt-1">Plan, track & achieve your goals with structured targets</p>
-          </div>
+        <PageHeader
+          eyebrow="Goals"
+          icon={Target}
+          title="Job Planning"
+          subtitle="Plan, track & achieve your goals with structured targets"
+          actions={
           <Dialog open={planDialog} onOpenChange={setPlanDialog}>
             <DialogTrigger asChild>
               <Button className="rounded-xl bg-accent text-accent-foreground"><Plus className="w-4 h-4 mr-1" /> New Plan</Button>
@@ -166,24 +166,18 @@ const JobPlanningModule = () => {
               </form>
             </DialogContent>
           </Dialog>
-        </motion.div>
+          }
+        />
 
         {/* Summary */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: "Total Targets", value: totalTargets, icon: Target, color: "text-accent" },
-            { label: "Completed", value: completedTargets, icon: CheckCircle, color: "text-green-600" },
-            { label: "Overdue", value: overdueTargets, icon: AlertTriangle, color: "text-destructive" },
-            { label: "Due Soon", value: upcomingTargets, icon: Clock, color: "text-svo-gold" },
+            { label: "Total Targets", value: totalTargets, icon: Target, tone: "blue" as Tone },
+            { label: "Completed", value: completedTargets, icon: CheckCircle, tone: "emerald" as Tone },
+            { label: "Overdue", value: overdueTargets, icon: AlertTriangle, tone: "rose" as Tone },
+            { label: "Due Soon", value: upcomingTargets, icon: Clock, tone: "gold" as Tone },
           ].map((s, i) => (
-            <motion.div key={s.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: i * 0.05 } }}
-              whileHover={{ y: -3, transition: { type: "spring", stiffness: 400 } }}
-              className="glass-card-strong rounded-xl p-4 cursor-default"
-            >
-              <s.icon className={`w-5 h-5 ${s.color} mb-2`} />
-              <p className="text-2xl font-bold text-foreground">{s.value}</p>
-              <p className="text-xs text-muted-foreground">{s.label}</p>
-            </motion.div>
+            <StatCard key={s.label} index={i} label={s.label} value={s.value} icon={s.icon} tone={s.tone} />
           ))}
         </div>
 

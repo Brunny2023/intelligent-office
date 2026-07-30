@@ -1,7 +1,9 @@
 import { useOrganization } from "@/hooks/useOrganization";
 import ActivityFeed from "@/components/activity/ActivityFeed";
 import AppLayout from "@/components/layout/AppLayout";
+import { PageHeader } from "@/components/dashboard/kit";
 import { motion } from "framer-motion";
+import { ScrollText } from "lucide-react";
 
 const ActivityModule = () => {
   const { loading } = useOrganization();
@@ -19,10 +21,12 @@ const ActivityModule = () => {
   return (
     <AppLayout title="Activity">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-2xl font-bold text-foreground">Activity Log</h1>
-          <p className="text-muted-foreground mt-1">Track all operations across your organization</p>
-        </motion.div>
+        <PageHeader
+          eyebrow="Audit Trail"
+          icon={ScrollText}
+          title="Activity Log"
+          subtitle="Track all operations across your organization"
+        />
 
         <div className="grid lg:grid-cols-2 gap-6">
           <motion.div

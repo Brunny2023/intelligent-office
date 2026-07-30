@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useOrganization } from "@/hooks/useOrganization";
 import { supabase } from "@/integrations/supabase/client";
 import AppLayout from "@/components/layout/AppLayout";
+import { PageHeader, StatCard, type Tone } from "@/components/dashboard/kit";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { Crown, Users, CheckSquare, Clock, TrendingUp, BarChart3, Activity, AlertTriangle, Zap } from "lucide-react";
@@ -126,25 +127,23 @@ const ExecutiveModule = () => {
   return (
     <AppLayout title="Executive Center">
       <div className="p-6 md:p-8 space-y-6">
-         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2"><Crown className="w-6 sm:w-7 h-6 sm:h-7 text-accent" /> Executive Control Center</h1>
-          <p className="text-muted-foreground text-sm mt-1">Live organizational health dashboard</p>
-        </motion.div>
+        <PageHeader
+          eyebrow="Leadership"
+          icon={Crown}
+          title="Executive Control Center"
+          subtitle="Live organizational health, department performance & risk"
+        />
 
         {/* Health Score + KPI cards */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
           {[
-            { label: "Health Score", value: `${metrics.healthScore}%`, icon: TrendingUp, color: metrics.healthScore >= 70 ? "text-green-600" : metrics.healthScore >= 40 ? "text-svo-gold" : "text-destructive" },
-            { label: "Present Today", value: `${metrics.presentToday}/${metrics.totalStaff}`, icon: Users, color: "text-svo-blue" },
-            { label: "On Leave", value: metrics.onLeave, icon: Clock, color: "text-svo-gold" },
-            { label: "Task Completion", value: `${metrics.completionRate}%`, icon: CheckSquare, color: "text-accent" },
-            { label: "KPI Achievement", value: `${metrics.kpiRate}%`, icon: BarChart3, color: "text-svo-blue" },
+            { label: "Health Score", value: `${metrics.healthScore}%`, icon: TrendingUp, tone: (metrics.healthScore >= 70 ? "emerald" : metrics.healthScore >= 40 ? "gold" : "rose") as Tone, progress: metrics.healthScore },
+            { label: "Present Today", value: `${metrics.presentToday}/${metrics.totalStaff}`, icon: Users, tone: "blue" as Tone },
+            { label: "On Leave", value: metrics.onLeave, icon: Clock, tone: "violet" as Tone },
+            { label: "Task Completion", value: `${metrics.completionRate}%`, icon: CheckSquare, tone: "gold" as Tone, progress: metrics.completionRate },
+            { label: "KPI Achievement", value: `${metrics.kpiRate}%`, icon: BarChart3, tone: "emerald" as Tone, progress: metrics.kpiRate },
           ].map((stat, i) => (
-            <motion.div key={stat.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: i * 0.05 } }} className="glass-card-strong rounded-xl p-4">
-              <stat.icon className={`w-5 h-5 ${stat.color} mb-2`} />
-              <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-              <p className="text-xs text-muted-foreground">{stat.label}</p>
-            </motion.div>
+            <StatCard key={stat.label} index={i} label={stat.label} value={stat.value} icon={stat.icon} tone={stat.tone} progress={(stat as any).progress} />
           ))}
         </div>
 

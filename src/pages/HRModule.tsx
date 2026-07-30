@@ -4,6 +4,7 @@ import { useOrganization } from "@/hooks/useOrganization";
 import { useProfileNames } from "@/hooks/useProfileNames";
 import { supabase } from "@/integrations/supabase/client";
 import AppLayout from "@/components/layout/AppLayout";
+import { PageHeader } from "@/components/dashboard/kit";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -578,10 +579,12 @@ const HRModule = () => {
   return (
     <AppLayout title="HR">
       <div className="p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-2xl font-bold text-foreground">Human Resources</h1>
-          <p className="text-muted-foreground mt-1">Recruitment, onboarding, performance reviews & offboarding</p>
-        </motion.div>
+        <PageHeader
+          eyebrow="People Operations"
+          icon={Briefcase}
+          title="Human Resources"
+          subtitle="Recruitment, onboarding, performance reviews & offboarding"
+        />
 
         <Tabs defaultValue="postings" className="space-y-4">
           <TabsList className="bg-muted/50 rounded-xl p-1 w-full grid grid-cols-3 sm:grid-cols-5 gap-1 h-auto">
