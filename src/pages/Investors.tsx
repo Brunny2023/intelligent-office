@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Download, Lock, Printer, Video } from "lucide-react";
+import { generateSecurityPack } from "@/components/trust/SecurityPackButton";
 import BookMeetingDialog from "@/components/investors/BookMeetingDialog";
 import { useInvestorAnalytics } from "@/hooks/useInvestorAnalytics";
 import {
@@ -643,6 +644,19 @@ const Investors = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="not-prose mt-4 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={generateSecurityPack}
+              className="inline-flex items-center gap-2 text-[11px] tracking-[0.2em] uppercase px-3 py-2 border hover:opacity-80 transition-opacity"
+              style={{ borderColor: GOLD, color: GOLD, fontFamily: "'Space Grotesk', sans-serif", background: `${GOLD}15` }}
+            >
+              <Download className="w-3.5 h-3.5" /> Security &amp; Continuity Pack (PDF)
+            </button>
+            <span className="text-xs" style={{ color: `${NAVY}99` }}>
+              Encryption, RPO/RTO, backups, restoration drills, insurance and escrow — generated live.
+            </span>
           </div>
           <p className="mt-6 text-sm" style={{ color: `${NAVY}99` }}>
             Every document above is available for immediate download. Full data room access — including cap table, corporate records, customer LOIs, and technical due-diligence artifacts — is available to qualified investors under NDA. Contact the founder directly.

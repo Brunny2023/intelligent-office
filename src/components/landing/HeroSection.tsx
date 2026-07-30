@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Users, BarChart3, Brain, Clock } from "lucide-react";
 
 const floatingCards = [
-  { icon: Users, label: "12 Online", sub: "3 departments active", x: "5%", y: "20%", delay: 0.8 },
-  { icon: BarChart3, label: "94%", sub: "Team efficiency", x: "78%", y: "15%", delay: 1.0 },
-  { icon: Clock, label: "09:01 AM", sub: "Sarah checked in", x: "85%", y: "55%", delay: 1.2 },
-  { icon: Brain, label: "AI Insight", sub: "2 risks detected", x: "2%", y: "65%", delay: 1.4 },
+  { icon: Users, label: "12 Online", sub: "3 departments active", side: "left" as const, x: "0px", y: "26%", delay: 0.8 },
+  { icon: BarChart3, label: "94%", sub: "Team efficiency", side: "right" as const, x: "0px", y: "22%", delay: 1.0 },
+  { icon: Clock, label: "09:01 AM", sub: "Sarah checked in", side: "right" as const, x: "0px", y: "60%", delay: 1.2 },
+  { icon: Brain, label: "AI Insight", sub: "2 risks detected", side: "left" as const, x: "0px", y: "64%", delay: 1.4 },
 ];
 
 const HeroSection = () => {
@@ -39,7 +39,7 @@ const HeroSection = () => {
       />
 
       <div className="container relative z-10 mx-auto px-4 md:px-8 py-8 md:py-16">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-3xl xl:max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -116,8 +116,8 @@ const HeroSection = () => {
           </motion.div>
         </div>
 
-        {/* Floating dashboard preview cards */}
-        <div className="hidden lg:block">
+        {/* Floating dashboard preview cards — only on wide screens, pinned to the viewport edges */}
+        <div className="hidden 2xl:block pointer-events-none">
           {floatingCards.map((card, i) => (
             <motion.div
               key={i}
@@ -125,7 +125,13 @@ const HeroSection = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: card.delay }}
               className="absolute glass-card rounded-xl px-4 py-3 flex items-center gap-3"
-              style={{ left: card.x, top: card.y, background: "hsl(0 0% 100% / 0.07)", backdropFilter: "blur(20px)", border: "1px solid hsl(0 0% 100% / 0.1)" }}
+              style={{
+                ...(card.side === "left" ? { left: card.x } : { right: card.x }),
+                top: card.y,
+                background: "hsl(0 0% 100% / 0.07)",
+                backdropFilter: "blur(20px)",
+                border: "1px solid hsl(0 0% 100% / 0.1)",
+              }}
             >
               <div className="w-9 h-9 rounded-lg bg-svo-gold/15 flex items-center justify-center">
                 <card.icon className="w-4 h-4 text-svo-gold" />
