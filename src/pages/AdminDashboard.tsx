@@ -162,12 +162,12 @@ const AdminDashboard = () => {
   return (
     <AppLayout title="Admin Dashboard">
       <div className="p-4 sm:p-6 md:p-8 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground flex items-center gap-2">
-            <ShieldCheck className="w-7 h-7 text-accent" /> Admin Dashboard
-          </h1>
-          <p className="text-muted-foreground text-sm mt-1">Organization overview and management</p>
-        </motion.div>
+        <PageHeader
+          eyebrow="Administration"
+          icon={ShieldCheck}
+          title="Admin Dashboard"
+          subtitle="Organization overview and management"
+        />
 
         {/* Metrics Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
