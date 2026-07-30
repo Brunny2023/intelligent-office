@@ -31,9 +31,9 @@ const AppLayout = ({ children, title }: { children: ReactNode; title?: string })
       </motion.main>
       <MobileNav />
       <AskLeadershipFAB />
-      {/* Mobile-only floating notifications bell — desktop shows it in the sidebar. */}
+      {/* Mobile-only floating notifications bell — desktop shows it in the top bar. */}
       <div className="md:hidden fixed top-3 right-3 z-50 glass-card-strong rounded-full p-1 shadow-lg">
-        <NotificationBell />
+        <NotificationBell className="text-foreground/80 hover:bg-muted hover:text-foreground" />
       </div>
     </div>
   );
