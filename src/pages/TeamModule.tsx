@@ -358,8 +358,8 @@ const TeamModule = () => {
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-mono text-sm tracking-widest text-foreground">{inv.access_code}</span>
                     <Badge variant="outline" className={`text-[10px] ${roleColors[inv.role] || ""}`}>{roleLabels[inv.role] || inv.role}</Badge>
-                    <Badge variant="outline" className={inv.status === "pending" ? "bg-svo-gold/10 text-svo-gold" : "bg-green-500/10 text-green-600"}>
-                      {inv.status === "pending" ? (new Date(inv.expires_at) < new Date() ? "expired" : "unused") : "used"}
+                    <Badge variant="outline" className={inv.status === "pending" ? "bg-svo-gold/10 text-svo-gold" : inv.status === "revoked" ? "bg-destructive/10 text-destructive" : "bg-green-500/10 text-green-600"}>
+                      {inv.status === "pending" ? (new Date(inv.expires_at) < new Date() ? "expired" : "unused") : inv.status === "revoked" ? "revoked" : "used"}
                     </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">

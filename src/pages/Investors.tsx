@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Download, Lock, Printer, Video } from "lucide-react";
+import { generateSecurityPack } from "@/components/trust/SecurityPackButton";
 import BookMeetingDialog from "@/components/investors/BookMeetingDialog";
 import { useInvestorAnalytics } from "@/hooks/useInvestorAnalytics";
 import {
