@@ -126,7 +126,7 @@ const HeroSection = () => {
               transition={{ duration: 0.5, delay: card.delay }}
               className="absolute glass-card rounded-xl px-4 py-3 flex items-center gap-3"
               style={{
-                [card.side === "left" ? "left" : "right"]: card.x,
+                ...(card.side === "left" ? { left: card.x } : { right: card.x }),
                 top: card.y,
                 background: "hsl(0 0% 100% / 0.07)",
                 backdropFilter: "blur(20px)",
