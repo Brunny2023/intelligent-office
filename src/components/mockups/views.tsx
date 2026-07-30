@@ -37,13 +37,70 @@ const PRESENCE_TREND = [
   { label: "28", value: 42 },
 ];
 
-/** Video tile that shows the participant's headshot as their camera feed. */
-const MockVideoTile = ({ name }: { name: string }) => {
+/** Animated video tile — subtle camera drift, breathing and blink so headshots read as a live feed. */
+const MockVideoTile = ({ name, index = 0, speaking = false, muted = false }: { name: string; index?: number; speaking?: boolean; muted?: boolean }) => {
   const photo = photoFor(name);
-  if (!photo) {
-    return <div className="w-full h-full flex items-center justify-center"><MockAvatar name={name} size={44} /></div>;
-  }
-  return <img src={photo} alt={name} loading="lazy" className="w-full h-full object-cover" />;
+  const dur = 9 + (index % 4) * 1.7;
+  const dir = index % 2 === 0 ? 1 : -1;
+  const feed = (
+    <motion.div
+      className="absolute inset-0"
+      animate={{
+        scale: speaking ? [1.06, 1.09, 1.06] : [1.04, 1.06, 1.04],
+        x: [0, 5 * dir, -3 * dir, 0],
+        y: [0, -3, 2, 0],
+      }}
+      transition={{ duration: speaking ? dur * 0.55 : dur, repeat: Infinity, ease: "easeInOut", delay: index * 0.4 }}
+    >
+      {photo ? (
+        <img src={photo} alt={name} loading="lazy" className="w-full h-full object-cover" />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center"><MockAvatar name={name} size={44} /></div>
+      )}
+    </motion.div>
+  );
+  return (
+    <div className="absolute inset-0 overflow-hidden">
+      {feed}
+      {/* blink */}
+      <motion.div
+        className="absolute inset-0 bg-black pointer-events-none"
+        animate={{ opacity: [0, 0, 0.55, 0] }}
+        transition={{ duration: 0.28, repeat: Infinity, repeatDelay: 3.4 + (index % 5) * 1.3, delay: index * 0.9, times: [0, 0.4, 0.6, 1] }}
+      />
+      {/* webcam sheen + slight exposure flicker */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-transparent via-white/10 to-transparent"
+        animate={{ opacity: [0.15, 0.32, 0.15] }}
+        transition={{ duration: 5 + index, repeat: Infinity, ease: "easeInOut" }}
+      />
+      {/* speaking ring glow + voice bars */}
+      {speaking && (
+        <>
+          <motion.div
+            className="absolute inset-0 pointer-events-none rounded-xl ring-2 ring-svo-gold"
+            animate={{ opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <div className="absolute top-1.5 right-1.5 flex items-end gap-[2px] h-3">
+            {[0, 1, 2, 3].map((b) => (
+              <motion.span
+                key={b}
+                className="w-[2px] rounded-full bg-svo-gold"
+                animate={{ height: ["25%", "100%", "45%", "80%", "30%"] }}
+                transition={{ duration: 0.75, repeat: Infinity, ease: "easeInOut", delay: b * 0.11 }}
+              />
+            ))}
+          </div>
+        </>
+      )}
+      {muted && (
+        <div className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-black/60 flex items-center justify-center">
+          <MicOff className="w-2.5 h-2.5 text-rose-400" />
+        </div>
+      )}
+    </div>
+  );
 };
 
 /* =====================================================================
