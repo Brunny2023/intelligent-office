@@ -3,8 +3,9 @@ import { useOrganization } from "@/hooks/useOrganization";
 import { useProfileNames } from "@/hooks/useProfileNames";
 import { supabase } from "@/integrations/supabase/client";
 import { Users, UserCheck, Clock } from "lucide-react";
-import { format, startOfDay } from "date-fns";
+import { format, startOfDay, subDays } from "date-fns";
 import { motion } from "framer-motion";
+import { PersonAvatar, SectionCard, TrendChart } from "@/components/dashboard/kit";
 
 interface AttendanceStat {
   label: string;
@@ -15,8 +16,9 @@ interface AttendanceStat {
 
 const AttendanceDashboard = () => {
   const { org } = useOrganization();
-  const { resolve, getName } = useProfileNames();
+  const { resolve, getName, getAvatar } = useProfileNames();
   const [records, setRecords] = useState<any[]>([]);
+  const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,6 +35,13 @@ const AttendanceDashboard = () => {
         .order("clock_in", { ascending: false });
 
       setRecords(data || []);
+
+      const { data: hist } = await supabase
+        .from("attendance_records")
+        .select("clock_in, clock_out")
+        .eq("organization_id", org.id)
+        .gte("clock_in", startOfDay(subDays(new Date(), 13)).toISOString());
+      setHistory(hist || []);
       if (data && data.length > 0) {
         await resolve([...new Set(data.map(r => r.user_id))]);
       }
@@ -65,6 +74,20 @@ const AttendanceDashboard = () => {
     );
   }
 
+  const trend = Array.from({ length: 14 }, (_, idx) => {
+    const day = startOfDay(subDays(new Date(), 13 - idx));
+    const next = new Date(day.getTime() + 86400000);
+    const rows = history.filter(r => {
+      const t = new Date(r.clock_in);
+      return t >= day && t < next;
+    });
+    return {
+      label: format(day, "MMM d"),
+      "clock-ins": rows.length,
+      completed: rows.filter(r => r.clock_out).length,
+    };
+  });
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold text-foreground">Today's Attendance</h3>
@@ -86,6 +109,10 @@ const AttendanceDashboard = () => {
         ))}
       </div>
 
+      <SectionCard title="Presence Trend — Last 14 Days" icon={Clock}>
+        <TrendChart data={trend} dataKey="clock-ins" secondKey="completed" tone="emerald" secondTone="blue" height={170} />
+      </SectionCard>
+
       <div className="glass-card rounded-xl overflow-hidden">
         <div className="p-4 border-b border-border">
           <h4 className="text-sm font-semibold text-foreground">Recent Activity</h4>
@@ -102,10 +129,14 @@ const AttendanceDashboard = () => {
                 className="flex items-center justify-between p-3 px-4 hover:bg-muted/30 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <span className={`w-2 h-2 rounded-full ${rec.clock_out ? "bg-muted-foreground" : "bg-green-500 animate-pulse"}`} />
-                  <span className="text-sm text-foreground">
-                    {getName(rec.user_id)}
-                  </span>
+                  <div className="relative">
+                    <PersonAvatar name={getName(rec.user_id)} src={getAvatar(rec.user_id)} size={34} />
+                    <span className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full ring-2 ring-card ${rec.clock_out ? "bg-muted-foreground" : "bg-green-500 animate-pulse"}`} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">{getName(rec.user_id)}</p>
+                    <p className="text-[11px] text-muted-foreground">{rec.clock_out ? "Shift complete" : "On the clock"}</p>
+                  </div>
                 </div>
                 <div className="text-xs text-muted-foreground text-right">
                   <span>In: {format(new Date(rec.clock_in), "HH:mm")}</span>
