@@ -221,7 +221,7 @@ export const TasksView = () => {
               <div key={i} className="p-3 rounded-lg bg-slate-50 border border-slate-100">
                 <div className="text-[12.5px] font-medium mb-2 leading-snug">{t.t}</div>
                 <div className="flex items-center justify-between text-[10px]">
-                  <div className="w-5 h-5 rounded-full bg-svo-gold/20 text-svo-gold flex items-center justify-center font-bold">{t.o}</div>
+                  <MockAvatar name={t.o} size={22} />
                   <span className={cn("px-1.5 py-0.5 rounded-full font-semibold",
                     t.p === "High" ? "bg-rose-500/15 text-rose-700" :
                     t.p === "Med"  ? "bg-amber-500/15 text-amber-700" : "bg-slate-200 text-slate-600")}>{t.p}</span>
@@ -249,7 +249,9 @@ export const MessagesView = () => (
       <div className="text-[10px] uppercase tracking-wider text-slate-400 px-2 mt-4 mb-2">Direct</div>
       {TEAM.slice(0,4).map((u)=>(
         <div key={u.n} className="px-2 py-1.5 rounded text-sm text-slate-600 flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> {u.n}
+          <MockAvatar name={u.n} size={22} />
+          <span className="truncate">{u.n}</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-auto" />
         </div>
       ))}
     </Card>
@@ -263,9 +265,7 @@ export const MessagesView = () => (
           { u: null,    m: "Perfect. Let's do it. 🎯", side: "r" },
         ].map((r,i) => (
           <div key={i} className={cn("flex gap-2.5", r.side === "r" && "flex-row-reverse")}>
-            {r.u ? (
-              <div className={cn("w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0", r.u.c)}>{r.u.i}</div>
-            ) : <div className="w-7 h-7 rounded-full bg-svo-navy text-svo-gold flex items-center justify-center text-[10px] font-bold shrink-0">AR</div>}
+            <MockAvatar name={r.u ? r.u.n : "Alex Rivera"} size={28} />
             <div className={cn("max-w-[70%]")}>
               <div className="text-[10px] text-slate-500 mb-0.5">{r.u ? r.u.n : "Alex Rivera"} · 09:{40+i}</div>
               <div className={cn("px-3 py-2 rounded-2xl text-[13px]",
@@ -377,9 +377,7 @@ export const ActivityView = () => (
         { u:"Daniel Osei", a:"logged", o:"New pipeline: Meridian Bank (£420K ARR)", t:"08:02", tag:"sales" },
       ].map((r,i) => (
         <div key={i} className="py-2.5 flex items-center gap-3 text-[13px]">
-          <div className="w-7 h-7 rounded-full bg-svo-gold/15 text-svo-gold flex items-center justify-center text-[10px] font-bold">
-            {r.u.split(" ").map(x=>x[0]).join("")}
-          </div>
+          <MockAvatar name={r.u} size={28} />
           <div className="flex-1"><span className="font-semibold">{r.u}</span> <span className="text-slate-500">{r.a}</span> <span className="text-slate-800">{r.o}</span></div>
           <span className="text-[10px] uppercase tracking-wider text-slate-400">{r.tag}</span>
           <span className="text-[11px] text-slate-400 tabular-nums w-12 text-right">{r.t}</span>
@@ -782,7 +780,7 @@ export const TeamView = () => (
       <div className="grid grid-cols-2 gap-3">
         {TEAM.concat(TEAM.slice(0,2).map(u=>({...u, n: u.n+" Jr."}))).map((u)=>(
           <div key={u.n} className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50">
-            <div className={cn("w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold", u.c)}>{u.i}</div>
+            <MockAvatar name={u.n.replace(" Jr.", "")} size={40} />
             <div className="flex-1 min-w-0">
               <div className="text-[13px] font-semibold flex items-center gap-2">{u.n}
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-svo-gold/15 text-svo-gold font-semibold uppercase tracking-wider">Member</span>
