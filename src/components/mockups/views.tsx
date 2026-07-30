@@ -963,6 +963,74 @@ export const AdminView = () => (
 /* =====================================================================
    PARTNER CONNECT
 ===================================================================== */
+const TICKETS = [
+  { id: "GO-2148", s: "Payroll export failing for NGN accounts", by: "Tom Park",    p: "High",   st: "In Progress", age: "2h", replies: 4, tone: "bg-amber-500/15 text-amber-700" },
+  { id: "GO-2147", s: "Request: add Figma link previews in channels", by: "Sarah Chen", p: "Low", st: "Open",        age: "5h", replies: 1, tone: "bg-slate-500/15 text-slate-700" },
+  { id: "GO-2145", s: "Meeting recording stuck at processing", by: "Marcus Lee", p: "Urgent",  st: "In Progress", age: "1h", replies: 7, tone: "bg-rose-500/15 text-rose-700" },
+  { id: "GO-2141", s: "SSO login loop for contractors", by: "Jade Wright",    p: "High",   st: "Resolved",    age: "1d", replies: 6, tone: "bg-amber-500/15 text-amber-700" },
+  { id: "GO-2139", s: "Bulk import of Q3 job plans", by: "Ana Costa",         p: "Medium", st: "Resolved",    age: "2d", replies: 3, tone: "bg-blue-500/15 text-blue-700" },
+  { id: "GO-2132", s: "Add auditor read-only role to Finance", by: "Daniel Osei", p: "Medium", st: "Closed",   age: "4d", replies: 5, tone: "bg-blue-500/15 text-blue-700" },
+];
+
+const ST_TONE: Record<string, string> = {
+  "Open": "bg-slate-100 text-slate-600",
+  "In Progress": "bg-svo-gold/15 text-svo-gold",
+  "Resolved": "bg-emerald-500/15 text-emerald-700",
+  "Closed": "bg-slate-200 text-slate-500",
+};
+
+export const SupportView = () => (
+  <>
+    <div className="grid grid-cols-4 gap-4 mb-6">
+      <StatTile icon={Ticket}       value="12"    label="Open Tickets"     tone="gold" />
+      <StatTile icon={Timer}        value="38m"   label="Avg First Reply"  tone="blue" />
+      <StatTile icon={CheckCircle2} value="94%"   label="Resolved in SLA"  tone="green" />
+      <StatTile icon={MessageCircle} value="146"  label="Replies (30d)"    tone="blue" />
+    </div>
+    <div className="grid grid-cols-3 gap-4">
+      <div className="col-span-2">
+        <Card title="Ticket Queue" icon={Ticket}>
+          {TICKETS.map((t) => (
+            <div key={t.id} className="flex items-center gap-3 py-2.5 border-b border-slate-100 last:border-0">
+              <MockAvatar name={t.by} size={34} />
+              <div className="flex-1 min-w-0">
+                <div className="text-[13px] font-semibold truncate">{t.s}</div>
+                <div className="text-[11px] text-slate-500">{t.id} · {t.by} · {t.replies} replies · {t.age} ago</div>
+              </div>
+              <span className={cn("text-[10px] px-2 py-0.5 rounded font-semibold uppercase tracking-wider", t.tone)}>{t.p}</span>
+              <span className={cn("text-[10px] px-2 py-0.5 rounded font-semibold", ST_TONE[t.st])}>{t.st}</span>
+            </div>
+          ))}
+        </Card>
+      </div>
+      <div className="space-y-4">
+        <Card title="GO-2145 · Thread" icon={MessageCircle}>
+          {[
+            { n: "Marcus Lee", m: "Recording from the 9am exec sync is stuck at 'processing'.", t: "09:42" },
+            { n: "Jade Wright", m: "Escalated to platform ops — egress job re-queued.", t: "09:51" },
+            { n: "Marcus Lee", m: "Transcript just landed. Summary looks right.", t: "10:14" },
+          ].map((r, i) => (
+            <div key={i} className="flex items-start gap-2.5 py-2 border-b border-slate-100 last:border-0">
+              <MockAvatar name={r.n} size={28} />
+              <div className="min-w-0">
+                <div className="text-[11px] font-semibold">{r.n} <span className="text-slate-400 font-normal">{r.t}</span></div>
+                <div className="text-[11px] text-slate-600 leading-snug">{r.m}</div>
+              </div>
+            </div>
+          ))}
+        </Card>
+        <Card title="Resolution Trend" icon={TrendingUp}>
+          <MockTrend data={[
+            { label: "W1", value: 71 }, { label: "W2", value: 78 },
+            { label: "W3", value: 84 }, { label: "W4", value: 88 },
+            { label: "W5", value: 94 },
+          ]} height={90} />
+        </Card>
+      </div>
+    </div>
+  </>
+);
+
 export const PartnerView = () => (
   <Card title="Partner Connect" icon={Building2}>
     <div className="grid grid-cols-3 gap-3">
@@ -1001,5 +1069,6 @@ export const VIEW_META: Record<MockView, { title: string; subtitle?: string; Ico
   hr:            { title: "Human Resources",           subtitle: "Recruitment, onboarding, reviews & offboarding", Icon: Briefcase, Component: HrView },
   finance:       { title: "Finance & Accounting",      subtitle: "Payroll, expenses & financial reports",       Icon: DollarSign,  Component: FinanceView },
   team:          { title: "Team Management",           subtitle: "Manage members & send invitations",           Icon: Users,       Component: TeamView },
+  support:       { title: "Support Center",            subtitle: "Threaded ticketing with SLA tracking",        Icon: Ticket,      Component: SupportView },
   partner:       { title: "Partner Connect",           subtitle: "Communicate with other organizations",        Icon: Building2,   Component: PartnerView },
 };
