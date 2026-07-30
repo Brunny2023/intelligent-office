@@ -57,7 +57,7 @@ export function MockupShell({
   view, onNav, navRef, children, pageTitle, pageSubtitle, headerIcon, headerActions,
 }: ShellProps) {
   return (
-    <div className="w-full h-full flex bg-[#F5F6F8] text-slate-900 overflow-hidden">
+    <div data-mock-shell className="w-full h-full flex bg-[#F5F6F8] text-slate-900 overflow-hidden">
       {/* Sidebar */}
       <aside className="w-[220px] shrink-0 bg-[#0B1533] flex flex-col">
         {/* Org header */}
