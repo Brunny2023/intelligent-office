@@ -17,7 +17,7 @@ const initialChecks: Check[] = [
   { name: "Storage", description: "Document and recording buckets", status: "checking" },
 ];
 
-const TARGET = 99.9;
+const TARGET = 99.99;
 const MINUTES_IN = (d: Date) => new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate() * 24 * 60;
 
 export default function StatusPanel({ compact = false }: { compact?: boolean }) {

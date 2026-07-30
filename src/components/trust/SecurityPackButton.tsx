@@ -65,7 +65,7 @@ const SECTIONS: Section[] = [
   {
     heading: "6. Availability & incident response",
     lines: [
-      "Operating availability target: 99.9% monthly for the core platform.",
+      "Operating availability target: 99.99% monthly for the core platform.",
       "A public status page reports live service health, incident history and monthly reliability statistics.",
       "Security and availability incidents are triaged on detection; affected customers are notified with an",
       "initial assessment and a written post-incident summary once resolved.",

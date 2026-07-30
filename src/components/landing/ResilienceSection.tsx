@@ -1,7 +1,8 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { ShieldCheck, DatabaseBackup, Globe2, LifeBuoy, Quote, ArrowRight, KeyRound, Activity } from "lucide-react";
+import { generateSecurityPack } from "@/components/trust/SecurityPackButton";
+import { ShieldCheck, DatabaseBackup, Globe2, LifeBuoy, Quote, ArrowRight, KeyRound, Activity, FileDown } from "lucide-react";
 
 const reliability = [
   { value: "99.99%", label: "Target monthly uptime", note: "Multi-AZ managed cloud" },
