@@ -6,6 +6,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { supabase } from "@/integrations/supabase/client";
 import AppLayout from "@/components/layout/AppLayout";
 import LogoUpload from "@/components/LogoUpload";
+import AvatarUpload from "@/components/AvatarUpload";
 import { motion } from "framer-motion";
 import { PageHeader } from "@/components/dashboard/kit";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -14,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Settings, Save, X, Plus, Building2 } from "lucide-react";
+import { Settings, Save, X, Plus, Building2, UserRound } from "lucide-react";
 import NotificationPreferences from "@/components/settings/NotificationPreferences";
 import EgressSettings from "@/components/settings/EgressSettings";
 
@@ -31,6 +32,10 @@ const SettingsModule = () => {
   const [newValue, setNewValue] = useState("");
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [savingProfile, setSavingProfile] = useState(false);
 
   useEffect(() => {
     if (!orgLoading && !roleLoading) {
@@ -43,6 +48,35 @@ const SettingsModule = () => {
       }
     }
   }, [org, orgLoading, roleLoading, role, navigate]);
+
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("full_name, job_title, avatar_url")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (data) {
+        setFullName(data.full_name || "");
+        setJobTitle(data.job_title || "");
+        setAvatarUrl(data.avatar_url);
+      }
+    })();
+  }, [user]);
+
+  const saveProfile = async (nextAvatar?: string | null) => {
+    if (!user) return;
+    setSavingProfile(true);
+    const { error } = await supabase.from("profiles").update({
+      full_name: fullName.trim() || "Member",
+      job_title: jobTitle.trim() || null,
+      avatar_url: nextAvatar !== undefined ? nextAvatar : avatarUrl,
+    }).eq("id", user.id);
+    if (error) toast.error("Failed to save profile: " + error.message);
+    else toast.success("Profile updated");
+    setSavingProfile(false);
+  };
 
   const addValue = () => {
     if (newValue.trim() && !coreValues.includes(newValue.trim())) {
@@ -90,6 +124,41 @@ const SettingsModule = () => {
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.05 } }}>
           <NotificationPreferences />
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.06 } }}>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2"><UserRound className="w-5 h-5" /> My Profile</CardTitle>
+              <CardDescription>Your photo appears across team, tasks, meetings and activity surfaces</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <div className="flex items-center gap-4">
+                <AvatarUpload
+                  currentUrl={avatarUrl}
+                  name={fullName}
+                  onUploaded={(url) => { setAvatarUrl(url); saveProfile(url); }}
+                />
+                <div className="text-sm text-muted-foreground">
+                  <p>Click your photo to upload a headshot</p>
+                  <p className="text-xs mt-1">Max 2MB, square PNG or JPG works best</p>
+                </div>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">Full Name</label>
+                  <Input value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Your full name" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">Job Title</label>
+                  <Input value={jobTitle} onChange={e => setJobTitle(e.target.value)} placeholder="e.g. Head of Operations" />
+                </div>
+              </div>
+              <Button onClick={() => saveProfile()} disabled={savingProfile} className="w-full sm:w-auto gap-2">
+                <Save className="w-4 h-4" /> {savingProfile ? "Saving..." : "Save Profile"}
+              </Button>
+            </CardContent>
+          </Card>
         </motion.div>
 
         {role === "owner" && org && (
