@@ -48,7 +48,9 @@ const AppSidebar = () => {
   const { isPlatformAdmin } = usePlatformAdmin();
   const navigate = useNavigate();
   const location = useLocation();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(
+    () => (typeof sessionStorage !== "undefined" ? sessionStorage.getItem("sidebar-collapsed") === "1" : false)
+  );
   const navRef = useRef<HTMLElement>(null);
 
   // Persist sidebar scroll across route changes (AppLayout remounts the sidebar per page)
@@ -61,6 +63,13 @@ const AppSidebar = () => {
     el.addEventListener("scroll", onScroll, { passive: true });
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
+
+  const toggleCollapsed = () => {
+    setCollapsed((c) => {
+      sessionStorage.setItem("sidebar-collapsed", c ? "0" : "1");
+      return !c;
+    });
+  };
 
   const allItems = [
     ...(isPlatformAdmin ? [{ icon: Sparkles, label: "Super Admin", path: "/super-admin" }] : []),
@@ -161,7 +170,7 @@ const AppSidebar = () => {
         <div className="flex items-center gap-1">
           <motion.button whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}
             transition={{ type: "spring", stiffness: 400 }}
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={toggleCollapsed}
             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors"
           >
             <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ type: "spring", stiffness: 300 }}>
