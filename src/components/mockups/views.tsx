@@ -45,23 +45,28 @@ const MockVideoTile = ({ name, index = 0, speaking = false, muted = false }: { n
   const dir = index % 2 === 0 ? 1 : -1;
   const feed = (
     <motion.div
-      className="absolute inset-0"
+      className="absolute inset-0 flex items-end justify-center"
       animate={{
-        scale: speaking ? [1.06, 1.09, 1.06] : [1.04, 1.06, 1.04],
-        x: [0, 5 * dir, -3 * dir, 0],
-        y: [0, -3, 2, 0],
+        scale: speaking ? [1, 1.015, 1] : [1, 1.008, 1],
+        x: [0, 1.5 * dir, -1 * dir, 0],
+        y: [0, -1, 0.8, 0],
       }}
       transition={{ duration: speaking ? dur * 0.55 : dur, repeat: Infinity, ease: "easeInOut", delay: index * 0.4 }}
     >
       {photo ? (
-        <img src={photo} alt={name} loading="lazy" className="w-full h-full object-cover" />
+        <img
+          src={photo}
+          alt={name}
+          loading="lazy"
+          className="h-[84%] w-auto object-cover object-top rounded-sm"
+        />
       ) : (
-        <div className="w-full h-full flex items-center justify-center"><MockAvatar name={name} size={44} /></div>
+        <div className="w-full h-full flex items-center justify-center"><MockAvatar name={name} size={32} /></div>
       )}
     </motion.div>
   );
   return (
-    <div className="absolute inset-0 overflow-hidden">
+    <div className="absolute inset-0 overflow-hidden bg-[#131a2b]">
       {feed}
       {/* blink */}
       <motion.div
@@ -360,6 +365,8 @@ const ROOM = [
   { n: "Ana Costa", muted: true },
   { n: "Jade Wright", muted: false },
   { n: "Tom Park", muted: true },
+  { n: "Daniel Osei", muted: false },
+  { n: "Nia Adeyemi", muted: true },
 ];
 
 export const MeetingsView = () => {
@@ -392,7 +399,7 @@ export const MeetingsView = () => {
       </Card>
     </div>
     <Card title="Live Room — Weekly Leadership Sync" icon={Video} className="mb-6">
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-4 gap-2.5">
         {ROOM.map((p, i) => {
           const live = i === speaker;
           return (
