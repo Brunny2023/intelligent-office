@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Download, Lock, Printer, Video } from "lucide-react";
+import { ArrowUpRight, Download, Lock, Printer, Video, Linkedin, ShieldCheck } from "lucide-react";
 import { generateSecurityPack } from "@/components/trust/SecurityPackButton";
 import BookMeetingDialog from "@/components/investors/BookMeetingDialog";
+import RequestAccessDialog from "@/components/investors/RequestAccessDialog";
+import VerifiedMetrics from "@/components/investors/VerifiedMetrics";
 import { useInvestorAnalytics } from "@/hooks/useInvestorAnalytics";
 import {
   InvestorBrief, IntelligenceStack, MoatFlywheel, IncumbentGrid,
@@ -82,6 +84,7 @@ const Stat = ({ figure, label, note }: { figure: string; label: string; note?: s
 
 const TOC = [
   { id: "brief", label: "01 — 5-Min Brief" },
+  { id: "highlights", label: "01b — Investment Highlights" },
   { id: "thesis", label: "02 — Thesis" },
   { id: "missing-layer", label: "03 — The Missing Layer" },
   { id: "flywheel", label: "04 — Compounding Moat" },
@@ -100,15 +103,38 @@ const TOC = [
   { id: "gtm", label: "17 — Go-to-Market" },
   { id: "moat", label: "18 — Defensibility" },
   { id: "validation", label: "19 — Traction" },
+  { id: "metrics", label: "19b — Verified Metrics" },
   { id: "roadmap", label: "20 — Roadmap" },
   { id: "confidence", label: "21 — At a Glance" },
   { id: "financials", label: "22 — Financials" },
   { id: "team", label: "23 — Team" },
   { id: "ask", label: "24 — The Ask" },
   { id: "risks", label: "25 — Risks" },
+  { id: "governance", label: "25b — Governance & Risk" },
   { id: "exit", label: "26 — Exit Landscape" },
   { id: "diligence", label: "27 — Due Diligence" },
   { id: "downloads", label: "28 — Materials" },
+];
+
+const HIGHLIGHTS: [string, string][] = [
+  ["Large and growing market", "Enterprise software is a $1T+ annual market, and the AI-native operating layer above it is being defined now rather than defended."],
+  ["Proprietary technology", "A graph-native organizational model, a multi-agent deliberation engine, and durable organizational memory — built together, not bolted on."],
+  ["Experienced leadership", "Category-creation and capital (CEO), multi-country commercial operations (COO), and venture-backed SaaS finance discipline (CFO)."],
+  ["Early traction", "A product-complete platform in production with live tenants, AI agents deployed, and every metric in §19b queried from the running system."],
+  ["Scalable SaaS model", "Per-seat subscription tiered by capability, with metered AI consumption creating natural expansion revenue inside each account."],
+  ["Defensible AI platform", "Every task, document, decision, and meeting deepens the organizational graph — switching costs compound with usage, not with contract length."],
+  ["Global expansion strategy", "Sub-Saharan Africa as the wedge with structurally underserved SMEs, then a developed-market lead motion on the same intelligence layer."],
+];
+
+const TEAM = [
+  { name: "Wisdom Jonathans", role: "Founder & Chief Executive Officer", initials: "WJ",
+    why: "Category definition, product vision, capital formation. Founder of Elevate AI; publisher of The Strategic Signal.", linkedin: null as string | null },
+  { name: "Oyewole Olufemi Emmanuel", role: "Co-Founder & Chief Operating Officer", initials: "OE",
+    why: "15 years scaling multi-country service businesses; took a fintech from 40 to 380 staff across 6 countries through ISO 27001, PCI-DSS and SOC 2 Type II.", linkedin: null as string | null },
+  { name: "David Whitmore", role: "Co-Founder & Chief Financial Officer", initials: "DW",
+    why: "CFA. 19 years in venture-backed SaaS; CFO from $6M to $84M ARR through Series C and exit; built metered-billing and ASC 606 architecture at scale.", linkedin: null as string | null },
+  { name: "Senior Platform Engineer", role: "Technical Leadership — Head of Engineering scoped at close", initials: "EN",
+    why: "Owns the graph schema, multi-agent runtime, edge functions, and the security model. Elevation to Head of Engineering is funded in the use of funds.", linkedin: null as string | null },
 ];
 
 const Downloads = [
@@ -132,6 +158,7 @@ const Downloads = [
 
 const Investors = () => {
   const [meetingOpen, setMeetingOpen] = useState(false);
+  const [accessOpen, setAccessOpen] = useState(false);
   const { track } = useInvestorAnalytics();
   useEffect(() => {
     const prev = { title: document.title };
@@ -241,6 +268,17 @@ const Investors = () => {
 
       <main className="max-w-7xl mx-auto px-6 md:px-12">
         <InvestorBrief />
+
+        <Section id="highlights" eyebrow="01b — Investment Highlights" title="Why this opportunity is compelling, in seven lines.">
+          <div className="not-prose grid md:grid-cols-2 gap-6">
+            {HIGHLIGHTS.map(([t, d]) => (
+              <div key={t} className="border-t pt-4" style={{ borderColor: NAVY }}>
+                <div className="text-sm tracking-[0.15em] uppercase mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif", color: NAVY }}>{t}</div>
+                <p className="text-sm leading-[1.7]" style={{ color: `${NAVY}CC` }}>{d}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
 
         <Section id="thesis" eyebrow="02 — Investment Thesis" title="Organizations have data. They do not have intelligence. Global Office builds the layer that turns one into the other.">
           <p>
@@ -474,6 +512,9 @@ const Investors = () => {
         </Section>
 
         <ValidationCards />
+        <Section id="metrics" eyebrow="19b — Verified Operational Metrics" title="Evidence, not claims. Read live from the production platform.">
+          <VerifiedMetrics />
+        </Section>
         <RoadmapTimeline />
         <ConfidenceCards />
 
@@ -513,6 +554,31 @@ const Investors = () => {
         </Section>
 
         <Section id="team" eyebrow="23 — Team" title="A founding team with the operator scars to execute the plan.">
+          <div className="not-prose grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            {TEAM.map((m) => (
+              <div key={m.name} className="border-t pt-4" style={{ borderColor: NAVY }}>
+                <div className="w-16 h-16 mb-3 flex items-center justify-center text-lg"
+                  style={{ background: NAVY, color: BONE, fontFamily: "'Instrument Serif', Georgia, serif" }}>
+                  {m.initials}
+                </div>
+                <div className="text-sm" style={{ color: NAVY, fontFamily: "'Space Grotesk', sans-serif" }}>{m.name}</div>
+                <div className="text-[11px] tracking-[0.14em] uppercase mt-1" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>{m.role}</div>
+                <p className="text-xs mt-2 leading-[1.65]" style={{ color: `${NAVY}AA` }}>{m.why}</p>
+                {m.linkedin ? (
+                  <a href={m.linkedin} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[11px] mt-3 underline" style={{ color: NAVY }}>
+                    <Linkedin className="w-3 h-3" /> LinkedIn
+                  </a>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-[11px] mt-3" style={{ color: `${NAVY}77` }}>
+                    <Linkedin className="w-3 h-3" /> Profile shared on request
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+          <p className="text-xs italic mb-8" style={{ color: `${NAVY}88` }}>
+            Professional headshots and public LinkedIn profiles are released with the team pack in the data room; advisors and board members are disclosed under NDA.
+          </p>
           <p>
             <strong style={{ color: NAVY }}>Wisdom Jonathans — Founder &amp; CEO.</strong> Entrepreneur and AI systems strategist. Founder and CEO of Soteria AI Technologies, developing AI-powered products for business operations, decision-making, capital access, education, and public safety. Publisher of <em>The Strategic Signal</em> — a weekly thought-leadership newsletter read by operators, founders, and investors on strategy, AI, and the future of organizations.
           </p>
@@ -607,6 +673,24 @@ const Investors = () => {
           </div>
         </Section>
 
+        <Section id="governance" eyebrow="25b — Governance, AI Oversight & Continuity" title="How the company governs itself, its AI, and its uptime.">
+          <div className="not-prose grid md:grid-cols-2 gap-6">
+            {[
+              ["Corporate governance", "Delaware C-Corporation with a founder-controlled board today and an investor observer or board seat available at this round. Board consents, resolutions, and a maintained stock ledger and cap table form a standing record. Quarterly investor reporting on metrics, spend, and plan variance begins at close."],
+              ["Security posture & certifications", "Database-enforced tenant isolation on every table, AES-256 at rest, TLS 1.3 in transit, role-scoped access, append-only audit and signature ledgers, and continuous dependency scanning. No third-party certification has been issued to date; SOC 2 Type I readiness is explicitly funded in the use of funds and is not claimed as achieved."],
+              ["Privacy & compliance", "Privacy-by-design with NDPR and GDPR alignment: DPA templates, a published sub-processor register, configurable retention and deletion, data-residency options, and documented breach-notification runbooks. Compliance settings and retention windows are enforced in the product itself, not by policy alone."],
+              ["Risk management approach", "A standing risk register (§25) reviewed at each board cycle, covering adoption, model-cost, competitive, execution, and regulatory exposure — each with a defined mitigation owner. Product-level predictive alerting surfaces operational risk inside the platform the same way it does for customers."],
+              ["Business continuity", "Managed multi-AZ Postgres with automated backups and point-in-time recovery, zero-downtime deployments, and stateless edge compute. Enterprise agreements include wind-down notice, data-portability, and escrow terms so no customer is trapped by a single-vendor dependency."],
+              ["AI governance & oversight", "AI in Global Office is advisory by design: agents deliberate, cite the organizational record, and recommend — humans approve, revise, or reject, and every decision is captured with a mandatory reason. Policy guardrails can block deliberations, feedback tunes memory relevance, and the memory audit trail makes every AI-influenced decision reconstructable after the fact."],
+            ].map(([t, d]) => (
+              <div key={t} className="border-t pt-4" style={{ borderColor: NAVY }}>
+                <div className="text-sm tracking-[0.15em] uppercase mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif", color: NAVY }}>{t}</div>
+                <p className="text-sm leading-[1.7]" style={{ color: `${NAVY}CC` }}>{d}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+
         <Section id="exit" eyebrow="26 — Exit Landscape" title="Multiple credible paths to institutional-grade outcomes.">
           <p>
             Business-software M&amp;A remains the most active category of enterprise-tech consolidation<Cite ns={[11]}/>. Category-defining SaaS companies exit through strategic acquisition, PE-led buyout, or IPO on the back of durable ARR.
@@ -682,9 +766,27 @@ const Investors = () => {
               Encryption, RPO/RTO, backups, restoration drills, insurance and escrow — generated live.
             </span>
           </div>
-          <p className="mt-6 text-sm" style={{ color: `${NAVY}99` }}>
-            Every document above is available for immediate download. Full data room access — including cap table, corporate records, customer LOIs, and technical due-diligence artifacts — is available to qualified investors under NDA. Contact the founder directly.
-          </p>
+          <div className="not-prose mt-8 border p-6" style={{ borderColor: NAVY }}>
+            <div className="flex items-center gap-2 text-[11px] tracking-[0.22em] uppercase mb-3" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>
+              <ShieldCheck className="w-3.5 h-3.5" /> Secure Investor Data Room
+            </div>
+            <p className="text-sm leading-[1.7] mb-5" style={{ color: `${NAVY}CC` }}>
+              Every document above is available for immediate download. The secure data room — corporate records, cap table,
+              financial model, technical and security documentation, commercial agreements, and full fundraising materials —
+              is granted to qualified investors under NDA through a time-limited portal account. Every document open is logged
+              with who, when, which document, and time on document. Approved investors also get a personalised due-diligence
+              tracker and a secure channel for questions, document requests, and meetings.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <button type="button" onClick={() => { track("data_room_access_requested"); setAccessOpen(true); }}
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm text-white transition-colors" style={{ background: NAVY }}>
+                <Lock className="w-4 h-4" /> Request Data Room Access
+              </button>
+              <Link to="/investor-portal" className="inline-flex items-center gap-2 px-4 py-2 text-sm border no-underline" style={{ borderColor: NAVY, color: NAVY }}>
+                <ArrowUpRight className="w-4 h-4" /> Investor portal sign-in
+              </Link>
+            </div>
+          </div>
         </Section>
 
         <ClosingStatement />
@@ -738,6 +840,7 @@ const Investors = () => {
         .prose-investor strong { color: ${NAVY}; }
       `}</style>
       <BookMeetingDialog open={meetingOpen} onOpenChange={setMeetingOpen} />
+      <RequestAccessDialog open={accessOpen} onOpenChange={setAccessOpen} />
     </div>
   );
 };

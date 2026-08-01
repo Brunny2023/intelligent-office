@@ -12,10 +12,11 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   ShieldCheck, Building2, Users, CheckSquare, MessageSquare, Brain,
-  Activity, Ticket, BarChart3, HeartPulse, Search, TrendingUp, AlertCircle, CheckCircle2, Video
+  Activity, Ticket, BarChart3, HeartPulse, Search, TrendingUp, AlertCircle, CheckCircle2, Video, Lock
 } from "lucide-react";
 import EgressHealthPanel from "@/components/superadmin/EgressHealthPanel";
 import AdoptionTelemetry from "@/components/superadmin/AdoptionTelemetry";
+import InvestorPortalAdmin from "@/components/superadmin/InvestorPortalAdmin";
 import { format, formatDistanceToNow } from "date-fns";
 
 interface PlatformStats {
@@ -133,6 +134,7 @@ const SuperAdmin = () => {
             <TabsTrigger value="adoption" className="gap-1.5"><TrendingUp className="w-4 h-4" /> Adoption</TabsTrigger>
             <TabsTrigger value="health" className="gap-1.5"><HeartPulse className="w-4 h-4" /> System Health</TabsTrigger>
             <TabsTrigger value="egress" className="gap-1.5"><Video className="w-4 h-4" /> Egress</TabsTrigger>
+            <TabsTrigger value="investors" className="gap-1.5"><Lock className="w-4 h-4" /> Investors</TabsTrigger>
             <TabsTrigger value="audit" className="gap-1.5"><Activity className="w-4 h-4" /> Audit</TabsTrigger>
           </TabsList>
 
@@ -238,6 +240,10 @@ const SuperAdmin = () => {
 
           <TabsContent value="adoption">
             <AdoptionTelemetry />
+          </TabsContent>
+
+          <TabsContent value="investors">
+            <InvestorPortalAdmin />
           </TabsContent>
 
           <TabsContent value="audit">
