@@ -5,8 +5,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
-import { Check, X, Eye, Send } from "lucide-react";
+import { Check, X, Eye, Send, Upload, Trash2 } from "lucide-react";
 
 type Investor = {
   id: string; full_name: string; email: string; firm: string | null; title: string | null;
@@ -16,6 +17,9 @@ type Investor = {
 };
 type LogRow = { id: string; investor_id: string; action: string; duration_seconds: number | null; created_at: string; document_id: string | null };
 type Step = { id: string; label: string; status: string; sort_order: number };
+type DocRow = { id: string; category: string; title: string; storage_path: string | null; is_active: boolean; created_at: string };
+
+const CATEGORIES = ["Corporate & Legal", "Financials", "Product & Technology", "Market & Strategy", "Team", "Fundraising"];
 
 const statusTone = (s: string) =>
   s === "approved" ? "default" : s === "pending" ? "secondary" : "outline";
@@ -27,6 +31,12 @@ const InvestorPortalAdmin = () => {
   const [steps, setSteps] = useState<Step[]>([]);
   const [docTitles, setDocTitles] = useState<Record<string, string>>({});
   const [reply, setReply] = useState("");
+  const [docs, setDocs] = useState<DocRow[]>([]);
+  const [docTitle, setDocTitle] = useState("");
+  const [docCategory, setDocCategory] = useState(CATEGORIES[0]);
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const { data } = await supabase.from("investor_profiles").select("*").order("created_at", { ascending: false });
@@ -34,6 +44,53 @@ const InvestorPortalAdmin = () => {
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  const loadDocs = useCallback(async () => {
+    const { data } = await supabase
+      .from("data_room_documents")
+      .select("id, category, title, storage_path, is_active, created_at")
+      .order("category").order("sort_order");
+    setDocs((data ?? []) as DocRow[]);
+  }, []);
+
+  useEffect(() => { loadDocs(); }, [loadDocs]);
+
+  const uploadDoc = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!file || !docTitle.trim()) return;
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const path = `${docCategory.toLowerCase().replace(/[^a-z0-9]+/g, "-")}/${Date.now()}-${safe}`;
+      const { error: upErr } = await supabase.storage.from("data-room").upload(path, file, {
+        contentType: file.type || "application/octet-stream", upsert: false,
+      });
+      if (upErr) throw upErr;
+      const { error: insErr } = await supabase.from("data_room_documents").insert({
+        category: docCategory, title: docTitle.trim(), storage_path: path,
+        sort_order: docs.filter((d) => d.category === docCategory).length,
+      });
+      if (insErr) throw insErr;
+      setDocTitle(""); setFile(null);
+      await loadDocs();
+    } catch (err) {
+      setUploadError((err as Error).message || "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removeDoc = async (doc: DocRow) => {
+    if (doc.storage_path) await supabase.storage.from("data-room").remove([doc.storage_path]);
+    await supabase.from("data_room_documents").delete().eq("id", doc.id);
+    await loadDocs();
+  };
+
+  const toggleDoc = async (doc: DocRow) => {
+    await supabase.from("data_room_documents").update({ is_active: !doc.is_active }).eq("id", doc.id);
+    await loadDocs();
+  };
 
   useEffect(() => {
     supabase.from("data_room_documents").select("id, title").then(({ data }) =>
@@ -168,6 +225,50 @@ const InvestorPortalAdmin = () => {
               </div>
             </>
           )}
+        </CardContent>
+      </Card>
+
+      <Card className="lg:col-span-2">
+        <CardHeader><CardTitle className="text-base">Data room documents</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          <form onSubmit={uploadDoc} className="grid md:grid-cols-4 gap-3 items-end">
+            <div className="md:col-span-1">
+              <label htmlFor="doc-cat" className="text-xs text-muted-foreground">Category</label>
+              <select id="doc-cat" value={docCategory} onChange={(e) => setDocCategory(e.target.value)}
+                className="w-full h-10 rounded-md border bg-background px-3 text-sm">
+                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div className="md:col-span-1">
+              <label htmlFor="doc-title" className="text-xs text-muted-foreground">Title</label>
+              <Input id="doc-title" value={docTitle} onChange={(e) => setDocTitle(e.target.value)} maxLength={160} required />
+            </div>
+            <div className="md:col-span-1">
+              <label htmlFor="doc-file" className="text-xs text-muted-foreground">File</label>
+              <Input id="doc-file" type="file" onChange={(e) => setFile(e.target.files?.[0] ?? null)} required />
+            </div>
+            <Button type="submit" disabled={uploading || !file}>
+              <Upload className="w-3.5 h-3.5 mr-2" />{uploading ? "Uploading…" : "Upload"}
+            </Button>
+          </form>
+          {uploadError && <p className="text-sm text-destructive">{uploadError}</p>}
+
+          <div className="max-h-72 overflow-y-auto divide-y">
+            {docs.length === 0 && <p className="text-sm text-muted-foreground">No documents yet.</p>}
+            {docs.map((d) => (
+              <div key={d.id} className="flex items-center justify-between gap-3 py-2">
+                <div className="min-w-0">
+                  <p className="text-sm truncate">{d.title}</p>
+                  <p className="text-xs text-muted-foreground">{d.category}</p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <Badge variant={d.is_active ? "default" : "outline"}>{d.is_active ? "visible" : "hidden"}</Badge>
+                  <Button size="sm" variant="ghost" onClick={() => toggleDoc(d)}>{d.is_active ? <X className="w-3.5 h-3.5" /> : <Check className="w-3.5 h-3.5" />}</Button>
+                  <Button size="sm" variant="ghost" onClick={() => removeDoc(d)}><Trash2 className="w-3.5 h-3.5" /></Button>
+                </div>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
     </div>
