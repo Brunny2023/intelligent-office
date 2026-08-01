@@ -14,6 +14,9 @@ import {
 import RequestAccessDialog from "@/components/investors/RequestAccessDialog";
 import BookMeetingDialog from "@/components/investors/BookMeetingDialog";
 import { NAVY, BONE, GOLD } from "@/components/investors/investorTheme";
+import DataRoomUploader from "@/components/investors/DataRoomUploader";
+import { DATA_ROOM_CATEGORIES } from "@/components/investors/dataRoomCategories";
+import { usePlatformAdmin } from "@/hooks/usePlatformAdmin";
 
 type Investor = {
   id: string; full_name: string; email: string; firm: string | null; status: string;
@@ -26,14 +29,7 @@ type Doc = {
 type Step = { id: string; step_key: string; label: string; status: string; completed_at: string | null; sort_order: number };
 type Msg = { id: string; body: string; from_company: boolean; kind: string; created_at: string };
 
-const CATEGORIES: { key: string; label: string }[] = [
-  { key: "corporate", label: "Corporate" },
-  { key: "financial", label: "Financial" },
-  { key: "product", label: "Product & Technology" },
-  { key: "commercial", label: "Commercial" },
-  { key: "legal", label: "Legal & Compliance" },
-  { key: "fundraising", label: "Fundraising" },
-];
+const CATEGORIES = DATA_ROOM_CATEGORIES;
 
 const Shell = ({ children }: { children: React.ReactNode }) => (
   <div className="min-h-screen" style={{ background: BONE, color: NAVY }}>
@@ -122,6 +118,7 @@ const AuthPanel = ({ onRequest }: { onRequest: () => void }) => {
 /* ---------------- portal ---------------- */
 const InvestorPortal = () => {
   const { user, loading: authLoading, signOut } = useAuth();
+  const { isPlatformAdmin } = usePlatformAdmin();
   const [investor, setInvestor] = useState<Investor | null>(null);
   const [loading, setLoading] = useState(true);
   const [docs, setDocs] = useState<Doc[]>([]);
@@ -146,16 +143,20 @@ const InvestorPortal = () => {
   const approved = investor?.status === "approved" &&
     (!investor.access_expires_at || new Date(investor.access_expires_at) > new Date());
 
-  useEffect(() => {
-    if (!approved || !investor) return;
+  const loadDocs = useCallback(() => {
     supabase.from("data_room_documents").select("*").eq("is_active", true)
       .order("category").order("sort_order")
       .then(({ data }) => setDocs((data ?? []) as Doc[]));
+  }, []);
+
+  useEffect(() => {
+    if (!approved || !investor) return;
+    loadDocs();
     supabase.from("investor_dd_steps").select("*").eq("investor_id", investor.id).order("sort_order")
       .then(({ data }) => setSteps((data ?? []) as Step[]));
     supabase.from("investor_messages").select("*").eq("investor_id", investor.id).order("created_at")
       .then(({ data }) => setMsgs((data ?? []) as Msg[]));
-  }, [approved, investor]);
+  }, [approved, investor, loadDocs]);
 
   const openDoc = async (doc: Doc) => {
     if (!investor) return;
@@ -281,6 +282,7 @@ const InvestorPortal = () => {
         </TabsList>
 
         <TabsContent value="dataroom" className="mt-8 space-y-10">
+          {isPlatformAdmin && <DataRoomUploader onChanged={loadDocs} />}
           {docs.length === 0 && (
             <p className="text-sm" style={{ color: `${NAVY}99` }}>
               Documents are being prepared for your grant. You will be notified as folders are released.
