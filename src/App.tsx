@@ -39,6 +39,7 @@ import FeaturesPage from "./pages/FeaturesPage";
 import InterOrgModule from "./pages/InterOrgModule";
 import Demo from "./pages/Demo";
 import Investors from "./pages/Investors";
+import InvestorPortal from "./pages/InvestorPortal";
 import TrustCenter from "./pages/TrustCenter";
 import Join from "./pages/Join";
 import Status from "./pages/Status";
@@ -67,6 +68,7 @@ const App = () => (
             <Route path="/features" element={<FeaturesPage />} />
             <Route path="/demo" element={<Demo />} />
             <Route path="/investors" element={<Investors />} />
+            <Route path="/investor-portal" element={<InvestorPortal />} />
             <Route path="/trust" element={<TrustCenter />} />
             <Route path="/join" element={<Join />} />
             <Route path="/status" element={<Status />} />
