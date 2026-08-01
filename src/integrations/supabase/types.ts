@@ -845,6 +845,96 @@ export type Database = {
           },
         ]
       }
+      data_room_access_log: {
+        Row: {
+          action: string
+          created_at: string
+          document_id: string | null
+          duration_seconds: number | null
+          id: string
+          investor_id: string
+          ip_hint: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action?: string
+          created_at?: string
+          document_id?: string | null
+          duration_seconds?: number | null
+          id?: string
+          investor_id: string
+          ip_hint?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          document_id?: string | null
+          duration_seconds?: number | null
+          id?: string
+          investor_id?: string
+          ip_hint?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "data_room_access_log_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "data_room_documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "data_room_access_log_investor_id_fkey"
+            columns: ["investor_id"]
+            isOneToOne: false
+            referencedRelation: "investor_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      data_room_documents: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          external_url: string | null
+          id: string
+          is_active: boolean
+          sensitivity: string
+          sort_order: number
+          storage_path: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          external_url?: string | null
+          id?: string
+          is_active?: boolean
+          sensitivity?: string
+          sort_order?: number
+          storage_path?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          external_url?: string | null
+          id?: string
+          is_active?: boolean
+          sensitivity?: string
+          sort_order?: number
+          storage_path?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       departments: {
         Row: {
           created_at: string
@@ -1508,6 +1598,53 @@ export type Database = {
           },
         ]
       }
+      investor_dd_steps: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          investor_id: string
+          label: string
+          note: string | null
+          sort_order: number
+          status: string
+          step_key: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          investor_id: string
+          label: string
+          note?: string | null
+          sort_order?: number
+          status?: string
+          step_key: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          investor_id?: string
+          label?: string
+          note?: string | null
+          sort_order?: number
+          status?: string
+          step_key?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_dd_steps_investor_id_fkey"
+            columns: ["investor_id"]
+            isOneToOne: false
+            referencedRelation: "investor_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       investor_meeting_qa: {
         Row: {
           answer: Json
@@ -1588,6 +1725,116 @@ export type Database = {
           scheduled_at?: string | null
           status?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      investor_messages: {
+        Row: {
+          body: string
+          created_at: string
+          from_company: boolean
+          id: string
+          investor_id: string
+          kind: string
+          responded_at: string | null
+          sender_id: string | null
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          from_company?: boolean
+          id?: string
+          investor_id: string
+          kind?: string
+          responded_at?: string | null
+          sender_id?: string | null
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          from_company?: boolean
+          id?: string
+          investor_id?: string
+          kind?: string
+          responded_at?: string | null
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_messages_investor_id_fkey"
+            columns: ["investor_id"]
+            isOneToOne: false
+            referencedRelation: "investor_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      investor_profiles: {
+        Row: {
+          access_expires_at: string | null
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          email: string
+          firm: string | null
+          full_name: string
+          id: string
+          investment_focus: string | null
+          last_seen_at: string | null
+          linkedin_url: string | null
+          message: string | null
+          nda_accepted_at: string | null
+          nda_signature: string | null
+          notes: string | null
+          status: string
+          ticket_size: string | null
+          title: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          access_expires_at?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          email: string
+          firm?: string | null
+          full_name: string
+          id?: string
+          investment_focus?: string | null
+          last_seen_at?: string | null
+          linkedin_url?: string | null
+          message?: string | null
+          nda_accepted_at?: string | null
+          nda_signature?: string | null
+          notes?: string | null
+          status?: string
+          ticket_size?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          access_expires_at?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          email?: string
+          firm?: string | null
+          full_name?: string
+          id?: string
+          investment_focus?: string | null
+          last_seen_at?: string | null
+          linkedin_url?: string | null
+          message?: string | null
+          nda_accepted_at?: string | null
+          nda_signature?: string | null
+          notes?: string | null
+          status?: string
+          ticket_size?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -3501,6 +3748,7 @@ export type Database = {
         }
         Returns: Json
       }
+      current_investor_id: { Args: never; Returns: string }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -3513,6 +3761,7 @@ export type Database = {
         Returns: number
       }
       escalate_alerts: { Args: never; Returns: Json }
+      get_investor_metrics: { Args: never; Returns: Json }
       get_platform_stats: { Args: never; Returns: Json }
       get_platform_tenants: {
         Args: never
@@ -3577,6 +3826,7 @@ export type Database = {
         Returns: boolean
       }
       intelligence_isolation_probe: { Args: never; Returns: Json }
+      is_approved_investor: { Args: { _user_id: string }; Returns: boolean }
       is_platform_admin: { Args: { _user_id: string }; Returns: boolean }
       log_token_event: {
         Args: {
