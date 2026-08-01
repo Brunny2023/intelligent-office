@@ -158,6 +158,7 @@ const Downloads = [
 
 const Investors = () => {
   const [meetingOpen, setMeetingOpen] = useState(false);
+  const [accessOpen, setAccessOpen] = useState(false);
   const { track } = useInvestorAnalytics();
   useEffect(() => {
     const prev = { title: document.title };
@@ -765,9 +766,27 @@ const Investors = () => {
               Encryption, RPO/RTO, backups, restoration drills, insurance and escrow — generated live.
             </span>
           </div>
-          <p className="mt-6 text-sm" style={{ color: `${NAVY}99` }}>
-            Every document above is available for immediate download. Full data room access — including cap table, corporate records, customer LOIs, and technical due-diligence artifacts — is available to qualified investors under NDA. Contact the founder directly.
-          </p>
+          <div className="not-prose mt-8 border p-6" style={{ borderColor: NAVY }}>
+            <div className="flex items-center gap-2 text-[11px] tracking-[0.22em] uppercase mb-3" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>
+              <ShieldCheck className="w-3.5 h-3.5" /> Secure Investor Data Room
+            </div>
+            <p className="text-sm leading-[1.7] mb-5" style={{ color: `${NAVY}CC` }}>
+              Every document above is available for immediate download. The secure data room — corporate records, cap table,
+              financial model, technical and security documentation, commercial agreements, and full fundraising materials —
+              is granted to qualified investors under NDA through a time-limited portal account. Every document open is logged
+              with who, when, which document, and time on document. Approved investors also get a personalised due-diligence
+              tracker and a secure channel for questions, document requests, and meetings.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <button type="button" onClick={() => { track("data_room_access_requested"); setAccessOpen(true); }}
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm text-white transition-colors" style={{ background: NAVY }}>
+                <Lock className="w-4 h-4" /> Request Data Room Access
+              </button>
+              <Link to="/investor-portal" className="inline-flex items-center gap-2 px-4 py-2 text-sm border no-underline" style={{ borderColor: NAVY, color: NAVY }}>
+                <ArrowUpRight className="w-4 h-4" /> Investor portal sign-in
+              </Link>
+            </div>
+          </div>
         </Section>
 
         <ClosingStatement />
@@ -821,6 +840,7 @@ const Investors = () => {
         .prose-investor strong { color: ${NAVY}; }
       `}</style>
       <BookMeetingDialog open={meetingOpen} onOpenChange={setMeetingOpen} />
+      <RequestAccessDialog open={accessOpen} onOpenChange={setAccessOpen} />
     </div>
   );
 };
