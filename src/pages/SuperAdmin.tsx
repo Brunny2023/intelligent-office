@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   ShieldCheck, Building2, Users, CheckSquare, MessageSquare, Brain,
-  Activity, Ticket, BarChart3, HeartPulse, Search, TrendingUp, AlertCircle, CheckCircle2, Video
+  Activity, Ticket, BarChart3, HeartPulse, Search, TrendingUp, AlertCircle, CheckCircle2, Video, Lock
 } from "lucide-react";
 import EgressHealthPanel from "@/components/superadmin/EgressHealthPanel";
 import AdoptionTelemetry from "@/components/superadmin/AdoptionTelemetry";
