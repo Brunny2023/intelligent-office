@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Upload, Trash2, Check, X } from "lucide-react";
 import { DATA_ROOM_CATEGORIES, categoryLabel } from "./dataRoomCategories";
+import DataRoomChecklist from "./DataRoomChecklist";
 
 type DocRow = { id: string; category: string; title: string; storage_path: string | null; is_active: boolean };
 
@@ -65,7 +66,9 @@ const DataRoomUploader = ({ onChanged }: { onChanged?: () => void }) => {
   };
 
   return (
-    <div className="border border-border rounded-md p-4 bg-card text-card-foreground space-y-4">
+    <div className="space-y-4">
+      <DataRoomChecklist docs={docs} />
+      <div className="border border-border rounded-md p-4 bg-card text-card-foreground space-y-4">
       <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Admin · upload documents</p>
       <form onSubmit={upload} className="grid md:grid-cols-4 gap-3 items-end">
         <div>
@@ -106,6 +109,7 @@ const DataRoomUploader = ({ onChanged }: { onChanged?: () => void }) => {
             </div>
           </div>
         ))}
+      </div>
       </div>
     </div>
   );
