@@ -107,7 +107,8 @@ const TOC = [
   { id: "ask", label: "24 — The Ask" },
   { id: "risks", label: "25 — Risks" },
   { id: "exit", label: "26 — Exit Landscape" },
-  { id: "downloads", label: "27 — Materials" },
+  { id: "diligence", label: "27 — Due Diligence" },
+  { id: "downloads", label: "28 — Materials" },
 ];
 
 const Downloads = [
@@ -617,7 +618,30 @@ const Investors = () => {
           </ul>
         </Section>
 
-        <Section id="downloads" eyebrow="27 — Materials & Data Room" title="The complete institutional package.">
+        <Section id="diligence" eyebrow="27 — Due Diligence" title="Legal, IP, and compliance posture — ready for institutional review.">
+          <p>
+            Diligence is not a post-term-sheet scramble. Corporate, intellectual-property, compliance, and financial artifacts are maintained continuously and released to qualified investors under NDA through the data room.
+          </p>
+          <div className="not-prose grid md:grid-cols-2 gap-6 mt-6">
+            {[
+              ["Corporate & governance", "Soteria AI Technologies Inc. (Delaware C-Corporation) is the investment entity, with Soteria AI Technologies Limited (Nigeria) as its engineering and innovation affiliate. Certificate of incorporation, bylaws, board consents, cap table, stock ledger, founder restricted-stock agreements with vesting and 83(b) elections, and an equity incentive pool are maintained as standing records."],
+              ["Intellectual property", "All platform source code, models, prompts, designs, and brand assets are owned by the Delaware parent. Every founder, employee, and contractor executes IP assignment and confidentiality agreements as a condition of engagement, including cross-border assignment from the engineering affiliate. Global Office trademark filings are in progress; no third-party IP claims, liens, or encumbrances exist."],
+              ["Open source & third-party", "A dependency inventory with license classification is maintained; the stack uses permissive licences only (MIT, Apache-2.0, BSD) with no copyleft obligations in distributed code. Automated dependency and vulnerability scanning runs continuously, and material vendor and infrastructure agreements are catalogued in the data room."],
+              ["Data protection & compliance", "Privacy-by-design architecture with database-level tenant isolation, AES-256 at rest, TLS 1.3 in transit, role-scoped access control, and append-only audit and signature ledgers. NDPR and GDPR alignment includes DPA templates, a sub-processor register, retention and deletion policies, breach-notification runbooks, and data-residency options. SOC 2 Type I readiness is scoped in the use of funds."],
+              ["Employment & contracts", "Standard offer letters, contractor agreements, and confidentiality terms across both entities; no outstanding employment disputes. Customer-facing agreements — MSA, DPA, and enterprise addenda covering data portability, wind-down notice, and escrow — are templated and legally reviewed."],
+              ["Financial & tax", "Books maintained on accrual basis with ASC 606 revenue-recognition policy defined ahead of first revenue; separate entity ledgers with an intercompany services agreement and transfer-pricing basis between the US parent and Nigerian affiliate. No debt, no convertible instruments outstanding, and no contingent liabilities. Full three-year model and assumptions are in Materials."],
+              ["Litigation & regulatory", "No pending or threatened litigation, regulatory action, or governmental investigation against either entity, and no prior financing disputes or unresolved founder claims."],
+              ["Data room access", "A structured index — corporate, IP, financial, technical, security, and commercial folders — mirrors the Due Diligence Package below. Access is granted to qualified investors under NDA, with per-investor access logging."],
+            ].map(([t, d]) => (
+              <div key={t} className="border-t pt-4" style={{ borderColor: NAVY }}>
+                <div className="text-sm tracking-[0.15em] uppercase mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{t}</div>
+                <p className="text-sm leading-[1.7]" style={{ color: `${NAVY}CC` }}>{d}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <Section id="downloads" eyebrow="28 — Materials & Data Room" title="The complete institutional package.">
           <div className="not-prose border" style={{ borderColor: NAVY }}>
             <table className="w-full text-sm">
               <tbody>
