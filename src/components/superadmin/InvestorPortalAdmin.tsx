@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
 import { Check, X, Eye, Send, Upload, Trash2 } from "lucide-react";
+import { DATA_ROOM_CATEGORIES, categoryLabel } from "@/components/investors/dataRoomCategories";
 
 type Investor = {
   id: string; full_name: string; email: string; firm: string | null; title: string | null;
@@ -19,7 +20,7 @@ type LogRow = { id: string; investor_id: string; action: string; duration_second
 type Step = { id: string; label: string; status: string; sort_order: number };
 type DocRow = { id: string; category: string; title: string; storage_path: string | null; is_active: boolean; created_at: string };
 
-const CATEGORIES = ["Corporate & Legal", "Financials", "Product & Technology", "Market & Strategy", "Team", "Fundraising"];
+const CATEGORIES = DATA_ROOM_CATEGORIES;
 
 const statusTone = (s: string) =>
   s === "approved" ? "default" : s === "pending" ? "secondary" : "outline";
@@ -33,7 +34,7 @@ const InvestorPortalAdmin = () => {
   const [reply, setReply] = useState("");
   const [docs, setDocs] = useState<DocRow[]>([]);
   const [docTitle, setDocTitle] = useState("");
-  const [docCategory, setDocCategory] = useState(CATEGORIES[0]);
+  const [docCategory, setDocCategory] = useState(CATEGORIES[0].key);
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -62,7 +63,7 @@ const InvestorPortalAdmin = () => {
     setUploadError(null);
     try {
       const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-      const path = `${docCategory.toLowerCase().replace(/[^a-z0-9]+/g, "-")}/${Date.now()}-${safe}`;
+      const path = `${docCategory}/${Date.now()}-${safe}`;
       const { error: upErr } = await supabase.storage.from("data-room").upload(path, file, {
         contentType: file.type || "application/octet-stream", upsert: false,
       });
@@ -236,7 +237,7 @@ const InvestorPortalAdmin = () => {
               <label htmlFor="doc-cat" className="text-xs text-muted-foreground">Category</label>
               <select id="doc-cat" value={docCategory} onChange={(e) => setDocCategory(e.target.value)}
                 className="w-full h-10 rounded-md border bg-background px-3 text-sm">
-                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                {CATEGORIES.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
               </select>
             </div>
             <div className="md:col-span-1">
@@ -259,7 +260,7 @@ const InvestorPortalAdmin = () => {
               <div key={d.id} className="flex items-center justify-between gap-3 py-2">
                 <div className="min-w-0">
                   <p className="text-sm truncate">{d.title}</p>
-                  <p className="text-xs text-muted-foreground">{d.category}</p>
+                  <p className="text-xs text-muted-foreground">{categoryLabel(d.category)}</p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <Badge variant={d.is_active ? "default" : "outline"}>{d.is_active ? "visible" : "hidden"}</Badge>
