@@ -596,28 +596,28 @@ const Investors = () => {
           </p>
         </Section>
 
-        <Section id="corporate" eyebrow="23b — Corporate Structure" title="Two entities. One global operating model.">
+        <Section id="corporate" eyebrow="23b — Corporate Structure" title="One company. Delaware-domiciled. Global engineering.">
           <p>
-            Soteria AI Technologies operates through two registered corporate entities that function together as a unified global organization with complementary responsibilities.
+            Global Office is the flagship platform of <strong style={{ color: NAVY }}>Soteria AI Technologies Inc.</strong>, a Delaware C-Corporation. The Delaware entity is the single investment, contracting, and intellectual-property holding company; engineering and delivery run from a wholly-controlled Africa engineering center.
           </p>
           <div className="not-prose grid md:grid-cols-2 gap-6 mt-6">
             <div className="border-t pt-4" style={{ borderColor: NAVY }}>
-              <div className="text-xs tracking-[0.22em] uppercase mb-2" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Global corporate entity</div>
+              <div className="text-xs tracking-[0.22em] uppercase mb-2" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Investment &amp; IP entity</div>
               <div className="text-sm mb-2" style={{ color: NAVY, fontFamily: "'Space Grotesk', sans-serif" }}>Soteria AI Technologies Inc.</div>
               <p className="text-sm leading-[1.7]" style={{ color: `${NAVY}CC` }}>
-                Delaware C-Corporation (USA). Responsible for corporate governance, intellectual property stewardship, strategic partnerships, capital formation, institutional readiness, and long-term global expansion.
+                Delaware C-Corporation (USA). Holds all intellectual property, customer contracts, and equity. Responsible for corporate governance, capital formation, strategic partnerships, institutional readiness, and long-term global expansion. All investment in this round is made into this entity.
               </p>
             </div>
             <div className="border-t pt-4" style={{ borderColor: NAVY }}>
-              <div className="text-xs tracking-[0.22em] uppercase mb-2" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Engineering &amp; innovation affiliate</div>
-              <div className="text-sm mb-2" style={{ color: NAVY, fontFamily: "'Space Grotesk', sans-serif" }}>Soteria AI Technologies Limited</div>
+              <div className="text-xs tracking-[0.22em] uppercase mb-2" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Engineering &amp; delivery center</div>
+              <div className="text-sm mb-2" style={{ color: NAVY, fontFamily: "'Space Grotesk', sans-serif" }}>Africa engineering center (Lagos, Nigeria)</div>
               <p className="text-sm leading-[1.7]" style={{ color: `${NAVY}CC` }}>
-                Registered Nigerian company. Contributes AI research, software engineering, product development, and operational execution across the company's technology ecosystem.
+                A controlled local operating vehicle of Soteria AI Technologies Inc. Delivers AI research, software engineering, product development, and operational execution under an intercompany services agreement, with all work product assigned to the Delaware parent.
               </p>
             </div>
           </div>
           <p className="mt-6">
-            This dual-entity structure is a deliberate global operating model — combining institutional-grade corporate governance with world-class distributed engineering and innovation capabilities. Investment in this round is made into <strong style={{ color: NAVY }}>Soteria AI Technologies Inc.</strong>, and is specifically directed at the commercialization, growth, and global expansion of Global Office, the company's flagship enterprise platform.
+            The structure is deliberate: institutional-grade US governance and a clean, single-entity cap table on top, world-class distributed engineering economics underneath. Capital raised is directed at the commercialization, growth, and global expansion of Global Office, the company's flagship AI-native platform.
           </p>
         </Section>
 
