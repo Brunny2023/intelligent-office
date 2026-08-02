@@ -483,6 +483,80 @@ const Investors = () => {
           </p>
         </Section>
 
+        <Section id="unit-economics" eyebrow="16b — Unit Economics & Capital Efficiency" title="Software margins, metered AI cost, and a defined path from $1.5M to seed-grade evidence.">
+          <p>
+            The most common question on an AI-native platform is whether intelligence makes it expensive to serve. It does not, because inference is metered at the tier and the marginal cost of an additional organization is dominated by cloud primitives that fall with scale. The table below is the quantified answer, drawn cell-for-cell from the{" "}
+            <a href="#downloads" style={{ color: NAVY }} className="underline">Three-Year Financial Model</a> and explained in the{" "}
+            <a href="#downloads" style={{ color: NAVY }} className="underline">Capital Efficiency &amp; Unit Economics Memo</a>. These are stated assumptions for a pre-revenue company, not reported actuals.
+          </p>
+          <div className="not-prose overflow-x-auto -mx-6 md:mx-0 mt-6">
+            <table className="w-full text-sm min-w-[680px]" style={{ borderCollapse: "collapse" }}>
+              <thead>
+                <tr>
+                  {["Question an investor will ask", "Answer", "Basis"].map((h) => (
+                    <th key={h} className="text-left py-3 pr-6 text-[11px] tracking-[0.18em] uppercase" style={{ color: GOLD, borderBottom: `1px solid ${NAVY}`, fontFamily: "'Space Grotesk', sans-serif" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody style={{ color: `${NAVY}CC` }}>
+                {[
+                  ["What is the expected monthly subscription?", "$6–$18 blended per seat / month; $180–$1,400 per organization / month depending on tier and seat count", "Starter, Business and Enterprise tier mix at launch-market pricing"],
+                  ["What is the gross margin?", "62–68% in year one, 78–84% at scale", "Cloud, storage, media and AI inference are the only variable COGS lines"],
+                  ["How much does it cost to serve one customer?", "$34–$58 per organization / month at launch, trending to $18–$26 by year three", "Committed-use cloud discounts, cached retrieval, and model-tier routing"],
+                  ["What is the expected CAC?", "$120–$280 blended (SME); $1,800–$3,200 (enterprise motion, year three)", "Product-led signup plus channel partners and founder-led content"],
+                  ["How long until CAC is recovered?", "12–18 months base case; under 10 months once channel partners mature", "Payback = CAC ÷ (ARPA × gross margin)"],
+                  ["What is the expected LTV?", "$1,050–$2,400 per SME organization", "ARPA × gross margin ÷ monthly churn, at 85–92% logo retention"],
+                  ["Does the business get more profitable as it scales?", "Yes — LTV:CAC ≥ 3.5x by year three, NRR 108–125%", "Fixed platform cost amortizes; expansion revenue arrives with no new CAC"],
+                ].map(([q, a, b]) => (
+                  <tr key={q as string}>
+                    <td className="py-3 pr-6 align-top" style={{ borderBottom: `1px solid ${NAVY}22`, color: NAVY }}>{q}</td>
+                    <td className="py-3 pr-6 align-top" style={{ borderBottom: `1px solid ${NAVY}22` }}>{a}</td>
+                    <td className="py-3 align-top text-[13px]" style={{ borderBottom: `1px solid ${NAVY}22`, color: `${NAVY}99` }}>{b}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <p className="mt-10">
+            <strong style={{ color: NAVY }}>Why the margin improves with scale.</strong> Three structural reasons. First, the platform is already built — this round funds commercialization, not construction, so incremental revenue arrives against a largely fixed cost base. Second, AI cost per action falls as retrieval caching, prompt compression and model-tier routing mature, while price per seat holds. Third, expansion revenue — extra seats, additional modules, AI credit packs, Partner Connect — carries near-zero acquisition cost, so every dollar of expansion lands at close to full contribution margin.
+          </p>
+
+          <p className="mt-8">
+            <strong style={{ color: NAVY }}>What $1.5M converts into.</strong> The ask is not a burn plan; it is a risk-retirement plan. Each allocation below is tied to an outcome an investor can verify at the seed round.
+          </p>
+          <div className="not-prose overflow-x-auto -mx-6 md:mx-0 mt-6">
+            <table className="w-full text-sm min-w-[680px]" style={{ borderCollapse: "collapse" }}>
+              <thead>
+                <tr>
+                  {["Investment", "Allocation", "Expected outcome", "Risk it retires"].map((h) => (
+                    <th key={h} className="text-left py-3 pr-6 text-[11px] tracking-[0.18em] uppercase" style={{ color: GOLD, borderBottom: `1px solid ${NAVY}`, fontFamily: "'Space Grotesk', sans-serif" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody style={{ color: `${NAVY}CC` }}>
+                {[
+                  ["Product refinement", "~30%", "Enterprise-ready platform: SSO, audit depth, SLA tiers", "Product risk"],
+                  ["Go-to-market execution", "~35%", "First cohort of paying organizations across launch markets", "Demand risk"],
+                  ["Sales, success & partnerships", "~15%", "A repeatable acquisition engine with measured CAC and payback", "Distribution risk"],
+                  ["AI & intelligence layer", "~8%", "Higher per-customer value, higher NRR, lower inference cost", "Value-capture risk"],
+                  ["Infrastructure & compliance", "~12%", "Capacity, uptime and certification posture to carry growth", "Scale and trust risk"],
+                ].map(([i, alloc, o, r]) => (
+                  <tr key={i as string}>
+                    <td className="py-3 pr-6 align-top" style={{ borderBottom: `1px solid ${NAVY}22`, color: NAVY }}>{i}</td>
+                    <td className="py-3 pr-6 align-top" style={{ borderBottom: `1px solid ${NAVY}22` }}>{alloc}</td>
+                    <td className="py-3 pr-6 align-top" style={{ borderBottom: `1px solid ${NAVY}22` }}>{o}</td>
+                    <td className="py-3 align-top text-[13px]" style={{ borderBottom: `1px solid ${NAVY}22`, color: `${NAVY}99` }}>{r}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-8">
+            <strong style={{ color: NAVY }}>Capital efficiency, stated plainly.</strong> The platform reached production readiness on a fraction of the capital a comparable enterprise suite would consume, because it was built AI-native from the first commit rather than retrofitted. That is the single most important number in this brief: the expensive half of the journey is already behind the company, and this round buys evidence — revenue, retention, and a measured acquisition engine — rather than construction.
+          </p>
+        </Section>
+
         <Section id="gtm" eyebrow="17 — Go-to-Market" title="Product-led at the base, partner-led at the top, ecosystem-led at scale.">
           <ol className="list-decimal pl-6 space-y-3">
             <li><strong style={{ color: NAVY }}>Product-led entry.</strong> Self-serve signup and org creation. Free tier for teams under 10. Time-to-value under 15 minutes.</li>
