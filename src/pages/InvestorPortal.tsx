@@ -25,6 +25,7 @@ type Investor = {
 type Doc = {
   id: string; category: string; title: string; description: string | null;
   storage_path: string | null; external_url: string | null; sensitivity: string;
+  created_at?: string | null;
 };
 type Step = { id: string; step_key: string; label: string; status: string; completed_at: string | null; sort_order: number };
 type Msg = { id: string; body: string; from_company: boolean; kind: string; created_at: string };
