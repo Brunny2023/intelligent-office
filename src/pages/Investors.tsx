@@ -580,7 +580,7 @@ const Investors = () => {
             Professional headshots and public LinkedIn profiles are released with the team pack in the data room; advisors and board members are disclosed under NDA.
           </p>
           <p>
-            <strong style={{ color: NAVY }}>Wisdom Jonathans — Founder &amp; CEO.</strong> Entrepreneur and AI systems strategist. Founder and CEO of Soteria AI Technologies, developing AI-powered products for business operations, decision-making, capital access, education, and public safety. Publisher of <em>The Strategic Signal</em> — a weekly thought-leadership newsletter read by operators, founders, and investors on strategy, AI, and the future of organizations.
+            <strong style={{ color: NAVY }}>Wisdom Jonathans — Founder &amp; CEO.</strong> Entrepreneur and AI systems strategist. Founder and CEO of Soteria AI Technologies Inc. (Delaware C-Corporation), developing AI-powered products for business operations, decision-making, capital access, education, and public safety. Publisher of <em>The Strategic Signal</em> — a weekly thought-leadership newsletter read by operators, founders, and investors on strategy, AI, and the future of organizations.
           </p>
           <p>
             Prior to Global Office, Wisdom founded and led Elevate AI, working directly with businesses to apply AI and workflow automation to real operational problems — the experience that surfaced the coherence problem this company was built to solve. He has served in governance and executive leadership across technology ventures, education (Vice Chairman, Exceeding Grace International Aviation College), nonprofit organizations, and faith-based institutions.
