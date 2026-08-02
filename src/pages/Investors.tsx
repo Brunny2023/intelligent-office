@@ -296,6 +296,12 @@ const Investors = () => {
           <p>
             The ICP is global-first — SMEs and mid-market organizations across the United States, United Kingdom, European Union, and other developed economies where AI-native operating layers command the strongest willingness to pay, followed by an emerging-markets expansion motion. Traditional software manages functions. Global Office manages organizational intelligence.
           </p>
+          <p>
+            <strong style={{ color: NAVY }}>This is not a SaaS application; it is an AI-native platform company.</strong> A SaaS application digitizes a function and waits for a human to operate it. Global Office runs an intelligence layer that orchestrates operations across functions — it holds the organization's memory in a graph, deliberates over decisions with an AI executive council, dispatches work through an automation engine, and learns from the outcome. The software surface is the interface to that layer, not the product itself. That distinction determines everything an investor cares about: the moat is data and learned organizational context rather than features, expansion is driven by intelligence consumption rather than seat count alone, and the defensible asset compounds with usage instead of depreciating with the next competitor release.
+          </p>
+          <p>
+            The invitation in this brief is therefore to evaluate a category creator rather than another entrant in an existing category. The evidence is deliberately concrete: a production platform you can walk through, live operational metrics read from the running system, an architecture document that shows the graph and cognition substrate, and the unit economics that convert that architecture into margin.
+          </p>
           <p className="mt-8 pl-6 border-l-2 italic text-lg" style={{ borderColor: GOLD, fontFamily: "'Instrument Serif', Georgia, serif" }}>
             The next trillion-dollar software company will not be a better CRM, ERP, or collaboration tool. It will be the intelligence layer those categories become obsolete inside of.
           </p>
