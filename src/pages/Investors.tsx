@@ -100,6 +100,7 @@ const TOC = [
   { id: "positioning", label: "14 — Positioning" },
   { id: "competition", label: "15 — Competition" },
   { id: "model", label: "16 — Business Model" },
+  { id: "unit-economics", label: "16b — Unit Economics" },
   { id: "gtm", label: "17 — Go-to-Market" },
   { id: "moat", label: "18 — Defensibility" },
   { id: "validation", label: "19 — Traction" },
@@ -145,6 +146,11 @@ const Downloads = [
   { name: "Investment Memorandum (DOCX)", status: "ready", phase: "Phase 3", href: "/investor-pack/Global-Office-Investment-Memorandum.docx" },
   { name: "Strategic Business Plan (DOCX)", status: "ready", phase: "Phase 3", href: "/investor-pack/Global-Office-Business-Plan.docx" },
   { name: "Three-Year Financial Model (XLSX)", status: "ready", phase: "Phase 3", href: "/investor-pack/Global-Office-Financial-Model.xlsx" },
+  { name: "Capital Efficiency & Unit Economics Memo (PDF)", status: "ready", phase: "Phase 3", href: "/investor-pack/Global-Office-Capital-Efficiency-and-Unit-Economics-Memo.pdf" },
+  { name: "Go-to-Market Strategy (PDF)", status: "ready", phase: "Phase 3", href: "/investor-pack/Global-Office-Go-To-Market-Strategy.pdf" },
+  { name: "Customer Discovery & Design Partner Commitments (PDF)", status: "ready", phase: "Phase 4", href: "/investor-pack/Global-Office-Customer-Discovery-and-Design-Partners.pdf" },
+  { name: "Traction & Metrics Report (PDF)", status: "ready", phase: "Phase 4", href: "/investor-pack/Global-Office-Traction-and-Metrics-Report.pdf" },
+  { name: "Product Screenshots & Demo Flows (PDF)", status: "ready", phase: "Phase 4", href: "/investor-pack/Global-Office-Product-Screenshots-and-Demo-Flows.pdf" },
   { name: "Market Research Report (DOCX)", status: "ready", phase: "Phase 4", href: "/investor-pack/Global-Office-Market-Research.docx" },
   { name: "Competitive Analysis Report (DOCX)", status: "ready", phase: "Phase 4", href: "/investor-pack/Global-Office-Competitive-Analysis.docx" },
   { name: "Product Strategy & Technical Architecture (DOCX)", status: "ready", phase: "Phase 4", href: "/investor-pack/Global-Office-Product-Strategy.docx" },
@@ -289,6 +295,12 @@ const Investors = () => {
           </p>
           <p>
             The ICP is global-first — SMEs and mid-market organizations across the United States, United Kingdom, European Union, and other developed economies where AI-native operating layers command the strongest willingness to pay, followed by an emerging-markets expansion motion. Traditional software manages functions. Global Office manages organizational intelligence.
+          </p>
+          <p>
+            <strong style={{ color: NAVY }}>This is not a SaaS application; it is an AI-native platform company.</strong> A SaaS application digitizes a function and waits for a human to operate it. Global Office runs an intelligence layer that orchestrates operations across functions — it holds the organization's memory in a graph, deliberates over decisions with an AI executive council, dispatches work through an automation engine, and learns from the outcome. The software surface is the interface to that layer, not the product itself. That distinction determines everything an investor cares about: the moat is data and learned organizational context rather than features, expansion is driven by intelligence consumption rather than seat count alone, and the defensible asset compounds with usage instead of depreciating with the next competitor release.
+          </p>
+          <p>
+            The invitation in this brief is therefore to evaluate a category creator rather than another entrant in an existing category. The evidence is deliberately concrete: a production platform you can walk through, live operational metrics read from the running system, an architecture document that shows the graph and cognition substrate, and the unit economics that convert that architecture into margin.
           </p>
           <p className="mt-8 pl-6 border-l-2 italic text-lg" style={{ borderColor: GOLD, fontFamily: "'Instrument Serif', Georgia, serif" }}>
             The next trillion-dollar software company will not be a better CRM, ERP, or collaboration tool. It will be the intelligence layer those categories become obsolete inside of.
@@ -483,6 +495,80 @@ const Investors = () => {
           </p>
         </Section>
 
+        <Section id="unit-economics" eyebrow="16b — Unit Economics & Capital Efficiency" title="Software margins, metered AI cost, and a defined path from $1.5M to seed-grade evidence.">
+          <p>
+            The most common question on an AI-native platform is whether intelligence makes it expensive to serve. It does not, because inference is metered at the tier and the marginal cost of an additional organization is dominated by cloud primitives that fall with scale. The table below is the quantified answer, drawn cell-for-cell from the{" "}
+            <a href="#downloads" style={{ color: NAVY }} className="underline">Three-Year Financial Model</a> and explained in the{" "}
+            <a href="#downloads" style={{ color: NAVY }} className="underline">Capital Efficiency &amp; Unit Economics Memo</a>. These are stated assumptions for a pre-revenue company, not reported actuals.
+          </p>
+          <div className="not-prose overflow-x-auto -mx-6 md:mx-0 mt-6">
+            <table className="w-full text-sm min-w-[680px]" style={{ borderCollapse: "collapse" }}>
+              <thead>
+                <tr>
+                  {["Question an investor will ask", "Answer", "Basis"].map((h) => (
+                    <th key={h} className="text-left py-3 pr-6 text-[11px] tracking-[0.18em] uppercase" style={{ color: GOLD, borderBottom: `1px solid ${NAVY}`, fontFamily: "'Space Grotesk', sans-serif" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody style={{ color: `${NAVY}CC` }}>
+                {[
+                  ["What is the expected monthly subscription?", "$6–$18 blended per seat / month; $180–$1,400 per organization / month depending on tier and seat count", "Starter, Business and Enterprise tier mix at launch-market pricing"],
+                  ["What is the gross margin?", "62–68% in year one, 78–84% at scale", "Cloud, storage, media and AI inference are the only variable COGS lines"],
+                  ["How much does it cost to serve one customer?", "$34–$58 per organization / month at launch, trending to $18–$26 by year three", "Committed-use cloud discounts, cached retrieval, and model-tier routing"],
+                  ["What is the expected CAC?", "$120–$280 blended (SME); $1,800–$3,200 (enterprise motion, year three)", "Product-led signup plus channel partners and founder-led content"],
+                  ["How long until CAC is recovered?", "12–18 months base case; under 10 months once channel partners mature", "Payback = CAC ÷ (ARPA × gross margin)"],
+                  ["What is the expected LTV?", "$1,050–$2,400 per SME organization", "ARPA × gross margin ÷ monthly churn, at 85–92% logo retention"],
+                  ["Does the business get more profitable as it scales?", "Yes — LTV:CAC ≥ 3.5x by year three, NRR 108–125%", "Fixed platform cost amortizes; expansion revenue arrives with no new CAC"],
+                ].map(([q, a, b]) => (
+                  <tr key={q as string}>
+                    <td className="py-3 pr-6 align-top" style={{ borderBottom: `1px solid ${NAVY}22`, color: NAVY }}>{q}</td>
+                    <td className="py-3 pr-6 align-top" style={{ borderBottom: `1px solid ${NAVY}22` }}>{a}</td>
+                    <td className="py-3 align-top text-[13px]" style={{ borderBottom: `1px solid ${NAVY}22`, color: `${NAVY}99` }}>{b}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <p className="mt-10">
+            <strong style={{ color: NAVY }}>Why the margin improves with scale.</strong> Three structural reasons. First, the platform is already built — this round funds commercialization, not construction, so incremental revenue arrives against a largely fixed cost base. Second, AI cost per action falls as retrieval caching, prompt compression and model-tier routing mature, while price per seat holds. Third, expansion revenue — extra seats, additional modules, AI credit packs, Partner Connect — carries near-zero acquisition cost, so every dollar of expansion lands at close to full contribution margin.
+          </p>
+
+          <p className="mt-8">
+            <strong style={{ color: NAVY }}>What $1.5M converts into.</strong> The ask is not a burn plan; it is a risk-retirement plan. Each allocation below is tied to an outcome an investor can verify at the seed round.
+          </p>
+          <div className="not-prose overflow-x-auto -mx-6 md:mx-0 mt-6">
+            <table className="w-full text-sm min-w-[680px]" style={{ borderCollapse: "collapse" }}>
+              <thead>
+                <tr>
+                  {["Investment", "Allocation", "Expected outcome", "Risk it retires"].map((h) => (
+                    <th key={h} className="text-left py-3 pr-6 text-[11px] tracking-[0.18em] uppercase" style={{ color: GOLD, borderBottom: `1px solid ${NAVY}`, fontFamily: "'Space Grotesk', sans-serif" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody style={{ color: `${NAVY}CC` }}>
+                {[
+                  ["Product refinement", "~30%", "Enterprise-ready platform: SSO, audit depth, SLA tiers", "Product risk"],
+                  ["Go-to-market execution", "~35%", "First cohort of paying organizations across launch markets", "Demand risk"],
+                  ["Sales, success & partnerships", "~15%", "A repeatable acquisition engine with measured CAC and payback", "Distribution risk"],
+                  ["AI & intelligence layer", "~8%", "Higher per-customer value, higher NRR, lower inference cost", "Value-capture risk"],
+                  ["Infrastructure & compliance", "~12%", "Capacity, uptime and certification posture to carry growth", "Scale and trust risk"],
+                ].map(([i, alloc, o, r]) => (
+                  <tr key={i as string}>
+                    <td className="py-3 pr-6 align-top" style={{ borderBottom: `1px solid ${NAVY}22`, color: NAVY }}>{i}</td>
+                    <td className="py-3 pr-6 align-top" style={{ borderBottom: `1px solid ${NAVY}22` }}>{alloc}</td>
+                    <td className="py-3 pr-6 align-top" style={{ borderBottom: `1px solid ${NAVY}22` }}>{o}</td>
+                    <td className="py-3 align-top text-[13px]" style={{ borderBottom: `1px solid ${NAVY}22`, color: `${NAVY}99` }}>{r}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-8">
+            <strong style={{ color: NAVY }}>Capital efficiency, stated plainly.</strong> The platform reached production readiness on a fraction of the capital a comparable enterprise suite would consume, because it was built AI-native from the first commit rather than retrofitted. That is the single most important number in this brief: the expensive half of the journey is already behind the company, and this round buys evidence — revenue, retention, and a measured acquisition engine — rather than construction.
+          </p>
+        </Section>
+
         <Section id="gtm" eyebrow="17 — Go-to-Market" title="Product-led at the base, partner-led at the top, ecosystem-led at scale.">
           <ol className="list-decimal pl-6 space-y-3">
             <li><strong style={{ color: NAVY }}>Product-led entry.</strong> Self-serve signup and org creation. Free tier for teams under 10. Time-to-value under 15 minutes.</li>
@@ -580,7 +666,7 @@ const Investors = () => {
             Professional headshots and public LinkedIn profiles are released with the team pack in the data room; advisors and board members are disclosed under NDA.
           </p>
           <p>
-            <strong style={{ color: NAVY }}>Wisdom Jonathans — Founder &amp; CEO.</strong> Entrepreneur and AI systems strategist. Founder and CEO of Soteria AI Technologies, developing AI-powered products for business operations, decision-making, capital access, education, and public safety. Publisher of <em>The Strategic Signal</em> — a weekly thought-leadership newsletter read by operators, founders, and investors on strategy, AI, and the future of organizations.
+            <strong style={{ color: NAVY }}>Wisdom Jonathans — Founder &amp; CEO.</strong> Entrepreneur and AI systems strategist. Founder and CEO of Soteria AI Technologies Inc. (Delaware C-Corporation), developing AI-powered products for business operations, decision-making, capital access, education, and public safety. Publisher of <em>The Strategic Signal</em> — a weekly thought-leadership newsletter read by operators, founders, and investors on strategy, AI, and the future of organizations.
           </p>
           <p>
             Prior to Global Office, Wisdom founded and led Elevate AI, working directly with businesses to apply AI and workflow automation to real operational problems — the experience that surfaced the coherence problem this company was built to solve. He has served in governance and executive leadership across technology ventures, education (Vice Chairman, Exceeding Grace International Aviation College), nonprofit organizations, and faith-based institutions.
@@ -596,28 +682,28 @@ const Investors = () => {
           </p>
         </Section>
 
-        <Section id="corporate" eyebrow="23b — Corporate Structure" title="Two entities. One global operating model.">
+        <Section id="corporate" eyebrow="23b — Corporate Structure" title="One company. Delaware-domiciled. Global engineering.">
           <p>
-            Soteria AI Technologies operates through two registered corporate entities that function together as a unified global organization with complementary responsibilities.
+            Global Office is the flagship platform of <strong style={{ color: NAVY }}>Soteria AI Technologies Inc.</strong>, a Delaware C-Corporation. The Delaware entity is the single investment, contracting, and intellectual-property holding company; engineering and delivery run from a wholly-controlled Africa engineering center.
           </p>
           <div className="not-prose grid md:grid-cols-2 gap-6 mt-6">
             <div className="border-t pt-4" style={{ borderColor: NAVY }}>
-              <div className="text-xs tracking-[0.22em] uppercase mb-2" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Global corporate entity</div>
+              <div className="text-xs tracking-[0.22em] uppercase mb-2" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Investment &amp; IP entity</div>
               <div className="text-sm mb-2" style={{ color: NAVY, fontFamily: "'Space Grotesk', sans-serif" }}>Soteria AI Technologies Inc.</div>
               <p className="text-sm leading-[1.7]" style={{ color: `${NAVY}CC` }}>
-                Delaware C-Corporation (USA). Responsible for corporate governance, intellectual property stewardship, strategic partnerships, capital formation, institutional readiness, and long-term global expansion.
+                Delaware C-Corporation (USA). Holds all intellectual property, customer contracts, and equity. Responsible for corporate governance, capital formation, strategic partnerships, institutional readiness, and long-term global expansion. All investment in this round is made into this entity.
               </p>
             </div>
             <div className="border-t pt-4" style={{ borderColor: NAVY }}>
-              <div className="text-xs tracking-[0.22em] uppercase mb-2" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Engineering &amp; innovation affiliate</div>
-              <div className="text-sm mb-2" style={{ color: NAVY, fontFamily: "'Space Grotesk', sans-serif" }}>Soteria AI Technologies Limited</div>
+              <div className="text-xs tracking-[0.22em] uppercase mb-2" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Engineering &amp; delivery center</div>
+              <div className="text-sm mb-2" style={{ color: NAVY, fontFamily: "'Space Grotesk', sans-serif" }}>Africa engineering center (Lagos, Nigeria)</div>
               <p className="text-sm leading-[1.7]" style={{ color: `${NAVY}CC` }}>
-                Registered Nigerian company. Contributes AI research, software engineering, product development, and operational execution across the company's technology ecosystem.
+                A controlled local operating vehicle of Soteria AI Technologies Inc. Delivers AI research, software engineering, product development, and operational execution under an intercompany services agreement, with all work product assigned to the Delaware parent.
               </p>
             </div>
           </div>
           <p className="mt-6">
-            This dual-entity structure is a deliberate global operating model — combining institutional-grade corporate governance with world-class distributed engineering and innovation capabilities. Investment in this round is made into <strong style={{ color: NAVY }}>Soteria AI Technologies Inc.</strong>, and is specifically directed at the commercialization, growth, and global expansion of Global Office, the company's flagship enterprise platform.
+            The structure is deliberate: institutional-grade US governance and a clean, single-entity cap table on top, world-class distributed engineering economics underneath. Capital raised is directed at the commercialization, growth, and global expansion of Global Office, the company's flagship AI-native platform.
           </p>
         </Section>
 
@@ -708,7 +794,7 @@ const Investors = () => {
           </p>
           <div className="not-prose grid md:grid-cols-2 gap-6 mt-6">
             {[
-              ["Corporate & governance", "Soteria AI Technologies Inc. (Delaware C-Corporation) is the investment entity, with Soteria AI Technologies Limited (Nigeria) as its engineering and innovation affiliate. Certificate of incorporation, bylaws, board consents, cap table, stock ledger, founder restricted-stock agreements with vesting and 83(b) elections, and an equity incentive pool are maintained as standing records."],
+              ["Corporate & governance", "Soteria AI Technologies Inc. (Delaware C-Corporation) is the sole investment, contracting, and IP-holding entity, operating an Africa engineering center under an intercompany services agreement with full work-product assignment to the parent. Certificate of incorporation, bylaws, board consents, cap table, stock ledger, founder restricted-stock agreements with vesting and 83(b) elections, and an equity incentive pool are maintained as standing records."],
               ["Intellectual property", "All platform source code, models, prompts, designs, and brand assets are owned by the Delaware parent. Every founder, employee, and contractor executes IP assignment and confidentiality agreements as a condition of engagement, including cross-border assignment from the engineering affiliate. Global Office trademark filings are in progress; no third-party IP claims, liens, or encumbrances exist."],
               ["Open source & third-party", "A dependency inventory with license classification is maintained; the stack uses permissive licences only (MIT, Apache-2.0, BSD) with no copyleft obligations in distributed code. Automated dependency and vulnerability scanning runs continuously, and material vendor and infrastructure agreements are catalogued in the data room."],
               ["Data protection & compliance", "Privacy-by-design architecture with database-level tenant isolation, AES-256 at rest, TLS 1.3 in transit, role-scoped access control, and append-only audit and signature ledgers. NDPR and GDPR alignment includes DPA templates, a sub-processor register, retention and deletion policies, breach-notification runbooks, and data-residency options. SOC 2 Type I readiness is scoped in the use of funds."],
@@ -815,8 +901,8 @@ const Investors = () => {
           <div className="flex flex-wrap gap-8 justify-between items-end">
             <div>
               <div className="text-xs tracking-[0.22em] uppercase" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Global Office</div>
-              <div className="mt-2 text-sm" style={{ color: `${NAVY}99` }}>Flagship enterprise platform of Soteria AI Technologies Inc. (Delaware, USA)</div>
-              <div className="mt-1 text-sm" style={{ color: `${NAVY}99` }}>Engineering &amp; innovation affiliate: Soteria AI Technologies Limited</div>
+              <div className="mt-2 text-sm" style={{ color: `${NAVY}99` }}>A product of Soteria AI Technologies Inc. — a Delaware C-Corporation (USA)</div>
+              <div className="mt-1 text-sm" style={{ color: `${NAVY}99` }}>Africa engineering center: Lagos, Nigeria</div>
               <div className="mt-1 text-sm" style={{ color: `${NAVY}99` }}>Founder: Wisdom Jonathans</div>
             </div>
             <div className="text-xs text-right" style={{ color: `${NAVY}77` }}>
