@@ -301,13 +301,53 @@ const InvestorPortal = () => {
 
         <TabsContent value="dataroom" className="mt-8 space-y-10">
           {isPlatformAdmin && <DataRoomUploader onChanged={loadDocs} />}
+
+          {docs.length > 0 && (
+            <div className="border p-4 grid gap-3 md:grid-cols-[1fr_auto_auto_auto] md:items-end" style={{ borderColor: NAVY }}>
+              <div>
+                <label htmlFor="dr-q" className="text-[10px] tracking-[0.2em] uppercase" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Search documents</label>
+                <Input id="dr-q" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by title or description…"
+                  className="mt-1 bg-transparent" style={{ borderColor: `${NAVY}55`, color: NAVY }} />
+              </div>
+              <div>
+                <label htmlFor="dr-cat-f" className="text-[10px] tracking-[0.2em] uppercase" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Category</label>
+                <select id="dr-cat-f" value={catFilter} onChange={(e) => setCatFilter(e.target.value)}
+                  className="mt-1 h-10 w-full md:w-48 border bg-transparent px-3 text-sm" style={{ borderColor: `${NAVY}55`, color: NAVY }}>
+                  <option value="all">All categories</option>
+                  {CATEGORIES.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="dr-date-f" className="text-[10px] tracking-[0.2em] uppercase" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Uploaded</label>
+                <select id="dr-date-f" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)}
+                  className="mt-1 h-10 w-full md:w-40 border bg-transparent px-3 text-sm" style={{ borderColor: `${NAVY}55`, color: NAVY }}>
+                  <option value="all">Any time</option>
+                  <option value="7">Last 7 days</option>
+                  <option value="30">Last 30 days</option>
+                  <option value="90">Last 90 days</option>
+                  <option value="365">Last 12 months</option>
+                </select>
+              </div>
+              <div className="flex items-center gap-3 md:pb-1">
+                <span className="text-xs whitespace-nowrap" style={{ color: `${NAVY}99` }}>{visibleDocs.length} of {docs.length}</span>
+                {filtersActive && (
+                  <button type="button" onClick={() => { setQuery(""); setCatFilter("all"); setDateFilter("all"); }}
+                    className="text-xs underline whitespace-nowrap" style={{ color: NAVY }}>Clear</button>
+                )}
+              </div>
+            </div>
+          )}
+
           {docs.length === 0 && (
             <p className="text-sm" style={{ color: `${NAVY}99` }}>
               Documents are being prepared for your grant. You will be notified as folders are released.
             </p>
           )}
+          {docs.length > 0 && visibleDocs.length === 0 && (
+            <p className="text-sm" style={{ color: `${NAVY}99` }}>No documents match these filters.</p>
+          )}
           {CATEGORIES.map((c) => {
-            const list = docs.filter((d) => d.category === c.key);
+            const list = visibleDocs.filter((d) => d.category === c.key);
             if (list.length === 0) return null;
             return (
               <div key={c.key}>
@@ -318,6 +358,11 @@ const InvestorPortal = () => {
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 text-sm"><FileText className="w-3.5 h-3.5" style={{ color: GOLD }} />{d.title}</div>
                         {d.description && <p className="text-xs mt-1" style={{ color: `${NAVY}99` }}>{d.description}</p>}
+                        {d.created_at && (
+                          <p className="text-[11px] mt-1" style={{ color: `${NAVY}77` }}>
+                            Uploaded {new Date(d.created_at).toLocaleDateString()}
+                          </p>
+                        )}
                       </div>
                       <button onClick={() => openDoc(d)}
                         className="shrink-0 inline-flex items-center gap-1 text-[10px] tracking-[0.2em] uppercase px-2 py-1 border"
