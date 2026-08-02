@@ -24,7 +24,7 @@ const Footer = () => (
             © 2026 Soteria AI Technologies. All rights reserved.
           </p>
           <p className="text-xs text-primary-foreground/25">
-            Powered by Soteria AI Technologies Limited.
+            A product of Soteria AI Technologies Inc. — a Delaware C-Corporation.
           </p>
         </div>
       </div>
