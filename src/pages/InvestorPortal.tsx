@@ -129,6 +129,9 @@ const InvestorPortal = () => {
   const [kind, setKind] = useState<"message" | "document_request" | "question">("message");
   const [requestOpen, setRequestOpen] = useState(false);
   const [meetingOpen, setMeetingOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [catFilter, setCatFilter] = useState("all");
+  const [dateFilter, setDateFilter] = useState("all");
 
   const loadInvestor = useCallback(async () => {
     if (!user) { setLoading(false); return; }
