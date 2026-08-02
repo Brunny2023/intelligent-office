@@ -257,6 +257,20 @@ const InvestorPortal = () => {
 
   const done = steps.filter((s) => s.status === "complete").length;
 
+  const DATE_WINDOWS: Record<string, number> = { "7": 7, "30": 30, "90": 90, "365": 365 };
+  const visibleDocs = docs.filter((d) => {
+    const q = query.trim().toLowerCase();
+    if (q && !(`${d.title} ${d.description ?? ""}`.toLowerCase().includes(q))) return false;
+    if (catFilter !== "all" && d.category !== catFilter) return false;
+    const days = DATE_WINDOWS[dateFilter];
+    if (days) {
+      if (!d.created_at) return false;
+      if (Date.now() - new Date(d.created_at).getTime() > days * 86400000) return false;
+    }
+    return true;
+  });
+  const filtersActive = query.trim() !== "" || catFilter !== "all" || dateFilter !== "all";
+
   return (
     <Shell>
       <div className="flex flex-wrap justify-between items-end gap-4 mb-8">
