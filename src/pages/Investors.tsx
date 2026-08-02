@@ -815,8 +815,8 @@ const Investors = () => {
           <div className="flex flex-wrap gap-8 justify-between items-end">
             <div>
               <div className="text-xs tracking-[0.22em] uppercase" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Global Office</div>
-              <div className="mt-2 text-sm" style={{ color: `${NAVY}99` }}>Flagship enterprise platform of Soteria AI Technologies Inc. (Delaware, USA)</div>
-              <div className="mt-1 text-sm" style={{ color: `${NAVY}99` }}>Engineering &amp; innovation affiliate: Soteria AI Technologies Limited</div>
+              <div className="mt-2 text-sm" style={{ color: `${NAVY}99` }}>A product of Soteria AI Technologies Inc. — a Delaware C-Corporation (USA)</div>
+              <div className="mt-1 text-sm" style={{ color: `${NAVY}99` }}>Africa engineering center: Lagos, Nigeria</div>
               <div className="mt-1 text-sm" style={{ color: `${NAVY}99` }}>Founder: Wisdom Jonathans</div>
             </div>
             <div className="text-xs text-right" style={{ color: `${NAVY}77` }}>
