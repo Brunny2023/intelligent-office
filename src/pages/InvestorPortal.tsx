@@ -25,7 +25,7 @@ type Investor = {
 type Doc = {
   id: string; category: string; title: string; description: string | null;
   storage_path: string | null; external_url: string | null; sensitivity: string;
-  created_at?: string | null;
+  created_at?: string | null; admin_only?: boolean | null;
 };
 type Step = { id: string; step_key: string; label: string; status: string; completed_at: string | null; sort_order: number };
 type Msg = { id: string; body: string; from_company: boolean; kind: string; created_at: string };
@@ -357,6 +357,12 @@ const InvestorPortal = () => {
                     <div key={d.id} className="flex items-center justify-between gap-4 px-4 py-3" style={{ borderTop: `1px solid ${NAVY}22` }}>
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 text-sm"><FileText className="w-3.5 h-3.5" style={{ color: GOLD }} />{d.title}</div>
+                        {d.admin_only && (
+                          <span className="inline-flex items-center gap-1 mt-1 text-[9px] tracking-[0.18em] uppercase px-1.5 py-0.5 border"
+                            style={{ borderColor: NAVY, color: NAVY, fontFamily: "'Space Grotesk', sans-serif" }}>
+                            <ShieldCheck className="w-2.5 h-2.5" /> Admin only
+                          </span>
+                        )}
                         {d.description && <p className="text-xs mt-1" style={{ color: `${NAVY}99` }}>{d.description}</p>}
                         {d.created_at && (
                           <p className="text-[11px] mt-1" style={{ color: `${NAVY}77` }}>

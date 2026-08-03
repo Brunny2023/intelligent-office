@@ -895,6 +895,7 @@ export type Database = {
       }
       data_room_documents: {
         Row: {
+          admin_only: boolean
           category: string
           created_at: string
           description: string | null
@@ -908,6 +909,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          admin_only?: boolean
           category: string
           created_at?: string
           description?: string | null
@@ -921,6 +923,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          admin_only?: boolean
           category?: string
           created_at?: string
           description?: string | null

@@ -24,7 +24,7 @@ export const InvestorBrief = () => {
     { k: "Market", v: "~$1.05T global enterprise software spend. ~$180B unified-suite SAM. Developed-market lead motion." },
     { k: "Why Now", v: "Generative AI has crossed utility; SaaS unbundling has run its course; the rebundling window is open." },
     { k: "Moat", v: "Graph-centric architecture that compounds with every user action. Incumbents cannot retrofit it." },
-    { k: "Model", v: "Per-seat SaaS, tiered, with metered AI credits. 78–84% gross margin at scale, 108–125% NRR target." },
+    { k: "Model", v: "Per-seat SaaS, tiered, with metered AI credits. 84–88% gross margin at scale, 115–135% NRR target." },
     { k: "Ask", v: "$1.5M pre-seed. 18–24 month runway. Design partners → PMF → Seed-ready close of period." },
     { k: "Signal", v: "Pre-revenue by design. Product depth, architectural review, and advisor conviction anchor the diligence story." },
     { k: "Milestones", v: "Commercial launch, reference customers, repeatable acquisition, expansion-ready platform." },
