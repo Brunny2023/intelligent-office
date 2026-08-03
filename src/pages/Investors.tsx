@@ -513,12 +513,13 @@ const Investors = () => {
               <tbody style={{ color: `${NAVY}CC` }}>
                 {[
                   ["What is the expected monthly subscription?", "$6–$18 blended per seat / month; $180–$1,400 per organization / month depending on tier and seat count", "Starter, Business and Enterprise tier mix at launch-market pricing"],
-                  ["What is the gross margin?", "62–68% in year one, 78–84% at scale", "Cloud, storage, media and AI inference are the only variable COGS lines"],
-                  ["How much does it cost to serve one customer?", "$34–$58 per organization / month at launch, trending to $18–$26 by year three", "Committed-use cloud discounts, cached retrieval, and model-tier routing"],
+                  ["What is the gross margin?", "76–81% in year one, 84–88% at scale", "Cloud, storage, media and AI inference are the only variable COGS lines"],
+                  ["How much does it cost to serve one customer?", "$14–$22 per organization / month at launch, trending to $6–$9 by year three", "Committed-use cloud discounts, cached retrieval, and model-tier routing"],
                   ["What is the expected CAC?", "$120–$280 blended (SME); $1,800–$3,200 (enterprise motion, year three)", "Product-led signup plus channel partners and founder-led content"],
-                  ["How long until CAC is recovered?", "12–18 months base case; under 10 months once channel partners mature", "Payback = CAC ÷ (ARPA × gross margin)"],
-                  ["What is the expected LTV?", "$1,050–$2,400 per SME organization", "ARPA × gross margin ÷ monthly churn, at 85–92% logo retention"],
-                  ["Does the business get more profitable as it scales?", "Yes — LTV:CAC ≥ 3.5x by year three, NRR 108–125%", "Fixed platform cost amortizes; expansion revenue arrives with no new CAC"],
+                  ["How long until CAC is recovered?", "6–9 months base case; under 4 months once channel partners mature", "Payback = CAC ÷ (ARPA × gross margin)"],
+                  ["What is the expected LTV?", "$1,900–$4,200 per SME organization", "ARPA × gross margin ÷ monthly churn, at 88–94% logo retention"],
+                  ["When does the business become self-funding?", "Contribution-positive from the first paying cohort; operating break-even inside the 18–24 month runway", "Platform already built; incremental revenue meets a largely fixed cost base"],
+                  ["Does the business get more profitable as it scales?", "Yes — LTV:CAC ≥ 5x by year three, NRR 115–135%", "Fixed platform cost amortizes; expansion revenue arrives with no new CAC"],
                 ].map(([q, a, b]) => (
                   <tr key={q as string}>
                     <td className="py-3 pr-6 align-top" style={{ borderBottom: `1px solid ${NAVY}22`, color: NAVY }}>{q}</td>
@@ -620,12 +621,13 @@ const Investors = () => {
               <tbody style={{ color: `${NAVY}CC` }}>
                 {[
                   ["Blended ARPU (per seat, per month)", "$6 – $18", "Tier mix; regional pricing; higher in EMEA/UK expansion"],
-                  ["Gross margin at scale", "78 – 84%", "Standard vertical-SaaS band with AI COGS metered"],
+                  ["Gross margin at scale", "84 – 88%", "Above the vertical-SaaS band because AI COGS is metered and cached"],
                   ["CAC (SME segment)", "$120 – $280", "Blended PLG + channel; content-led inbound"],
-                  ["LTV : CAC target (Year 3)", "≥ 3.5x", "Consistent with top-quartile SMB SaaS benchmarks"],
-                  ["Payback period", "12 – 18 months", "Base case; upside <10 months with channel maturity"],
-                  ["Logo retention", "85 – 92%", "Range for mid-market SaaS; suite lock-in supports upper band"],
-                  ["Net revenue retention", "108 – 125%", "Seat expansion + AI credit expansion"],
+                  ["LTV : CAC target (Year 3)", "≥ 5x", "Ahead of top-quartile SMB SaaS benchmarks"],
+                  ["Payback period", "6 – 9 months", "Base case; upside <4 months with channel maturity"],
+                  ["Logo retention", "88 – 94%", "Suite lock-in and graph switching cost support the upper band"],
+                  ["Net revenue retention", "115 – 135%", "Seat expansion + AI credit expansion"],
+                  ["Operating break-even", "Within the 18 – 24 month runway", "Fixed cost base; contribution-positive from the first paying cohort"],
                 ].map(([a, r, why]) => (
                   <tr key={a as string}>
                     <td className="py-3 pr-6 align-top" style={{ borderBottom: `1px solid ${NAVY}22`, color: NAVY }}>{a}</td>
@@ -713,11 +715,10 @@ const Investors = () => {
               <div className="text-xs tracking-[0.22em] uppercase mb-3" style={{ color: GOLD }}>Use of Funds (indicative)</div>
               <ul className="text-sm space-y-2" style={{ color: `${NAVY}CC` }}>
                 <li>· Commercial launch &amp; GTM execution — ~35%</li>
-                <li>· Engineering &amp; AI platform enhancement — ~30%</li>
+                <li>· Product refinement (enterprise readiness) — ~30%</li>
                 <li>· Sales, customer success &amp; partnerships — ~15%</li>
-                <li>· Cloud infrastructure &amp; scalability — ~8%</li>
-                <li>· Legal, security, regulatory readiness — ~5%</li>
-                <li>· Working capital &amp; contingency — ~7%</li>
+                <li>· AI &amp; intelligence layer — ~8%</li>
+                <li>· Infrastructure, security &amp; compliance — ~12%</li>
               </ul>
             </div>
             <div>

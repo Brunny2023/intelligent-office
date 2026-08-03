@@ -85,7 +85,7 @@ const VerifiedMetrics = () => {
           { label: "ARR", value: "$0", note: "First revenue targeted post-close", source: "internal" },
           { label: "Monthly growth", value: "n/a", note: "Reported from first billing cohort", source: "internal" },
           { label: "Retention / churn", value: "n/a", note: "Measured from first paying cohort", source: "internal" },
-          { label: "NRR target", value: "108–125%", note: "Modelled: seat + AI credit expansion", source: "internal" },
+          { label: "NRR target", value: "115–135%", note: "Modelled: seat + AI credit expansion", source: "internal" },
           { label: "Expansion revenue", value: "Metered AI", note: "Credit consumption above tier allowance", source: "internal" },
         ]} />
 

@@ -6,7 +6,7 @@ import { Upload, Trash2, Check, X } from "lucide-react";
 import { DATA_ROOM_CATEGORIES, categoryLabel } from "./dataRoomCategories";
 import DataRoomChecklist from "./DataRoomChecklist";
 
-type DocRow = { id: string; category: string; title: string; storage_path: string | null; is_active: boolean };
+type DocRow = { id: string; category: string; title: string; storage_path: string | null; is_active: boolean; admin_only: boolean };
 
 /** Admin-only uploader rendered inside the investor portal data room. */
 const DataRoomUploader = ({ onChanged }: { onChanged?: () => void }) => {
@@ -14,13 +14,14 @@ const DataRoomUploader = ({ onChanged }: { onChanged?: () => void }) => {
   const [category, setCategory] = useState(DATA_ROOM_CATEGORIES[0].key);
   const [title, setTitle] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [adminOnly, setAdminOnly] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const { data } = await supabase
       .from("data_room_documents")
-      .select("id, category, title, storage_path, is_active")
+      .select("id, category, title, storage_path, is_active, admin_only")
       .order("category").order("sort_order");
     setDocs((data ?? []) as DocRow[]);
   }, []);
@@ -33,16 +34,16 @@ const DataRoomUploader = ({ onChanged }: { onChanged?: () => void }) => {
     setBusy(true); setError(null);
     try {
       const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-      const path = `${category}/${Date.now()}-${safe}`;
+      const path = `${adminOnly ? "admin" : category}/${Date.now()}-${safe}`;
       const { error: upErr } = await supabase.storage.from("data-room")
         .upload(path, file, { contentType: file.type || "application/octet-stream", upsert: false });
       if (upErr) throw upErr;
       const { error: insErr } = await supabase.from("data_room_documents").insert({
-        category, title: title.trim(), storage_path: path,
+        category, title: title.trim(), storage_path: path, admin_only: adminOnly,
         sort_order: docs.filter((d) => d.category === category).length,
       });
       if (insErr) throw insErr;
-      setTitle(""); setFile(null);
+      setTitle(""); setFile(null); setAdminOnly(false);
       (document.getElementById("dr-file") as HTMLInputElement | null)?.value &&
         ((document.getElementById("dr-file") as HTMLInputElement).value = "");
       await load();
@@ -90,6 +91,10 @@ const DataRoomUploader = ({ onChanged }: { onChanged?: () => void }) => {
           <Upload className="w-3.5 h-3.5 mr-2" />{busy ? "Uploading…" : "Upload"}
         </Button>
       </form>
+      <label className="flex items-center gap-2 text-xs text-muted-foreground">
+        <input type="checkbox" checked={adminOnly} onChange={(e) => setAdminOnly(e.target.checked)} className="accent-current" />
+        Admin only — hidden from approved investors, visible to platform administrators
+      </label>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <div className="max-h-64 overflow-y-auto divide-y divide-border">
         {docs.length === 0 && <p className="text-sm text-muted-foreground">No documents yet.</p>}
@@ -97,7 +102,9 @@ const DataRoomUploader = ({ onChanged }: { onChanged?: () => void }) => {
           <div key={d.id} className="flex items-center justify-between gap-3 py-2">
             <div className="min-w-0">
               <p className="text-sm truncate">{d.title}</p>
-              <p className="text-xs text-muted-foreground">{categoryLabel(d.category)}{d.is_active ? "" : " · hidden"}</p>
+              <p className="text-xs text-muted-foreground">
+                {categoryLabel(d.category)}{d.admin_only ? " · admin only" : ""}{d.is_active ? "" : " · hidden"}
+              </p>
             </div>
             <div className="flex items-center gap-1 shrink-0">
               <Button size="sm" variant="ghost" onClick={() => toggle(d)} aria-label="Toggle visibility">
