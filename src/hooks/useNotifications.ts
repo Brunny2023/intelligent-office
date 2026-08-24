@@ -28,6 +28,11 @@ export const useNotifications = () => {
   const [loading, setLoading] = useState(true);
   const [eventPrefs, setEventPrefs] = useState<Record<string, { in_app: boolean; realtime: boolean }>>({});
   const [snoozes, setSnoozes] = useState<Record<string, string | null>>({});
+  // Refs keep the realtime handler reading fresh prefs without re-subscribing.
+  const prefsRef = useRef(eventPrefs);
+  const snoozesRef = useRef(snoozes);
+  prefsRef.current = eventPrefs;
+  snoozesRef.current = snoozes;
 
   const fetchNotifications = useCallback(async () => {
     if (!user) return;
@@ -65,9 +70,9 @@ export const useNotifications = () => {
       }, (payload) => {
         const n = payload.new as Notification;
         const key = typeToPrefKey(n.type);
-        const pref = key ? eventPrefs[key] : undefined;
+        const pref = key ? prefsRef.current[key] : undefined;
         const inAppOn = !key || pref?.in_app !== false;
-        const snoozeUntil = key ? snoozes[key] : null;
+        const snoozeUntil = key ? snoozesRef.current[key] : null;
         const isSnoozed = !!snoozeUntil && new Date(snoozeUntil) > new Date();
         const realtimeOn = (!key || pref?.realtime !== false) && !isSnoozed;
         if (inAppOn) {
@@ -81,7 +86,8 @@ export const useNotifications = () => {
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, [user, fetchNotifications, eventPrefs, snoozes]);
+  }, [user, fetchNotifications]);
+
 
   const markAsRead = async (id: string) => {
     await supabase.from("notifications").update({ is_read: true }).eq("id", id);
