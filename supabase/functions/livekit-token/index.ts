@@ -54,13 +54,16 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Missing auth' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
+    // Use the service-role client for validation so the function never depends on a
+    // publishable/anon key being present in the runtime env ("supabaseKey is required").
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_PUBLISHABLE_KEY')!,
-      { global: { headers: { Authorization: authHeader } } }
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+      { auth: { persistSession: false } }
     );
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const jwt = authHeader.replace(/^Bearer\s+/i, '');
+    const { data: { user }, error: authError } = await supabase.auth.getUser(jwt);
     if (authError || !user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
@@ -70,7 +73,7 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: 'roomName required' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', user.id).single();
+    const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', user.id).maybeSingle();
     const participantName = profile?.full_name || user.email || 'Participant';
 
     const apiKey = Deno.env.get('LIVEKIT_API_KEY');
