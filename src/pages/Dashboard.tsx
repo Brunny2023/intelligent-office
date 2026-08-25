@@ -52,6 +52,7 @@ const Dashboard = () => {
   const { role } = useUserRole();
   const visibleModules = modules.filter((m) => isPathAllowed(role, m.path));
   const [stats, setStats] = useState<Record<string, string>>({ team: "—", tasks: "—", messages: "—", health: "—" });
+  const [statsLoading, setStatsLoading] = useState(true);
 
   useEffect(() => {
     if (!org?.id) return;
