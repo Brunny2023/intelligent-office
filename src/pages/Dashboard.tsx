@@ -52,6 +52,7 @@ const Dashboard = () => {
   const { role } = useUserRole();
   const visibleModules = modules.filter((m) => isPathAllowed(role, m.path));
   const [stats, setStats] = useState<Record<string, string>>({ team: "—", tasks: "—", messages: "—", health: "—" });
+  const [statsLoading, setStatsLoading] = useState(true);
 
   useEffect(() => {
     if (!org?.id) return;
@@ -90,6 +91,7 @@ const Dashboard = () => {
         messages: String(messagesCount),
         health: totalCount + kpis.length + teamCount === 0 ? "—" : `${health}%`,
       });
+      setStatsLoading(false);
     })();
   }, [org?.id]);
 
@@ -170,10 +172,14 @@ const Dashboard = () => {
                 key={stat.label}
                 index={i}
                 label={stat.label}
-                value={stats[stat.key]}
+                value={
+                  statsLoading
+                    ? <span className="block h-7 w-14 rounded-md bg-muted animate-pulse" aria-label="Loading" />
+                    : stats[stat.key]
+                }
                 icon={stat.icon}
                 tone={stat.tone}
-                progress={stat.key === "health" && stats.health.endsWith("%") ? parseInt(stats.health, 10) : undefined}
+                progress={!statsLoading && stat.key === "health" && stats.health.endsWith("%") ? parseInt(stats.health, 10) : undefined}
               />
             ))}
           </div>
