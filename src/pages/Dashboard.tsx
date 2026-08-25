@@ -91,6 +91,7 @@ const Dashboard = () => {
         messages: String(messagesCount),
         health: totalCount + kpis.length + teamCount === 0 ? "—" : `${health}%`,
       });
+      setStatsLoading(false);
     })();
   }, [org?.id]);
 
