@@ -48,14 +48,23 @@ const ChannelList = ({ onSelectChannel, selectedChannelId }: ChannelListProps) =
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !org || !form.name.trim()) return;
+    if (!user || !form.name.trim()) return;
+    if (!org) {
+      toast.error("Your account isn't linked to an organization yet. Complete onboarding first.");
+      return;
+    }
+    const name = form.name.trim().toLowerCase().replace(/\s+/g, "-");
+    if (channels.some((c) => c.name === name)) {
+      toast.error(`A channel named "${name}" already exists`);
+      return;
+    }
     setCreating(true);
 
     const { data, error } = await supabase
       .from("channels")
       .insert({
         organization_id: org.id,
-        name: form.name.trim().toLowerCase().replace(/\s+/g, "-"),
+        name,
         description: form.description || null,
         channel_type: "public" as any,
         created_by: user.id,
@@ -64,13 +73,12 @@ const ChannelList = ({ onSelectChannel, selectedChannelId }: ChannelListProps) =
       .single();
 
     if (error) {
-      toast.error("Failed to create channel");
+      toast.error(error.message || "Failed to create channel");
     } else {
-      // Auto-join the channel
-      await supabase.from("channel_members").insert({
-        channel_id: data.id,
-        user_id: user.id,
-      });
+      // Auto-join the channel (ignore duplicates)
+      await supabase
+        .from("channel_members")
+        .upsert({ channel_id: data.id, user_id: user.id }, { onConflict: "channel_id,user_id", ignoreDuplicates: true });
       toast.success("Channel created!");
       setForm({ name: "", description: "" });
       setDialogOpen(false);
@@ -81,11 +89,9 @@ const ChannelList = ({ onSelectChannel, selectedChannelId }: ChannelListProps) =
 
   const joinChannel = async (channelId: string) => {
     if (!user) return;
-    await supabase.from("channel_members").insert({
-      channel_id: channelId,
-      user_id: user.id,
-    });
-    toast.success("Joined channel!");
+    await supabase
+      .from("channel_members")
+      .upsert({ channel_id: channelId, user_id: user.id }, { onConflict: "channel_id,user_id", ignoreDuplicates: true });
   };
 
   const channelIcon = (type: string) => {
