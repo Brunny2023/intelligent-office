@@ -5,5 +5,7 @@ project_id = "sydqmpordfbtjmxuxjkc"
     verify_jwt = false
   [functions.livekit-egress-webhook]
     verify_jwt = false
+  [functions.book-investor-meeting]
+    verify_jwt = false
   [functions.process-email-queue]
     verify_jwt = true
