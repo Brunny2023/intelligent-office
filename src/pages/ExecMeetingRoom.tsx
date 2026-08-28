@@ -28,6 +28,8 @@ export default function ExecMeetingRoom() {
   const [token, setToken] = useState<string | null>(null);
   const [serverUrl, setServerUrl] = useState<string | null>(null);
   const [meetingId, setMeetingId] = useState<string | null>(null);
+  const [shortCode, setShortCode] = useState<string | null>(code || null);
+
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
