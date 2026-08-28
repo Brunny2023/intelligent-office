@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { CheckCircle2, Copy } from "lucide-react";
 import { useInvestorAnalytics } from "@/hooks/useInvestorAnalytics";
+import { copyToClipboard } from "@/lib/clipboard";
 
 export default function BookMeetingDialog({
   open,
@@ -58,7 +59,9 @@ export default function BookMeetingDialog({
         throw new Error("The meeting was not created. Please try again.");
       }
 
-      const url = `${window.location.origin}/exec-room/${data.roomName}?t=${data.accessToken}&mode=investor`;
+      const url = data.shortCode
+        ? `${window.location.origin}/m/${data.shortCode}`
+        : `${window.location.origin}/exec-room/${data.roomName}?t=${data.accessToken}&mode=investor`;
       setJoinUrl(url);
       track("meeting_booked", { name, email, org, when }, data.id);
     } catch (err) {
@@ -174,7 +177,7 @@ export default function BookMeetingDialog({
                 <Button
                   variant="outline"
                   className="flex-1"
-                  onClick={() => navigator.clipboard.writeText(joinUrl)}
+                  onClick={() => copyToClipboard(joinUrl, "Meeting link copied")}
                 >
                   <Copy className="w-4 h-4 mr-2" /> Copy link
                 </Button>

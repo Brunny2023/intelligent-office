@@ -13,7 +13,7 @@ async function createLiveKitToken(apiKey: string, apiSecret: string, roomName: s
     sub: participantIdentity,
     name: participantName,
     nbf: now,
-    exp: now + 60 * 60 * 4,
+    exp: now + 60 * 60 * 12,
     iat: now,
     video: { roomJoin: true, room: roomName, canPublish: true, canSubscribe: true, canPublishData: true },
   };
@@ -29,15 +29,18 @@ async function createLiveKitToken(apiKey: string, apiSecret: string, roomName: s
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    const { accessToken } = await req.json();
-    if (!accessToken) return json({ error: "accessToken required" }, 400);
+    const body = await req.json();
+    const accessToken: string | undefined = body?.accessToken;
+    const code: string | undefined = body?.code;
+    if (!accessToken && !code) return json({ error: "accessToken required" }, 400);
 
     const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-    const { data: meeting, error } = await admin
+    const query = admin
       .from("investor_meetings")
-      .select("id, room_name, investor_name, status")
-      .eq("access_token", accessToken)
-      .maybeSingle();
+      .select("id, room_name, investor_name, status");
+    const { data: meeting, error } = accessToken
+      ? await query.eq("access_token", accessToken).maybeSingle()
+      : await query.eq("short_code", code).maybeSingle();
 
     if (error || !meeting) return json({ error: "invalid_token" }, 404);
     if (meeting.status === "cancelled") return json({ error: "cancelled" }, 403);
@@ -47,7 +50,9 @@ Deno.serve(async (req) => {
     const livekitUrl = Deno.env.get("LIVEKIT_URL");
     if (!apiKey || !apiSecret || !livekitUrl) return json({ error: "livekit_not_configured" }, 500);
 
-    const identity = `guest-${meeting.id}`;
+    // Unique per connection so a reconnect (or a second device) never evicts
+    // the participant already in the room via an identity collision.
+    const identity = `guest-${meeting.id}-${crypto.randomUUID().slice(0, 8)}`;
     const token = await createLiveKitToken(apiKey, apiSecret, meeting.room_name, meeting.investor_name, identity);
 
     await admin.from("investor_analytics").insert({

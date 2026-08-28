@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { usePlatformAdmin } from "@/hooks/usePlatformAdmin";
 import { useInvestorAnalytics } from "@/hooks/useInvestorAnalytics";
 import { Loader2 } from "lucide-react";
+import { copyToClipboard } from "@/lib/clipboard";
 
 const MeetingRoomView = lazy(() => import("@/components/meetings/MeetingRoomView"));
 const FounderCopilotPanel = lazy(() => import("@/components/execintel/FounderCopilotPanel"));
@@ -15,19 +16,21 @@ const FounderCopilotPanel = lazy(() => import("@/components/execintel/FounderCop
  * - Founder mode (default): requires signed-in platform admin; loads the private Copilot panel.
  */
 export default function ExecMeetingRoom() {
-  const { roomName = "" } = useParams();
+  const { roomName = "", code = "" } = useParams();
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { isPlatformAdmin, loading: adminLoading } = usePlatformAdmin();
   const { track } = useInvestorAnalytics();
 
-  const mode = params.get("mode") === "investor" ? "investor" : "founder";
+  const mode = code || params.get("mode") === "investor" ? "investor" : "founder";
   const accessToken = params.get("t");
 
   const [token, setToken] = useState<string | null>(null);
   const [serverUrl, setServerUrl] = useState<string | null>(null);
   const [meetingId, setMeetingId] = useState<string | null>(null);
+  const [shortCode, setShortCode] = useState<string | null>(code || null);
+
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -41,15 +44,16 @@ export default function ExecMeetingRoom() {
     const run = async () => {
       try {
         if (mode === "investor") {
-          if (!accessToken) { setError("Missing meeting access token."); setLoading(false); return; }
+          if (!accessToken && !code) { setError("Missing meeting access token."); setLoading(false); return; }
           const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/livekit-guest-token`, {
             method: "POST",
             headers: { "Content-Type": "application/json", apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
-            body: JSON.stringify({ accessToken }),
+            body: JSON.stringify(code ? { code } : { accessToken }),
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.error || "Could not join meeting");
           setToken(data.token); setServerUrl(data.url); setMeetingId(data.meetingId);
+
         } else {
           const { data: session } = await supabase.auth.getSession();
           const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/livekit-token`, {
@@ -64,8 +68,10 @@ export default function ExecMeetingRoom() {
           const data = await res.json();
           if (!res.ok) throw new Error(data.error || "Could not join meeting");
           setToken(data.token); setServerUrl(data.url);
-          const { data: meeting } = await supabase.from("investor_meetings").select("id").eq("room_name", roomName).maybeSingle();
+          const { data: meeting } = await supabase.from("investor_meetings").select("id, short_code").eq("room_name", roomName).maybeSingle();
           setMeetingId(meeting?.id ?? null);
+          setShortCode((meeting as { short_code?: string } | null)?.short_code ?? null);
+
           track("meeting_joined", { role: "founder" }, meeting?.id ?? null);
         }
       } catch (err) {
@@ -121,8 +127,10 @@ export default function ExecMeetingRoom() {
           onStopRecording={() => {}}
           onLeave={() => navigate(mode === "founder" ? "/dashboard" : "/investors")}
           onCopyInvite={() => {
-            const url = `${window.location.origin}/exec-room/${roomName}?t=${accessToken ?? ""}&mode=investor`;
-            navigator.clipboard.writeText(url);
+            const url = shortCode
+              ? `${window.location.origin}/m/${shortCode}`
+              : `${window.location.origin}/exec-room/${roomName}?t=${accessToken ?? ""}&mode=investor`;
+            copyToClipboard(url, "Meeting link copied");
           }}
         />
         {mode === "founder" && isPlatformAdmin && (

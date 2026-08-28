@@ -1,7 +1,7 @@
-import { useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { LiveKitRoom, VideoConference, RoomAudioRenderer, useRoomContext } from "@livekit/components-react";
 import { motion } from "framer-motion";
-import { Circle, Square, PhoneOff, Link as LinkIcon, Cloud } from "lucide-react";
+import { Circle, Square, PhoneOff, Link as LinkIcon, Cloud, RotateCw } from "lucide-react";
 import type { Room } from "livekit-client";
 
 interface Props {
@@ -65,13 +65,36 @@ function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvi
 }
 
 export default function MeetingRoomView({ token, serverUrl, recording, egressActive, onStartRecording, onStopRecording, onLeave, onCopyInvite }: Props) {
+  // The meeting stays open until a participant explicitly leaves. A dropped
+  // connection (network blip, duplicate mount, server restart) shows a rejoin
+  // prompt instead of silently kicking the user back to the previous page.
+  const [connectKey, setConnectKey] = useState(0);
+  const [dropped, setDropped] = useState(false);
+  const leavingRef = useRef(false);
+
+  const handleLeave = useCallback(() => {
+    leavingRef.current = true;
+    return onLeave();
+  }, [onLeave]);
+
+  const handleDisconnected = useCallback(() => {
+    if (leavingRef.current) return;
+    setDropped(true);
+  }, []);
+
+  const rejoin = useCallback(() => {
+    setDropped(false);
+    setConnectKey((k) => k + 1);
+  }, []);
+
   return (
     <div className="relative h-[calc(100vh-4rem)]">
       <LiveKitRoom
+        key={connectKey}
         token={token}
         serverUrl={serverUrl}
-        connect={true}
-        onDisconnected={onLeave}
+        connect={!dropped}
+        onDisconnected={handleDisconnected}
         data-lk-theme="default"
         style={{ height: "100%" }}
       >
@@ -82,10 +105,29 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
           egressActive={egressActive}
           onStart={onStartRecording}
           onStop={onStopRecording}
-          onLeave={onLeave}
+          onLeave={handleLeave}
           onCopyInvite={onCopyInvite}
         />
       </LiveKitRoom>
+
+      {dropped && (
+        <div className="absolute inset-0 z-[60] flex items-center justify-center bg-background/90 backdrop-blur">
+          <div className="text-center max-w-sm px-6">
+            <h2 className="text-lg font-semibold mb-2">Connection interrupted</h2>
+            <p className="text-sm text-muted-foreground mb-5">
+              The meeting is still open. Rejoin to continue — the room only ends when participants leave it.
+            </p>
+            <div className="flex gap-2 justify-center">
+              <button onClick={rejoin} className="rounded-full bg-svo-blue text-white px-5 py-2 text-sm font-medium flex items-center gap-2">
+                <RotateCw className="w-4 h-4" /> Rejoin meeting
+              </button>
+              <button onClick={handleLeave} className="rounded-full border border-border px-5 py-2 text-sm font-medium">
+                Leave
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

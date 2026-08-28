@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
         scheduled_at: scheduledAt,
         notes,
       })
-      .select("id, access_token, room_name")
+      .select("id, access_token, room_name, short_code")
       .single();
 
     if (error || !meeting) {
@@ -80,10 +80,39 @@ Deno.serve(async (req) => {
       return json({ error: "booking_unavailable" }, 503);
     }
 
+    // Notify the founder / platform admins in-app so a meeting request is never
+    // missed when outbound email is not configured yet.
+    try {
+      const { data: admins } = await admin.from("platform_admins").select("user_id");
+      const adminIds = (admins ?? []).map((a: { user_id: string }) => a.user_id);
+      if (adminIds.length) {
+        const { data: profiles } = await admin
+          .from("profiles")
+          .select("id, organization_id")
+          .in("id", adminIds);
+        const rows = (profiles ?? [])
+          .filter((p: { organization_id: string | null }) => p.organization_id)
+          .map((p: { id: string; organization_id: string }) => ({
+            user_id: p.id,
+            organization_id: p.organization_id,
+            title: "New investor meeting request",
+            message: `${investorName}${investorOrg ? ` (${investorOrg})` : ""} requested a meeting${
+              scheduledAt ? ` for ${new Date(scheduledAt).toUTCString()}` : ""
+            }.`,
+            type: "meeting",
+            link: `/m/${meeting.short_code}`,
+          }));
+        if (rows.length) await admin.from("notifications").insert(rows);
+      }
+    } catch (notifyError) {
+      console.error("[book-investor-meeting] notification failed", notifyError);
+    }
+
     return json({
       id: meeting.id,
       roomName: meeting.room_name,
       accessToken: meeting.access_token,
+      shortCode: meeting.short_code,
     });
   } catch (error) {
     console.error("[book-investor-meeting] request failed", error);
