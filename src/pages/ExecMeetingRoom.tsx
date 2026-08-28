@@ -67,8 +67,10 @@ export default function ExecMeetingRoom() {
           const data = await res.json();
           if (!res.ok) throw new Error(data.error || "Could not join meeting");
           setToken(data.token); setServerUrl(data.url);
-          const { data: meeting } = await supabase.from("investor_meetings").select("id").eq("room_name", roomName).maybeSingle();
+          const { data: meeting } = await supabase.from("investor_meetings").select("id, short_code").eq("room_name", roomName).maybeSingle();
           setMeetingId(meeting?.id ?? null);
+          setShortCode((meeting as { short_code?: string } | null)?.short_code ?? null);
+
           track("meeting_joined", { role: "founder" }, meeting?.id ?? null);
         }
       } catch (err) {
