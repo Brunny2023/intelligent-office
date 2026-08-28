@@ -15,7 +15,7 @@ function createLiveKitToken(apiKey: string, apiSecret: string, roomName: string,
     sub: participantIdentity,
     name: participantName,
     nbf: now,
-    exp: now + 3600,
+    exp: now + 60 * 60 * 12,
     iat: now,
     video: {
       roomJoin: true,
