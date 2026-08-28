@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import PostMeetingPanel from "@/components/meetings/PostMeetingPanel";
 import { formatDistanceToNow } from "date-fns";
 import MeetingRoomView from "@/components/meetings/MeetingRoomView";
+import { copyToClipboard } from "@/lib/clipboard";
 
 const MAX_RECORDING_BYTES = 500 * 1024 * 1024; // 500 MB
 
@@ -289,7 +290,7 @@ const MeetingsModule = () => {
 
   const copyInvite = (name: string) => {
     const url = `${window.location.origin}/meetings/${encodeURIComponent(name)}`;
-    navigator.clipboard.writeText(url).then(() => toast.success("Invite link copied"));
+    copyToClipboard(url, "Invite link copied");
   };
 
   if (loading) {
