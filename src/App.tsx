@@ -107,6 +107,8 @@ const App = () => (
             <Route path="/support/:id" element={<ProtectedRoute><SupportTicketDetail /></ProtectedRoute>} />
             <Route path="/partner-connect" element={<ProtectedRoute><InterOrgModule /></ProtectedRoute>} />
             <Route path="/exec-room/:roomName" element={<ExecMeetingRoom />} />
+            <Route path="/m/:code" element={<ExecMeetingRoom />} />
+
             <Route path="/cognition" element={<ProtectedRoute><CognitionModule /></ProtectedRoute>} />
             <Route path="/notifications" element={<ProtectedRoute><NotificationsInbox /></ProtectedRoute>} />
             <Route path="/memory-audit" element={<ProtectedRoute><MemoryAuditModule /></ProtectedRoute>} />
