@@ -15,14 +15,14 @@ const FounderCopilotPanel = lazy(() => import("@/components/execintel/FounderCop
  * - Founder mode (default): requires signed-in platform admin; loads the private Copilot panel.
  */
 export default function ExecMeetingRoom() {
-  const { roomName = "" } = useParams();
+  const { roomName = "", code = "" } = useParams();
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { isPlatformAdmin, loading: adminLoading } = usePlatformAdmin();
   const { track } = useInvestorAnalytics();
 
-  const mode = params.get("mode") === "investor" ? "investor" : "founder";
+  const mode = code || params.get("mode") === "investor" ? "investor" : "founder";
   const accessToken = params.get("t");
 
   const [token, setToken] = useState<string | null>(null);
@@ -41,15 +41,16 @@ export default function ExecMeetingRoom() {
     const run = async () => {
       try {
         if (mode === "investor") {
-          if (!accessToken) { setError("Missing meeting access token."); setLoading(false); return; }
+          if (!accessToken && !code) { setError("Missing meeting access token."); setLoading(false); return; }
           const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/livekit-guest-token`, {
             method: "POST",
             headers: { "Content-Type": "application/json", apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
-            body: JSON.stringify({ accessToken }),
+            body: JSON.stringify(code ? { code } : { accessToken }),
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.error || "Could not join meeting");
           setToken(data.token); setServerUrl(data.url); setMeetingId(data.meetingId);
+
         } else {
           const { data: session } = await supabase.auth.getSession();
           const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/livekit-token`, {
