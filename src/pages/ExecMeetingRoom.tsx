@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { usePlatformAdmin } from "@/hooks/usePlatformAdmin";
 import { useInvestorAnalytics } from "@/hooks/useInvestorAnalytics";
 import { Loader2 } from "lucide-react";
+import { copyToClipboard } from "@/lib/clipboard";
 
 const MeetingRoomView = lazy(() => import("@/components/meetings/MeetingRoomView"));
 const FounderCopilotPanel = lazy(() => import("@/components/execintel/FounderCopilotPanel"));
@@ -126,8 +127,10 @@ export default function ExecMeetingRoom() {
           onStopRecording={() => {}}
           onLeave={() => navigate(mode === "founder" ? "/dashboard" : "/investors")}
           onCopyInvite={() => {
-            const url = `${window.location.origin}/exec-room/${roomName}?t=${accessToken ?? ""}&mode=investor`;
-            navigator.clipboard.writeText(url);
+            const url = shortCode
+              ? `${window.location.origin}/m/${shortCode}`
+              : `${window.location.origin}/exec-room/${roomName}?t=${accessToken ?? ""}&mode=investor`;
+            copyToClipboard(url, "Meeting link copied");
           }}
         />
         {mode === "founder" && isPlatformAdmin && (
