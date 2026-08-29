@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 import { LiveKitRoom, VideoConference, RoomAudioRenderer, useRoomContext } from "@livekit/components-react";
 import { motion } from "framer-motion";
-import { Circle, Square, PhoneOff, Link as LinkIcon, Cloud, RotateCw } from "lucide-react";
+import { Circle, Square, PhoneOff, Link as LinkIcon, Cloud, RotateCw, Check } from "lucide-react";
 import type { Room } from "livekit-client";
 
 interface Props {
@@ -27,6 +27,7 @@ function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvi
   const room = useRoomContext();
   const roomRef = useRef<Room | null>(room ?? null);
   roomRef.current = room ?? null;
+  const [copied, setCopied] = useState(false);
 
   return (
     <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
@@ -38,10 +39,11 @@ function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvi
         </div>
       )}
       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-        onClick={onCopyInvite}
+        onClick={() => { onCopyInvite(); setCopied(true); window.setTimeout(() => setCopied(false), 2000); }}
         className="bg-background/80 backdrop-blur border border-border text-foreground rounded-full px-3 py-2 shadow-lg flex items-center gap-2 text-xs font-medium">
-        <LinkIcon className="w-3.5 h-3.5" /> Invite
+        {copied ? <><Check className="w-3.5 h-3.5 text-emerald-500" /> Link copied</> : <><LinkIcon className="w-3.5 h-3.5" /> Invite</>}
       </motion.button>
+
       {egressActive ? null : !recording ? (
         <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
           onClick={() => onStart(() => roomRef.current)}

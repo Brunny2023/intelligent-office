@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { CheckCircle2, Copy } from "lucide-react";
+import { CheckCircle2, Copy, Check } from "lucide-react";
 import { useInvestorAnalytics } from "@/hooks/useInvestorAnalytics";
 import { copyToClipboard } from "@/lib/clipboard";
 
@@ -30,6 +30,8 @@ export default function BookMeetingDialog({
   const [loading, setLoading] = useState(false);
   const [joinUrl, setJoinUrl] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+
   const { track } = useInvestorAnalytics();
 
   const submit = async (e: React.FormEvent) => {
@@ -177,10 +179,21 @@ export default function BookMeetingDialog({
                 <Button
                   variant="outline"
                   className="flex-1"
-                  onClick={() => copyToClipboard(joinUrl, "Meeting link copied")}
+                  onClick={async () => {
+                    const ok = await copyToClipboard(joinUrl, "Meeting link copied");
+                    if (ok) {
+                      setCopied(true);
+                      window.setTimeout(() => setCopied(false), 2000);
+                    }
+                  }}
                 >
-                  <Copy className="w-4 h-4 mr-2" /> Copy link
+                  {copied ? (
+                    <><Check className="w-4 h-4 mr-2 text-emerald-500" /> Copied!</>
+                  ) : (
+                    <><Copy className="w-4 h-4 mr-2" /> Copy link</>
+                  )}
                 </Button>
+
                 <Button
                   className="flex-1"
                   onClick={() => window.open(joinUrl, "_blank")}

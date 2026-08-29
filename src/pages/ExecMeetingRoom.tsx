@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -34,6 +34,8 @@ export default function ExecMeetingRoom() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const joinedRef = useRef(false);
+
   useEffect(() => {
     if (mode === "founder") {
       if (authLoading || adminLoading) return;
@@ -41,7 +43,13 @@ export default function ExecMeetingRoom() {
       if (!isPlatformAdmin) { setError("Only the platform admin can enter founder mode."); setLoading(false); return; }
     }
 
+    // Only ever mint one token per mount. Re-running this effect would swap the
+    // LiveKitRoom token prop, forcing a reconnect that drops the live session.
+    if (joinedRef.current) return;
+    joinedRef.current = true;
+
     const run = async () => {
+
       try {
         if (mode === "investor") {
           if (!accessToken && !code) { setError("Missing meeting access token."); setLoading(false); return; }
