@@ -177,10 +177,21 @@ export default function BookMeetingDialog({
                 <Button
                   variant="outline"
                   className="flex-1"
-                  onClick={() => copyToClipboard(joinUrl, "Meeting link copied")}
+                  onClick={async () => {
+                    const ok = await copyToClipboard(joinUrl, "Meeting link copied");
+                    if (ok) {
+                      setCopied(true);
+                      window.setTimeout(() => setCopied(false), 2000);
+                    }
+                  }}
                 >
-                  <Copy className="w-4 h-4 mr-2" /> Copy link
+                  {copied ? (
+                    <><Check className="w-4 h-4 mr-2 text-emerald-500" /> Copied!</>
+                  ) : (
+                    <><Copy className="w-4 h-4 mr-2" /> Copy link</>
+                  )}
                 </Button>
+
                 <Button
                   className="flex-1"
                   onClick={() => window.open(joinUrl, "_blank")}
