@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { CheckCircle2, Copy } from "lucide-react";
+import { CheckCircle2, Copy, Check } from "lucide-react";
 import { useInvestorAnalytics } from "@/hooks/useInvestorAnalytics";
 import { copyToClipboard } from "@/lib/clipboard";
 
