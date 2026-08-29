@@ -30,6 +30,8 @@ export default function BookMeetingDialog({
   const [loading, setLoading] = useState(false);
   const [joinUrl, setJoinUrl] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+
   const { track } = useInvestorAnalytics();
 
   const submit = async (e: React.FormEvent) => {
