@@ -84,7 +84,12 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: 'LiveKit not configured' }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    const token = await createLiveKitToken(apiKey, apiSecret, roomName, participantName, user.id);
+    // Unique per token request: LiveKit evicts an existing participant when a new
+    // connection uses the same identity, which would kick a user out of their own
+    // room on any token refresh / remount. A random suffix keeps sessions distinct.
+    const identity = `${user.id}-${crypto.randomUUID().slice(0, 8)}`;
+    const token = await createLiveKitToken(apiKey, apiSecret, roomName, participantName, identity);
+
 
     return new Response(JSON.stringify({ token, url: livekitUrl }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
