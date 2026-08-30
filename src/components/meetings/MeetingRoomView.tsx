@@ -4,6 +4,7 @@ import "@livekit/components-styles";
 import { motion } from "framer-motion";
 import { Circle, Square, PhoneOff, Link as LinkIcon, Cloud, RotateCw, Check } from "lucide-react";
 import { DisconnectReason, type Room } from "livekit-client";
+import { getDisconnectAction } from "./meetingRoomPolicy";
 
 
 interface Props {
@@ -85,12 +86,7 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
     if (leavingRef.current) return;
     // A hang-up from LiveKit's own control bar (or an intentional room end)
     // is a real exit — leave the meeting instead of showing the rejoin prompt.
-    if (
-      reason === DisconnectReason.CLIENT_INITIATED ||
-      reason === DisconnectReason.ROOM_DELETED ||
-      reason === DisconnectReason.PARTICIPANT_REMOVED ||
-      reason === DisconnectReason.USER_REJECTED
-    ) {
+    if (getDisconnectAction(reason) === "leave") {
       leavingRef.current = true;
       void onLeave();
       return;

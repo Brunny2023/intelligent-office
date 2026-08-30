@@ -16,6 +16,7 @@ import PostMeetingPanel from "@/components/meetings/PostMeetingPanel";
 import { formatDistanceToNow } from "date-fns";
 import MeetingRoomView from "@/components/meetings/MeetingRoomView";
 import { copyToClipboard } from "@/lib/clipboard";
+import { describeMeetingError } from "@/components/meetings/meetingRoomPolicy";
 
 const MAX_RECORDING_BYTES = 500 * 1024 * 1024; // 500 MB
 
@@ -132,8 +133,10 @@ const MeetingsModule = () => {
           toast.error(e.message || "Cloud recording start failed");
         }
       }
-    } catch (err: any) {
-      toast.error(err.message || "Connection failed");
+    } catch (err: unknown) {
+      const message = describeMeetingError(err, "Connection failed. Please reopen the meeting and try again.");
+      console.error("meeting_join_failed", { message, roomName: normalized });
+      toast.error(message);
     }
     setConnecting(false);
   }, [roomName, org, user]);
@@ -228,7 +231,11 @@ const MeetingsModule = () => {
       mediaRecRef.current = mr;
       setRecording(true);
       toast.success("Recording full-room audio for AI");
-    } catch (e: any) { toast.error(e.message || "Mic access denied"); }
+    } catch (error: unknown) {
+      const message = describeMeetingError(error, "Could not start recording. Check microphone access and try again.");
+      console.error("meeting_recording_failed", { message, roomName: roomName || "meeting" });
+      toast.error(message);
+    }
   };
 
   const stopRecording = async () => {

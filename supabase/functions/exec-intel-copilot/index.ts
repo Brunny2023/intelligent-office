@@ -167,6 +167,10 @@ Deno.serve(async (req) => {
 
     if (!resp.ok) {
       const t = await resp.text();
+      console.warn("founder_copilot_ai_error", {
+        latency_ms: Date.now() - start,
+        status: resp.status,
+      });
       return json({ error: "ai_error", status: resp.status, detail: t.slice(0, 400) }, 200);
     }
     const data = await resp.json();
@@ -176,6 +180,11 @@ Deno.serve(async (req) => {
     catch { parsed = { mode: "manual", hint: "Copilot output unreadable — answer manually.", followUps: [] }; }
 
     const latency = Date.now() - start;
+    console.info("founder_copilot_request", {
+      latency_ms: latency,
+      mode: (parsed as { mode?: string } | null)?.mode ?? "unknown",
+      persisted: Boolean(meetingId),
+    });
 
     // Persist Q&A for post-meeting review
     if (meetingId) {
@@ -190,6 +199,9 @@ Deno.serve(async (req) => {
 
     return json({ ...(parsed as object), latency_ms: latency });
   } catch (err) {
+    console.error("founder_copilot_request_failed", {
+      error: (err as Error).message,
+    });
     return json({ error: (err as Error).message }, 500);
   }
 });
