@@ -81,10 +81,22 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
     return onLeave();
   }, [onLeave]);
 
-  const handleDisconnected = useCallback(() => {
+  const handleDisconnected = useCallback((reason?: DisconnectReason) => {
     if (leavingRef.current) return;
+    // A hang-up from LiveKit's own control bar (or an intentional room end)
+    // is a real exit — leave the meeting instead of showing the rejoin prompt.
+    if (
+      reason === DisconnectReason.CLIENT_INITIATED ||
+      reason === DisconnectReason.ROOM_DELETED ||
+      reason === DisconnectReason.PARTICIPANT_REMOVED ||
+      reason === DisconnectReason.USER_REJECTED
+    ) {
+      leavingRef.current = true;
+      void onLeave();
+      return;
+    }
     setDropped(true);
-  }, []);
+  }, [onLeave]);
 
   const rejoin = useCallback(() => {
     setDropped(false);
@@ -98,10 +110,13 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
         token={token}
         serverUrl={serverUrl}
         connect={!dropped}
+        video
+        audio
         onDisconnected={handleDisconnected}
         data-lk-theme="default"
         style={{ height: "100%" }}
       >
+
         <VideoConference />
         <RoomAudioRenderer />
         <Overlay
