@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.escalate_alerts() TO postgres;
