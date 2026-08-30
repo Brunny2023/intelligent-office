@@ -1,8 +1,10 @@
 import { useCallback, useRef, useState } from "react";
 import { LiveKitRoom, VideoConference, RoomAudioRenderer, useRoomContext } from "@livekit/components-react";
+import "@livekit/components-styles";
 import { motion } from "framer-motion";
 import { Circle, Square, PhoneOff, Link as LinkIcon, Cloud, RotateCw, Check } from "lucide-react";
-import type { Room } from "livekit-client";
+import { DisconnectReason, type Room } from "livekit-client";
+
 
 interface Props {
   token: string;
