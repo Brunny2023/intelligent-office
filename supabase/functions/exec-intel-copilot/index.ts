@@ -17,7 +17,7 @@ const INVESTOR_KB = {
     name: "Global Office",
     tagline: "The Organizational Intelligence Layer for the Enterprise",
     stage: "Pre-seed, pre-launch commercial",
-    incorporation: "Soteria AI Technologies",
+    incorporation: "Soteria AI Technologies Inc. — a Delaware C-Corporation",
     hq: "Global (remote-first, Africa origin, global roadmap)",
   },
   raise: {
@@ -36,11 +36,11 @@ const INVESTOR_KB = {
     year_1_arr_usd: "$0.4M",
     year_2_arr_usd: "$2.8M",
     year_3_arr_usd: "$11.5M",
-    gross_margin_target: "78%",
+    gross_margin_target: "84-88% at scale",
     cac_target_usd: "$1,800",
     ltv_target_usd: "$28,000",
     ltv_cac: "15.5x steady state",
-    payback_months: 9,
+    payback_months: "6-9 months CAC payback",
     burn_month_usd: "$125K target average",
   },
   market: {
