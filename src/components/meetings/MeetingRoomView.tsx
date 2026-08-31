@@ -22,13 +22,15 @@ interface Props {
 }
 
 // Inner overlay so we can read the LiveKit Room via context for full-room mixing
-function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvite }: {
+function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvite, transcriptOn, onToggleTranscript }: {
   recording: boolean;
   egressActive?: boolean;
   onStart: (getRoom: () => Room | null) => void | Promise<void>;
   onStop: () => void | Promise<void>;
   onLeave: () => void | Promise<void>;
   onCopyInvite: () => void;
+  transcriptOn: boolean;
+  onToggleTranscript: () => void;
 }) {
   const room = useRoomContext();
   const roomRef = useRef<Room | null>(room ?? null);
