@@ -1,10 +1,13 @@
-import { useCallback, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useRef, useState } from "react";
 import { LiveKitRoom, VideoConference, RoomAudioRenderer, useRoomContext } from "@livekit/components-react";
 import "@livekit/components-styles";
 import { motion } from "framer-motion";
-import { Circle, Square, PhoneOff, Link as LinkIcon, Cloud, RotateCw, Check } from "lucide-react";
+import { Circle, Square, PhoneOff, Link as LinkIcon, Cloud, RotateCw, Check, Captions } from "lucide-react";
 import { DisconnectReason, type Room } from "livekit-client";
 import { getDisconnectAction } from "./meetingRoomPolicy";
+
+const LiveTranscriptPanel = lazy(() => import("./LiveTranscriptPanel"));
+
 
 
 interface Props {
