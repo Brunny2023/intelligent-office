@@ -17,7 +17,7 @@ describe("getDisconnectAction", () => {
   });
 
   it("shows the rejoin path for an unexpected disconnect", () => {
-    expect(getDisconnectAction(DisconnectReason.NETWORK_ERROR)).toBe("rejoin");
+    expect(getDisconnectAction(DisconnectReason.CONNECTION_TIMEOUT)).toBe("rejoin");
   });
 });
 

@@ -2,8 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import AnswerCard, { CopilotAnswer } from "./AnswerCard";
-import LiveCaptions from "./LiveCaptions";
 import FollowUpsRail from "./FollowUpsRail";
+import { subscribeUtterances } from "@/lib/liveTranscript";
 import { Send, X, Minimize2, Maximize2 } from "lucide-react";
 
 interface Props {
