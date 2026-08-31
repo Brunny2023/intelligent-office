@@ -15,7 +15,7 @@ interface Props {
 export default function FounderCopilotPanel({ meetingId, roomName, onOpenSource }: Props) {
   const [answer, setAnswer] = useState<CopilotAnswer>({ mode: "idle" });
   const [followUps, setFollowUps] = useState<string[]>([]);
-  const [captionsOn, setCaptionsOn] = useState(true);
+  
   const [manualQ, setManualQ] = useState("");
   const [collapsed, setCollapsed] = useState(false);
   const [hidden, setHidden] = useState(false);
