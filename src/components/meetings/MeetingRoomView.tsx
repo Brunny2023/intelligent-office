@@ -1,10 +1,13 @@
-import { useCallback, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useRef, useState } from "react";
 import { LiveKitRoom, VideoConference, RoomAudioRenderer, useRoomContext } from "@livekit/components-react";
 import "@livekit/components-styles";
 import { motion } from "framer-motion";
-import { Circle, Square, PhoneOff, Link as LinkIcon, Cloud, RotateCw, Check } from "lucide-react";
+import { Circle, Square, PhoneOff, Link as LinkIcon, Cloud, RotateCw, Check, Captions } from "lucide-react";
 import { DisconnectReason, type Room } from "livekit-client";
 import { getDisconnectAction } from "./meetingRoomPolicy";
+
+const LiveTranscriptPanel = lazy(() => import("./LiveTranscriptPanel"));
+
 
 
 interface Props {
@@ -19,13 +22,15 @@ interface Props {
 }
 
 // Inner overlay so we can read the LiveKit Room via context for full-room mixing
-function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvite }: {
+function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvite, transcriptOn, onToggleTranscript }: {
   recording: boolean;
   egressActive?: boolean;
   onStart: (getRoom: () => Room | null) => void | Promise<void>;
   onStop: () => void | Promise<void>;
   onLeave: () => void | Promise<void>;
   onCopyInvite: () => void;
+  transcriptOn: boolean;
+  onToggleTranscript: () => void;
 }) {
   const room = useRoomContext();
   const roomRef = useRef<Room | null>(room ?? null);
@@ -41,6 +46,13 @@ function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvi
           Cloud recording
         </div>
       )}
+      <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+        onClick={onToggleTranscript}
+        aria-pressed={transcriptOn}
+        className={`rounded-full px-3 py-2 shadow-lg flex items-center gap-2 text-xs font-medium border ${transcriptOn ? "bg-svo-blue text-white border-transparent" : "bg-background/80 backdrop-blur border-border text-foreground"}`}>
+        <Captions className="w-3.5 h-3.5" /> {transcriptOn ? "Transcript on" : "Transcript"}
+      </motion.button>
+
       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
         onClick={() => { onCopyInvite(); setCopied(true); window.setTimeout(() => setCopied(false), 2000); }}
         className="bg-background/80 backdrop-blur border border-border text-foreground rounded-full px-3 py-2 shadow-lg flex items-center gap-2 text-xs font-medium">

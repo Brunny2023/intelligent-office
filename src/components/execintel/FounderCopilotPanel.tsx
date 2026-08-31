@@ -2,8 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import AnswerCard, { CopilotAnswer } from "./AnswerCard";
-import LiveCaptions from "./LiveCaptions";
 import FollowUpsRail from "./FollowUpsRail";
+import { subscribeUtterances } from "@/lib/liveTranscript";
 import { Send, X, Minimize2, Maximize2 } from "lucide-react";
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
 export default function FounderCopilotPanel({ meetingId, roomName, onOpenSource }: Props) {
   const [answer, setAnswer] = useState<CopilotAnswer>({ mode: "idle" });
   const [followUps, setFollowUps] = useState<string[]>([]);
-  const [captionsOn, setCaptionsOn] = useState(true);
+  
   const [manualQ, setManualQ] = useState("");
   const [collapsed, setCollapsed] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -62,6 +62,10 @@ export default function FounderCopilotPanel({ meetingId, roomName, onOpenSource 
     utteranceTimer.current = window.setTimeout(() => ask(text), 250);
   }, [ask]);
 
+  // The shared meeting room owns the live transcript now; the copilot simply
+  // listens to the utterances it publishes.
+  useEffect(() => subscribeUtterances(onUtterance), [onUtterance]);
+
   useEffect(() => () => { if (utteranceTimer.current) window.clearTimeout(utteranceTimer.current); }, []);
 
   if (hidden) {
@@ -102,7 +106,10 @@ export default function FounderCopilotPanel({ meetingId, roomName, onOpenSource 
 
         {!collapsed && (
           <>
-            <LiveCaptions enabled={captionsOn} onToggle={() => setCaptionsOn((v) => !v)} onUtterance={onUtterance} />
+            <p className="text-[11px] text-white/40 px-1">
+              Listening to the room&apos;s live transcript — toggle it from the meeting controls.
+            </p>
+
             <div className="flex-1 min-h-0 overflow-auto space-y-3">
               <AnswerCard answer={answer} onOpenSource={onOpenSource} />
               <FollowUpsRail items={followUps} onPick={(q) => ask(q)} />
