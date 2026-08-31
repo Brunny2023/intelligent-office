@@ -47,6 +47,13 @@ function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvi
         </div>
       )}
       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+        onClick={onToggleTranscript}
+        aria-pressed={transcriptOn}
+        className={`rounded-full px-3 py-2 shadow-lg flex items-center gap-2 text-xs font-medium border ${transcriptOn ? "bg-svo-blue text-white border-transparent" : "bg-background/80 backdrop-blur border-border text-foreground"}`}>
+        <Captions className="w-3.5 h-3.5" /> {transcriptOn ? "Transcript on" : "Transcript"}
+      </motion.button>
+
+      <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
         onClick={() => { onCopyInvite(); setCopied(true); window.setTimeout(() => setCopied(false), 2000); }}
         className="bg-background/80 backdrop-blur border border-border text-foreground rounded-full px-3 py-2 shadow-lg flex items-center gap-2 text-xs font-medium">
         {copied ? <><Check className="w-3.5 h-3.5 text-emerald-500" /> Link copied</> : <><LinkIcon className="w-3.5 h-3.5" /> Invite</>}
