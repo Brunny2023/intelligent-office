@@ -60,7 +60,8 @@ Deno.serve(async (req) => {
     if (error || !meeting) return json({ error: "invalid_token" }, 404);
     if (meeting.status === "cancelled") return json({ error: "cancelled" }, 403);
 
-    const apiKey = Deno.env.get("LIVEKIT_API_KEY");
+    const rawApiKey = Deno.env.get("LIVEKIT_API_KEY");
+    const apiKey = rawApiKey ? normalizeApiKey(rawApiKey) : rawApiKey;
     const apiSecret = Deno.env.get("LIVEKIT_API_SECRET");
     const livekitUrl = Deno.env.get("LIVEKIT_URL");
     if (!apiKey || !apiSecret || !livekitUrl) return json({ error: "livekit_not_configured" }, 500);
