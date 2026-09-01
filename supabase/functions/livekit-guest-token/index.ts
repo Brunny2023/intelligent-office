@@ -26,6 +26,21 @@ async function createLiveKitToken(apiKey: string, apiSecret: string, roomName: s
   return `${signingInput}.${sigB64}`;
 }
 
+// The LIVEKIT_API_KEY secret is sometimes pasted as a full LiveKit access token
+// instead of the bare API key. A token's `iss` claim IS the API key, so recover
+// it rather than signing rooms with an issuer LiveKit rejects ("invalid API key").
+export function normalizeApiKey(raw: string): string {
+  const parts = raw.trim().split(".");
+  if (parts.length !== 3) return raw.trim();
+  try {
+    const b = parts[1].replaceAll("-", "+").replaceAll("_", "/").padEnd(Math.ceil(parts[1].length / 4) * 4, "=");
+    const claims = JSON.parse(atob(b)) as { iss?: string };
+    return typeof claims.iss === "string" && claims.iss ? claims.iss : raw.trim();
+  } catch {
+    return raw.trim();
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
