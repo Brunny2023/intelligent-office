@@ -87,15 +87,28 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
   // prompt instead of silently kicking the user back to the previous page.
   const [connectKey, setConnectKey] = useState(0);
   const [dropped, setDropped] = useState(false);
+  const [transcriptOn, setTranscriptOn] = useState(false);
   const leavingRef = useRef(false);
+  // Tracks whether this session ever reached a connected state. LiveKit emits a
+  // CLIENT_INITIATED disconnect while a connection attempt is being torn down
+  // (remount, token swap, failed handshake); treating that as a hang-up is what
+  // bounced users straight back out of the room during "Connecting…".
+  const connectedRef = useRef(false);
 
   const handleLeave = useCallback(() => {
     leavingRef.current = true;
     return onLeave();
   }, [onLeave]);
 
+  const handleConnected = useCallback(() => {
+    connectedRef.current = true;
+  }, []);
+
   const handleDisconnected = useCallback((reason?: DisconnectReason) => {
     if (leavingRef.current) return;
+    // Never exit on a disconnect that happens before the room was ever joined —
+    // offer a rejoin instead so the user stays on the meeting page.
+    if (!connectedRef.current) { setDropped(true); return; }
     // A hang-up from LiveKit's own control bar (or an intentional room end)
     // is a real exit — leave the meeting instead of showing the rejoin prompt.
     if (getDisconnectAction(reason) === "leave") {
@@ -107,6 +120,7 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
   }, [onLeave]);
 
   const rejoin = useCallback(() => {
+    connectedRef.current = false;
     setDropped(false);
     setConnectKey((k) => k + 1);
   }, []);
@@ -120,6 +134,7 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
         connect={!dropped}
         video
         audio
+        onConnected={handleConnected}
         onDisconnected={handleDisconnected}
         data-lk-theme="default"
         style={{ height: "100%" }}
@@ -134,7 +149,14 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
           onStop={onStopRecording}
           onLeave={handleLeave}
           onCopyInvite={onCopyInvite}
+          transcriptOn={transcriptOn}
+          onToggleTranscript={() => setTranscriptOn((v) => !v)}
         />
+        {transcriptOn && (
+          <Suspense fallback={null}>
+            <LiveTranscriptPanel onClose={() => setTranscriptOn(false)} />
+          </Suspense>
+        )}
       </LiveKitRoom>
 
       {dropped && (
