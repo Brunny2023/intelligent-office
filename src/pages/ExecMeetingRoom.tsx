@@ -23,13 +23,23 @@ export default function ExecMeetingRoom() {
   const { isPlatformAdmin, loading: adminLoading } = usePlatformAdmin();
   const { track } = useInvestorAnalytics();
 
-  const mode = code || params.get("mode") === "investor" ? "investor" : "founder";
+  // A short link (/m/:code) is the same meeting for everyone, but the founder
+  // must enter it as the founder (own identity + Copilot), not as the investor
+  // guest. Resolve the role from the signed-in user before minting a token.
+  const forcedInvestor = params.get("mode") === "investor";
+  const identityResolved = !authLoading && !adminLoading;
+  const mode: "investor" | "founder" | null = forcedInvestor
+    ? "investor"
+    : code
+      ? (identityResolved ? (isPlatformAdmin ? "founder" : "investor") : null)
+      : "founder";
   const accessToken = params.get("t");
 
   const [token, setToken] = useState<string | null>(null);
   const [serverUrl, setServerUrl] = useState<string | null>(null);
   const [meetingId, setMeetingId] = useState<string | null>(null);
   const [shortCode, setShortCode] = useState<string | null>(code || null);
+  const [activeRoom, setActiveRoom] = useState<string>(roomName);
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,9 +47,10 @@ export default function ExecMeetingRoom() {
   const joinedRef = useRef(false);
 
   useEffect(() => {
+    if (!mode) return;
     if (mode === "founder") {
-      if (authLoading || adminLoading) return;
-      if (!user) { navigate(`/signin?redirect=/exec-room/${roomName}`); return; }
+      if (!identityResolved) return;
+      if (!user) { navigate(`/signin?redirect=${code ? `/m/${code}` : `/exec-room/${roomName}`}`); return; }
       if (!isPlatformAdmin) { setError("Only the platform admin can enter founder mode."); setLoading(false); return; }
     }
 
@@ -63,6 +74,18 @@ export default function ExecMeetingRoom() {
           setToken(data.token); setServerUrl(data.url); setMeetingId(data.meetingId);
 
         } else {
+          // Founder arriving via a short link: resolve the underlying room first.
+          let room = roomName;
+          let meeting: { id: string; short_code?: string; room_name?: string } | null = null;
+          if (!room && code) {
+            const { data } = await supabase
+              .from("investor_meetings").select("id, short_code, room_name").eq("short_code", code).maybeSingle();
+            meeting = data as typeof meeting;
+            if (!meeting?.room_name) throw new Error("Meeting not found for this link.");
+            room = meeting.room_name;
+          }
+          setActiveRoom(room);
+
           const { data: session } = await supabase.auth.getSession();
           const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/livekit-token`, {
             method: "POST",
@@ -71,14 +94,17 @@ export default function ExecMeetingRoom() {
               Authorization: `Bearer ${session.session?.access_token ?? ""}`,
               apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
             },
-            body: JSON.stringify({ roomName }),
+            body: JSON.stringify({ roomName: room }),
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.error || "Could not join meeting");
           setToken(data.token); setServerUrl(data.url);
-          const { data: meeting } = await supabase.from("investor_meetings").select("id, short_code").eq("room_name", roomName).maybeSingle();
+          if (!meeting) {
+            const { data: found } = await supabase.from("investor_meetings").select("id, short_code").eq("room_name", room).maybeSingle();
+            meeting = found as typeof meeting;
+          }
           setMeetingId(meeting?.id ?? null);
-          setShortCode((meeting as { short_code?: string } | null)?.short_code ?? null);
+          setShortCode(meeting?.short_code ?? code ?? null);
 
           track("meeting_joined", { role: "founder" }, meeting?.id ?? null);
         }
@@ -89,7 +115,8 @@ export default function ExecMeetingRoom() {
       }
     };
     run();
-  }, [mode, accessToken, roomName, user, authLoading, isPlatformAdmin, adminLoading, navigate, track]);
+  }, [mode, accessToken, roomName, code, user, identityResolved, isPlatformAdmin, navigate, track]);
+
 
   const onOpenSource = useMemo(() => (ref: string) => {
     window.open(`/investor-pack/${ref}`, "_blank");
