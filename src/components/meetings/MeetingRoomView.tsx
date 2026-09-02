@@ -1,12 +1,61 @@
-import { lazy, Suspense, useCallback, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { LiveKitRoom, VideoConference, RoomAudioRenderer, useRoomContext } from "@livekit/components-react";
 import "@livekit/components-styles";
 import { motion } from "framer-motion";
-import { Circle, Square, PhoneOff, Link as LinkIcon, Cloud, RotateCw, Check, Captions } from "lucide-react";
-import { DisconnectReason, type Room } from "livekit-client";
+import { Circle, Square, PhoneOff, Link as LinkIcon, Cloud, RotateCw, Check, Captions, VideoOff } from "lucide-react";
+import { DisconnectReason, RoomEvent, type Room } from "livekit-client";
 import { getDisconnectAction } from "./meetingRoomPolicy";
 
 const LiveTranscriptPanel = lazy(() => import("./LiveTranscriptPanel"));
+
+/**
+ * Turns the local camera on as soon as the room connects and surfaces a clear
+ * reason when the browser refuses (permission denied, no device, or an embed
+ * that does not allow camera access).
+ */
+function CameraBootstrap() {
+  const room = useRoomContext();
+  const [problem, setProblem] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!room) return;
+    let cancelled = false;
+
+    const enableCamera = async () => {
+      try {
+        await room.localParticipant.setCameraEnabled(true);
+        if (!cancelled) setProblem(null);
+      } catch (err) {
+        if (cancelled) return;
+        const name = (err as { name?: string })?.name ?? "";
+        const message = (err as Error)?.message ?? "";
+        if (name === "NotAllowedError" || /permission|denied|disallowed/i.test(message)) {
+          setProblem("Camera blocked. Allow camera access for this site (or open the meeting in a new tab) and click the camera button again.");
+        } else if (name === "NotFoundError" || /device/i.test(message)) {
+          setProblem("No camera detected on this device. Audio still works.");
+        } else {
+          setProblem(`Camera could not start: ${message || "unknown error"}`);
+        }
+      }
+    };
+
+    if (room.state === "connected") void enableCamera();
+    room.on(RoomEvent.Connected, enableCamera);
+    return () => {
+      cancelled = true;
+      room.off(RoomEvent.Connected, enableCamera);
+    };
+  }, [room]);
+
+  if (!problem) return null;
+  return (
+    <div className="absolute top-20 right-4 z-50 max-w-xs rounded-xl bg-amber-500/15 border border-amber-400/40 text-amber-100 px-3 py-2 text-xs flex items-start gap-2 backdrop-blur">
+      <VideoOff className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+      <span>{problem}</span>
+    </div>
+  );
+}
+
 
 
 
