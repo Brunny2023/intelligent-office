@@ -200,7 +200,7 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
 
         <VideoConference />
         <RoomAudioRenderer />
-        <CameraBootstrap />
+        <MediaBootstrap />
 
         <Overlay
           recording={recording}
