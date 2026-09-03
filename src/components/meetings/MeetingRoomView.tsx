@@ -190,10 +190,12 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
         token={token}
         serverUrl={serverUrl}
         connect={!dropped}
-        video
-        audio
+        video={false}
+        audio={false}
         onConnected={handleConnected}
         onDisconnected={handleDisconnected}
+        onError={(err) => console.error("[meeting] livekit error", err)}
+
         data-lk-theme="default"
         style={{ height: "100%" }}
       >
