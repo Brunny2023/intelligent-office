@@ -9,11 +9,12 @@ import { getDisconnectAction } from "./meetingRoomPolicy";
 const LiveTranscriptPanel = lazy(() => import("./LiveTranscriptPanel"));
 
 /**
- * Turns the local camera on as soon as the room connects and surfaces a clear
- * reason when the browser refuses (permission denied, no device, or an embed
- * that does not allow camera access).
+ * Turns the local mic + camera on once the room is actually connected and
+ * surfaces a clear reason when the browser refuses. Devices are acquired AFTER
+ * connection (never as a pre-connect requirement) so a blocked camera can no
+ * longer stop the room from connecting at all.
  */
-function CameraBootstrap() {
+function MediaBootstrap() {
   const room = useRoomContext();
   const [problem, setProblem] = useState<string | null>(null);
 
@@ -21,29 +22,36 @@ function CameraBootstrap() {
     if (!room) return;
     let cancelled = false;
 
-    const enableCamera = async () => {
-      try {
-        await room.localParticipant.setCameraEnabled(true);
-        if (!cancelled) setProblem(null);
-      } catch (err) {
-        if (cancelled) return;
-        const name = (err as { name?: string })?.name ?? "";
-        const message = (err as Error)?.message ?? "";
-        if (name === "NotAllowedError" || /permission|denied|disallowed/i.test(message)) {
-          setProblem("Camera blocked. Allow camera access for this site (or open the meeting in a new tab) and click the camera button again.");
-        } else if (name === "NotFoundError" || /device/i.test(message)) {
-          setProblem("No camera detected on this device. Audio still works.");
-        } else {
-          setProblem(`Camera could not start: ${message || "unknown error"}`);
-        }
+    const describe = (err: unknown) => {
+      const name = (err as { name?: string })?.name ?? "";
+      const message = (err as Error)?.message ?? "";
+      if (name === "NotAllowedError" || /permission|denied|disallowed/i.test(message)) {
+        return "Camera/microphone blocked. Allow access for this site (or open the meeting in a new tab), then use the buttons in the control bar.";
       }
+      if (name === "NotFoundError" || /device/i.test(message)) return "No camera detected on this device. Audio still works.";
+      return `Device could not start: ${message || "unknown error"}`;
     };
 
-    if (room.state === "connected") void enableCamera();
-    room.on(RoomEvent.Connected, enableCamera);
+    const enableMedia = async () => {
+      let issue: string | null = null;
+      try {
+        await room.localParticipant.setMicrophoneEnabled(true);
+      } catch (err) {
+        issue = describe(err);
+      }
+      try {
+        await room.localParticipant.setCameraEnabled(true);
+      } catch (err) {
+        issue = describe(err);
+      }
+      if (!cancelled) setProblem(issue);
+    };
+
+    if (room.state === "connected") void enableMedia();
+    room.on(RoomEvent.Connected, enableMedia);
     return () => {
       cancelled = true;
-      room.off(RoomEvent.Connected, enableCamera);
+      room.off(RoomEvent.Connected, enableMedia);
     };
   }, [room]);
 
@@ -55,6 +63,7 @@ function CameraBootstrap() {
     </div>
   );
 }
+
 
 
 
@@ -181,17 +190,19 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
         token={token}
         serverUrl={serverUrl}
         connect={!dropped}
-        video
-        audio
+        video={false}
+        audio={false}
         onConnected={handleConnected}
         onDisconnected={handleDisconnected}
+        onError={(err) => console.error("[meeting] livekit error", err)}
+
         data-lk-theme="default"
         style={{ height: "100%" }}
       >
 
         <VideoConference />
         <RoomAudioRenderer />
-        <CameraBootstrap />
+        <MediaBootstrap />
 
         <Overlay
           recording={recording}
