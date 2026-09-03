@@ -100,7 +100,7 @@ Deno.serve(async (req) => {
               scheduledAt ? ` for ${new Date(scheduledAt).toUTCString()}` : ""
             }.`,
             type: "meeting",
-            link: `/m/${meeting.short_code}`,
+            link: `/exec-room/${meeting.room_name}`,
           }));
         if (rows.length) await admin.from("notifications").insert(rows);
       }
