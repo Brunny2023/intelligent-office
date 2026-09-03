@@ -122,7 +122,7 @@ export default function ExecMeetingRoom() {
     window.open(`/investor-pack/${ref}`, "_blank");
   }, []);
 
-  if (loading) {
+  if (loading || !mode) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
         <div className="flex items-center gap-3"><Loader2 className="w-5 h-5 animate-spin" /> Preparing your room…</div>
@@ -164,12 +164,12 @@ export default function ExecMeetingRoom() {
           onCopyInvite={() => {
             const url = shortCode
               ? `${window.location.origin}/m/${shortCode}`
-              : `${window.location.origin}/exec-room/${roomName}?t=${accessToken ?? ""}&mode=investor`;
+              : `${window.location.origin}/exec-room/${activeRoom}?t=${accessToken ?? ""}&mode=investor`;
             copyToClipboard(url, "Meeting link copied");
           }}
         />
         {mode === "founder" && isPlatformAdmin && (
-          <FounderCopilotPanel meetingId={meetingId} roomName={roomName} onOpenSource={onOpenSource} />
+          <FounderCopilotPanel meetingId={meetingId} roomName={activeRoom} onOpenSource={onOpenSource} />
         )}
       </Suspense>
     </div>
