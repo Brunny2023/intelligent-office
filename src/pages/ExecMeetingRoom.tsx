@@ -144,7 +144,7 @@ export default function ExecMeetingRoom() {
 
   return (
     <div className="min-h-screen bg-slate-950">
-      <div className="h-16 px-6 flex items-center justify-between border-b border-white/10 text-white">
+      <div className="h-16 px-4 sm:px-6 flex items-center justify-between gap-3 border-b border-white/10 text-white">
         <div>
           <div className="text-xs uppercase tracking-widest text-amber-400/80">
             {mode === "founder" ? "Founder Mode" : "Investor Session"}
