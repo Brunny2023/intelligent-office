@@ -198,8 +198,42 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
     setConnectKey((k) => k + 1);
   }, []);
 
+  // Full screen works on any device that supports the Fullscreen API; iOS
+  // Safari falls back to a CSS-fixed overlay so the room still fills the screen.
+  const shellRef = useRef<HTMLDivElement>(null);
+  const [fullscreen, setFullscreen] = useState(false);
+
+  useEffect(() => {
+    const onChange = () => setFullscreen(Boolean(document.fullscreenElement));
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, []);
+
+  const toggleFullscreen = useCallback(async () => {
+    const el = shellRef.current;
+    if (!el) return;
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else if (el.requestFullscreen) {
+        await el.requestFullscreen();
+      } else {
+        setFullscreen((v) => !v);
+      }
+    } catch {
+      setFullscreen((v) => !v);
+    }
+  }, []);
+
   return (
-    <div className="relative h-[calc(100vh-4rem)]">
+    <div
+      ref={shellRef}
+      className={
+        fullscreen
+          ? "fixed inset-0 z-[70] bg-background"
+          : "relative h-[calc(100dvh-4rem)] min-h-[420px] w-full overflow-hidden"
+      }
+    >
       <LiveKitRoom
         key={connectKey}
         token={token}
@@ -228,7 +262,10 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
           onCopyInvite={onCopyInvite}
           transcriptOn={transcriptOn}
           onToggleTranscript={() => setTranscriptOn((v) => !v)}
+          fullscreen={fullscreen}
+          onToggleFullscreen={toggleFullscreen}
         />
+
         {transcriptOn && (
           <Suspense fallback={null}>
             <LiveTranscriptPanel onClose={() => setTranscriptOn(false)} />
