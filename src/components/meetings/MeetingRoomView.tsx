@@ -2,7 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react"
 import { LiveKitRoom, VideoConference, RoomAudioRenderer, useRoomContext } from "@livekit/components-react";
 import "@livekit/components-styles";
 import { motion } from "framer-motion";
-import { Circle, Square, PhoneOff, Link as LinkIcon, Cloud, RotateCw, Check, Captions, VideoOff } from "lucide-react";
+import { Circle, Square, PhoneOff, Link as LinkIcon, Cloud, RotateCw, Check, Captions, VideoOff, Maximize, Minimize } from "lucide-react";
 import { DisconnectReason, RoomEvent, type Room } from "livekit-client";
 import { getDisconnectAction } from "./meetingRoomPolicy";
 
@@ -80,7 +80,7 @@ interface Props {
 }
 
 // Inner overlay so we can read the LiveKit Room via context for full-room mixing
-function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvite, transcriptOn, onToggleTranscript }: {
+function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvite, transcriptOn, onToggleTranscript, fullscreen, onToggleFullscreen }: {
   recording: boolean;
   egressActive?: boolean;
   onStart: (getRoom: () => Room | null) => void | Promise<void>;
@@ -89,6 +89,8 @@ function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvi
   onCopyInvite: () => void;
   transcriptOn: boolean;
   onToggleTranscript: () => void;
+  fullscreen: boolean;
+  onToggleFullscreen: () => void;
 }) {
   const room = useRoomContext();
   const roomRef = useRef<Room | null>(room ?? null);
@@ -96,48 +98,61 @@ function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvi
   const [copied, setCopied] = useState(false);
 
   return (
-    <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
+    <div className="absolute top-2 right-2 sm:top-4 sm:right-4 left-2 sm:left-auto z-50 flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
       {egressActive && (
-        <div className="bg-svo-blue text-white rounded-full px-3 py-2 shadow-lg flex items-center gap-2 text-xs font-medium">
+        <div className="bg-svo-blue text-white rounded-full px-3 py-2 shadow-lg flex items-center gap-2 text-[11px] sm:text-xs font-medium">
           <Cloud className="w-3.5 h-3.5" />
           <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
-          Cloud recording
+          <span className="hidden sm:inline">Cloud recording</span>
         </div>
       )}
       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+        onClick={onToggleFullscreen}
+        aria-label={fullscreen ? "Exit full screen" : "Enter full screen"}
+        className="bg-background/80 backdrop-blur border border-border text-foreground rounded-full p-2 sm:px-3 sm:py-2 shadow-lg flex items-center gap-2 text-[11px] sm:text-xs font-medium">
+        {fullscreen ? <Minimize className="w-3.5 h-3.5" /> : <Maximize className="w-3.5 h-3.5" />}
+        <span className="hidden sm:inline">{fullscreen ? "Exit full screen" : "Full screen"}</span>
+      </motion.button>
+
+      <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
         onClick={onToggleTranscript}
         aria-pressed={transcriptOn}
-        className={`rounded-full px-3 py-2 shadow-lg flex items-center gap-2 text-xs font-medium border ${transcriptOn ? "bg-svo-blue text-white border-transparent" : "bg-background/80 backdrop-blur border-border text-foreground"}`}>
-        <Captions className="w-3.5 h-3.5" /> {transcriptOn ? "Transcript on" : "Transcript"}
+        aria-label="Toggle live transcript"
+        className={`rounded-full p-2 sm:px-3 sm:py-2 shadow-lg flex items-center gap-2 text-[11px] sm:text-xs font-medium border ${transcriptOn ? "bg-svo-blue text-white border-transparent" : "bg-background/80 backdrop-blur border-border text-foreground"}`}>
+        <Captions className="w-3.5 h-3.5" /> <span className="hidden sm:inline">{transcriptOn ? "Transcript on" : "Transcript"}</span>
       </motion.button>
 
       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
         onClick={() => { onCopyInvite(); setCopied(true); window.setTimeout(() => setCopied(false), 2000); }}
-        className="bg-background/80 backdrop-blur border border-border text-foreground rounded-full px-3 py-2 shadow-lg flex items-center gap-2 text-xs font-medium">
-        {copied ? <><Check className="w-3.5 h-3.5 text-emerald-500" /> Link copied</> : <><LinkIcon className="w-3.5 h-3.5" /> Invite</>}
+        aria-label="Copy invite link"
+        className="bg-background/80 backdrop-blur border border-border text-foreground rounded-full p-2 sm:px-3 sm:py-2 shadow-lg flex items-center gap-2 text-[11px] sm:text-xs font-medium">
+        {copied ? <><Check className="w-3.5 h-3.5 text-emerald-500" /> <span className="hidden sm:inline">Link copied</span></> : <><LinkIcon className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Invite</span></>}
       </motion.button>
 
       {egressActive ? null : !recording ? (
         <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
           onClick={() => onStart(() => roomRef.current)}
-          className="bg-svo-blue text-white rounded-full px-4 py-2 shadow-lg flex items-center gap-2 text-sm font-medium">
-          <Circle className="w-4 h-4 fill-current" /> Record for AI
+          aria-label="Record for AI"
+          className="bg-svo-blue text-white rounded-full p-2 sm:px-4 sm:py-2 shadow-lg flex items-center gap-2 text-xs sm:text-sm font-medium">
+          <Circle className="w-4 h-4 fill-current" /> <span className="hidden sm:inline">Record for AI</span>
         </motion.button>
       ) : (
         <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
           onClick={onStop}
-          className="bg-red-500 text-white rounded-full px-4 py-2 shadow-lg flex items-center gap-2 text-sm font-medium animate-pulse">
-          <Square className="w-4 h-4 fill-current" /> Stop & Analyze
+          aria-label="Stop and analyze"
+          className="bg-red-500 text-white rounded-full p-2 sm:px-4 sm:py-2 shadow-lg flex items-center gap-2 text-xs sm:text-sm font-medium animate-pulse">
+          <Square className="w-4 h-4 fill-current" /> <span className="hidden sm:inline">Stop & Analyze</span>
         </motion.button>
       )}
       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
         onClick={onLeave}
-        className="bg-destructive text-destructive-foreground rounded-full p-3 shadow-lg" aria-label="Leave meeting">
-        <PhoneOff className="w-5 h-5" />
+        className="bg-destructive text-destructive-foreground rounded-full p-2 sm:p-3 shadow-lg" aria-label="Leave meeting">
+        <PhoneOff className="w-4 h-4 sm:w-5 sm:h-5" />
       </motion.button>
     </div>
   );
 }
+
 
 export default function MeetingRoomView({ token, serverUrl, recording, egressActive, onStartRecording, onStopRecording, onLeave, onCopyInvite }: Props) {
   // The meeting stays open until a participant explicitly leaves. A dropped
@@ -183,8 +198,42 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
     setConnectKey((k) => k + 1);
   }, []);
 
+  // Full screen works on any device that supports the Fullscreen API; iOS
+  // Safari falls back to a CSS-fixed overlay so the room still fills the screen.
+  const shellRef = useRef<HTMLDivElement>(null);
+  const [fullscreen, setFullscreen] = useState(false);
+
+  useEffect(() => {
+    const onChange = () => setFullscreen(Boolean(document.fullscreenElement));
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, []);
+
+  const toggleFullscreen = useCallback(async () => {
+    const el = shellRef.current;
+    if (!el) return;
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else if (el.requestFullscreen) {
+        await el.requestFullscreen();
+      } else {
+        setFullscreen((v) => !v);
+      }
+    } catch {
+      setFullscreen((v) => !v);
+    }
+  }, []);
+
   return (
-    <div className="relative h-[calc(100vh-4rem)]">
+    <div
+      ref={shellRef}
+      className={
+        fullscreen
+          ? "fixed inset-0 z-[70] bg-background"
+          : "relative h-[calc(100dvh-4rem)] min-h-[420px] w-full overflow-hidden"
+      }
+    >
       <LiveKitRoom
         key={connectKey}
         token={token}
@@ -213,7 +262,10 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
           onCopyInvite={onCopyInvite}
           transcriptOn={transcriptOn}
           onToggleTranscript={() => setTranscriptOn((v) => !v)}
+          fullscreen={fullscreen}
+          onToggleFullscreen={toggleFullscreen}
         />
+
         {transcriptOn && (
           <Suspense fallback={null}>
             <LiveTranscriptPanel onClose={() => setTranscriptOn(false)} />

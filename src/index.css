@@ -269,3 +269,27 @@
     scrollbar-width: none;
   }
 }
+
+/* ---- Meeting room: mobile-friendly LiveKit surfaces ---- */
+@media (max-width: 640px) {
+  .lk-control-bar {
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    padding: 0.5rem;
+  }
+  .lk-control-bar .lk-button {
+    padding: 0.5rem;
+    font-size: 0.7rem;
+  }
+  .lk-control-bar .lk-button > span,
+  .lk-button-group .lk-button-menu {
+    display: none;
+  }
+  .lk-grid-layout {
+    --lk-grid-gap: 0.35rem;
+  }
+  .lk-chat {
+    width: 100%;
+    max-width: 100%;
+  }
+}
