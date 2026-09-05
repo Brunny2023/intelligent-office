@@ -1,28 +1,52 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Download, X } from "lucide-react";
-import LiveCaptions from "@/components/execintel/LiveCaptions";
+import { Download, Mic, MicOff, Loader2, X } from "lucide-react";
 import { publishUtterance } from "@/lib/liveTranscript";
+import { AiCaptioner } from "@/lib/aiCaptions";
 
 interface Props {
   onClose: () => void;
+  /** Names/terms spoken in this meeting — improves recognition accuracy. */
+  vocabularyHint?: string;
 }
 
 /**
  * Live transcript for every participant in any meeting room.
- * Captions are produced locally (browser speech recognition) and broadcast on
- * the in-page bus so panels like the Founder Copilot can react to them.
+ * Audio is captured locally, split into complete utterances and transcribed by
+ * the platform's speech-to-text service (far more accurate than browser
+ * recognition), then broadcast on the in-page bus so panels like the Founder
+ * Copilot can react to what is being said.
  */
-export default function LiveTranscriptPanel({ onClose }: Props) {
+export default function LiveTranscriptPanel({ onClose, vocabularyHint }: Props) {
   const [enabled, setEnabled] = useState(true);
+  const [status, setStatus] = useState<"listening" | "transcribing" | "idle">("idle");
+  const [error, setError] = useState<string | null>(null);
   const [lines, setLines] = useState<Array<{ t: string; text: string }>>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const captionerRef = useRef<AiCaptioner | null>(null);
 
   const onUtterance = useCallback((text: string) => {
     const t = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     setLines((prev) => [...prev.slice(-199), { t, text }]);
     publishUtterance(text);
   }, []);
+
+  useEffect(() => {
+    if (!enabled) {
+      captionerRef.current?.stop();
+      captionerRef.current = null;
+      return;
+    }
+    const captioner = new AiCaptioner({
+      onUtterance,
+      onStatus: setStatus,
+      onError: (message) => setError(message),
+      vocabularyHint,
+    });
+    captionerRef.current = captioner;
+    void captioner.start().then((ok) => { if (ok) setError(null); });
+    return () => { captioner.stop(); captionerRef.current = null; };
+  }, [enabled, onUtterance, vocabularyHint]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -56,7 +80,19 @@ export default function LiveTranscriptPanel({ onClose }: Props) {
         </div>
       </div>
 
-      <LiveCaptions enabled={enabled} onToggle={() => setEnabled((v) => !v)} onUtterance={onUtterance} />
+      <div className="rounded-xl border border-white/10 bg-black/50 px-4 py-3 flex items-center gap-3">
+        <button
+          onClick={() => setEnabled((v) => !v)}
+          className={`p-2 rounded-full ${enabled ? "bg-emerald-500/20 text-emerald-400" : "bg-white/10 text-white/60"}`}
+          title={enabled ? "Pause captions" : "Start captions"}
+        >
+          {enabled ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
+        </button>
+        <div className="flex-1 text-sm text-white/70 truncate flex items-center gap-2">
+          {status === "transcribing" && enabled && <Loader2 className="w-3.5 h-3.5 animate-spin text-white/50" />}
+          {error ? error : !enabled ? "Captions paused" : status === "transcribing" ? "Transcribing…" : "Listening…"}
+        </div>
+      </div>
 
       <div ref={scrollRef} className="max-h-56 overflow-y-auto rounded-xl border border-white/10 bg-black/60 px-3 py-2 space-y-1.5 backdrop-blur">
         {lines.length === 0 ? (
