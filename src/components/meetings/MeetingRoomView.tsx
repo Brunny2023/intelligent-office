@@ -2,11 +2,13 @@ import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react"
 import { LiveKitRoom, VideoConference, RoomAudioRenderer, useRoomContext } from "@livekit/components-react";
 import "@livekit/components-styles";
 import { motion } from "framer-motion";
-import { Circle, Square, PhoneOff, Link as LinkIcon, Cloud, RotateCw, Check, Captions, VideoOff, Maximize, Minimize } from "lucide-react";
+import { Circle, Square, PhoneOff, Link as LinkIcon, Cloud, RotateCw, Check, Captions, VideoOff, Maximize, Minimize, FileText, Paperclip } from "lucide-react";
 import { DisconnectReason, RoomEvent, type Room } from "livekit-client";
 import { getDisconnectAction } from "./meetingRoomPolicy";
 
 const LiveTranscriptPanel = lazy(() => import("./LiveTranscriptPanel"));
+const MeetingFilesPanel = lazy(() => import("./MeetingFilesPanel"));
+const CaptionsLayer = lazy(() => import("./CaptionsLayer"));
 
 /**
  * Turns the local mic + camera on once the room is actually connected and
@@ -77,10 +79,11 @@ interface Props {
   onStopRecording: () => void | Promise<void>;
   onLeave: () => void | Promise<void>;
   onCopyInvite: () => void;
+  roomName?: string;
 }
 
 // Inner overlay so we can read the LiveKit Room via context for full-room mixing
-function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvite, transcriptOn, onToggleTranscript, fullscreen, onToggleFullscreen }: {
+function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvite, transcriptOn, onToggleTranscript, captionsOn, onToggleCaptions, filesOn, onToggleFiles, fullscreen, onToggleFullscreen }: {
   recording: boolean;
   egressActive?: boolean;
   onStart: (getRoom: () => Room | null) => void | Promise<void>;
@@ -89,6 +92,10 @@ function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvi
   onCopyInvite: () => void;
   transcriptOn: boolean;
   onToggleTranscript: () => void;
+  captionsOn: boolean;
+  onToggleCaptions: () => void;
+  filesOn: boolean;
+  onToggleFiles: () => void;
   fullscreen: boolean;
   onToggleFullscreen: () => void;
 }) {
@@ -115,11 +122,27 @@ function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvi
       </motion.button>
 
       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+        onClick={onToggleCaptions}
+        aria-pressed={captionsOn}
+        aria-label={captionsOn ? "Turn captions off" : "Enable captions"}
+        className={`rounded-full p-2 sm:px-3 sm:py-2 shadow-lg flex items-center gap-2 text-[11px] sm:text-xs font-medium border ${captionsOn ? "bg-emerald-500 text-white border-transparent" : "bg-background/80 backdrop-blur border-border text-foreground"}`}>
+        <Captions className="w-3.5 h-3.5" /> <span className="hidden sm:inline">{captionsOn ? "Captions on" : "Enable captions"}</span>
+      </motion.button>
+
+      <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+        onClick={onToggleFiles}
+        aria-pressed={filesOn}
+        aria-label="Share files"
+        className={`rounded-full p-2 sm:px-3 sm:py-2 shadow-lg flex items-center gap-2 text-[11px] sm:text-xs font-medium border ${filesOn ? "bg-svo-blue text-white border-transparent" : "bg-background/80 backdrop-blur border-border text-foreground"}`}>
+        <Paperclip className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Files</span>
+      </motion.button>
+
+      <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
         onClick={onToggleTranscript}
         aria-pressed={transcriptOn}
         aria-label="Toggle live transcript"
         className={`rounded-full p-2 sm:px-3 sm:py-2 shadow-lg flex items-center gap-2 text-[11px] sm:text-xs font-medium border ${transcriptOn ? "bg-svo-blue text-white border-transparent" : "bg-background/80 backdrop-blur border-border text-foreground"}`}>
-        <Captions className="w-3.5 h-3.5" /> <span className="hidden sm:inline">{transcriptOn ? "Transcript on" : "Transcript"}</span>
+        <FileText className="w-3.5 h-3.5" /> <span className="hidden sm:inline">{transcriptOn ? "Transcript on" : "Transcript"}</span>
       </motion.button>
 
       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
@@ -154,13 +177,15 @@ function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvi
 }
 
 
-export default function MeetingRoomView({ token, serverUrl, recording, egressActive, onStartRecording, onStopRecording, onLeave, onCopyInvite }: Props) {
+export default function MeetingRoomView({ token, serverUrl, recording, egressActive, onStartRecording, onStopRecording, onLeave, onCopyInvite, roomName }: Props) {
   // The meeting stays open until a participant explicitly leaves. A dropped
   // connection (network blip, duplicate mount, server restart) shows a rejoin
   // prompt instead of silently kicking the user back to the previous page.
   const [connectKey, setConnectKey] = useState(0);
   const [dropped, setDropped] = useState(false);
   const [transcriptOn, setTranscriptOn] = useState(false);
+  const [captionsOn, setCaptionsOn] = useState(false);
+  const [filesOn, setFilesOn] = useState(false);
   const leavingRef = useRef(false);
   // Tracks whether this session ever reached a connected state. LiveKit emits a
   // CLIENT_INITIATED disconnect while a connection attempt is being torn down
@@ -262,13 +287,31 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
           onCopyInvite={onCopyInvite}
           transcriptOn={transcriptOn}
           onToggleTranscript={() => setTranscriptOn((v) => !v)}
+          captionsOn={captionsOn}
+          onToggleCaptions={() => setCaptionsOn((v) => !v)}
+          filesOn={filesOn}
+          onToggleFiles={() => setFilesOn((v) => !v)}
           fullscreen={fullscreen}
           onToggleFullscreen={toggleFullscreen}
         />
 
+        <Suspense fallback={null}>
+          <CaptionsLayer enabled={captionsOn} />
+        </Suspense>
+
         {transcriptOn && (
           <Suspense fallback={null}>
-            <LiveTranscriptPanel onClose={() => setTranscriptOn(false)} />
+            <LiveTranscriptPanel
+              onClose={() => setTranscriptOn(false)}
+              captionsOn={captionsOn}
+              onEnableCaptions={() => setCaptionsOn(true)}
+            />
+          </Suspense>
+        )}
+
+        {filesOn && roomName && (
+          <Suspense fallback={null}>
+            <MeetingFilesPanel roomName={roomName} onClose={() => setFilesOn(false)} />
           </Suspense>
         )}
       </LiveKitRoom>
