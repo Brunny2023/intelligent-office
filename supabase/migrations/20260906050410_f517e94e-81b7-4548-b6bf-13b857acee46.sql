@@ -1,0 +1,1 @@
+ALTER TABLE public.investor_meetings ADD COLUMN IF NOT EXISTS guest_emails text[] NOT NULL DEFAULT '{}';

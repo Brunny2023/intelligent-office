@@ -1690,6 +1690,7 @@ export type Database = {
         Row: {
           access_token: string
           created_at: string
+          guest_emails: string[]
           host_user_id: string | null
           id: string
           investor_email: string
@@ -1705,6 +1706,7 @@ export type Database = {
         Insert: {
           access_token?: string
           created_at?: string
+          guest_emails?: string[]
           host_user_id?: string | null
           id?: string
           investor_email: string
@@ -1720,6 +1722,7 @@ export type Database = {
         Update: {
           access_token?: string
           created_at?: string
+          guest_emails?: string[]
           host_user_id?: string | null
           id?: string
           investor_email?: string
