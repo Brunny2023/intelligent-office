@@ -167,6 +167,7 @@ export default function ExecMeetingRoom() {
               : `${window.location.origin}/exec-room/${activeRoom}?t=${accessToken ?? ""}&mode=investor`;
             copyToClipboard(url, "Meeting link copied");
           }}
+          roomName={activeRoom}
         />
         {mode === "founder" && isPlatformAdmin && (
           <FounderCopilotPanel meetingId={meetingId} roomName={activeRoom} onOpenSource={onOpenSource} />
