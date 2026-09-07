@@ -330,7 +330,7 @@ const MessageThread = ({ channelId, channelName }: MessageThreadProps) => {
             <input
               type="file"
               multiple
-              accept="image/*,.pdf,.doc,.docx,.txt,.md,.rtf,.odt,.ppt,.pptx,.key,.odp,.xls,.xlsx,.csv,.ods,.zip"
+              accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.txt,.md,.rtf,.odt,.ppt,.pptx,.key,.odp,.xls,.xlsx,.csv,.ods,.zip"
               className="hidden"
               onChange={(e) => { addFiles(e.target.files); e.currentTarget.value = ""; }}
             />
