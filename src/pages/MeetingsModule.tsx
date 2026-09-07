@@ -324,6 +324,7 @@ const MeetingsModule = () => {
             onStopRecording={stopRecording}
             onLeave={leaveMeeting}
             onCopyInvite={() => copyInvite(currentName)}
+            roomName={currentName}
           />
         </Suspense>
       </AppLayout>

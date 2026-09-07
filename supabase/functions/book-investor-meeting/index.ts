@@ -13,6 +13,7 @@ type BookingRequest = {
   investorOrg?: unknown;
   scheduledAt?: unknown;
   notes?: unknown;
+  guestEmails?: unknown;
 };
 
 function json(payload: unknown, status = 200) {
@@ -38,6 +39,14 @@ Deno.serve(async (req) => {
     const investorOrg = cleanString(body.investorOrg, 200) || null;
     const notes = cleanString(body.notes, 4000) || null;
     const scheduledAtRaw = cleanString(body.scheduledAt, 80);
+    // Team members the investor wants on the same invitation.
+    const guestEmails = Array.from(
+      new Set(
+        (Array.isArray(body.guestEmails) ? body.guestEmails : [])
+          .map((value) => cleanString(value, 320).toLowerCase())
+          .filter((value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)),
+      ),
+    ).slice(0, 10);
 
     if (!investorName) return json({ error: "name_required" }, 400);
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(investorEmail)) {
@@ -71,6 +80,7 @@ Deno.serve(async (req) => {
         investor_org: investorOrg,
         scheduled_at: scheduledAt,
         notes,
+        guest_emails: guestEmails,
       })
       .select("id, access_token, room_name, short_code")
       .single();
@@ -98,7 +108,7 @@ Deno.serve(async (req) => {
             title: "New investor meeting request",
             message: `${investorName}${investorOrg ? ` (${investorOrg})` : ""} requested a meeting${
               scheduledAt ? ` for ${new Date(scheduledAt).toUTCString()}` : ""
-            }.`,
+            }.${guestEmails.length ? ` Additional invitees: ${guestEmails.join(", ")}.` : ""}`,
             type: "meeting",
             link: `/exec-room/${meeting.room_name}`,
           }));
@@ -113,6 +123,7 @@ Deno.serve(async (req) => {
       roomName: meeting.room_name,
       accessToken: meeting.access_token,
       shortCode: meeting.short_code,
+      guestEmails,
     });
   } catch (error) {
     console.error("[book-investor-meeting] request failed", error);
