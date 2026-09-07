@@ -27,6 +27,7 @@ export default function BookMeetingDialog({
   const [org, setOrg] = useState("");
   const [when, setWhen] = useState("");
   const [notes, setNotes] = useState("");
+  const [guests, setGuests] = useState("");
   const [loading, setLoading] = useState(false);
   const [joinUrl, setJoinUrl] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -53,6 +54,10 @@ export default function BookMeetingDialog({
             investorOrg: org,
             scheduledAt: scheduledAt?.toISOString() ?? null,
             notes,
+            guestEmails: guests
+              .split(/[,;\s]+/)
+              .map((v) => v.trim())
+              .filter(Boolean),
           },
         },
       );
@@ -81,6 +86,7 @@ export default function BookMeetingDialog({
     setOrg("");
     setWhen("");
     setNotes("");
+    setGuests("");
     setJoinUrl(null);
     setErrorMessage(null);
   };
@@ -140,6 +146,18 @@ export default function BookMeetingDialog({
                   value={when}
                   onChange={(e) => setWhen(e.target.value)}
                 />
+              </div>
+              <div>
+                <Label htmlFor="guests">Invite your team (optional)</Label>
+                <Input
+                  id="guests"
+                  placeholder="colleague@fund.com, analyst@fund.com"
+                  value={guests}
+                  onChange={(e) => setGuests(e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Separate email addresses with commas — everyone gets the same private join link.
+                </p>
               </div>
               <div>
                 <Label htmlFor="notes">Notes (optional)</Label>
