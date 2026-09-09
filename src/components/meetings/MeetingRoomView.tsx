@@ -273,6 +273,45 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
     }
   }, []);
 
+  // Auto-hide all chrome while fullscreen so the video stays unobstructed.
+  // Moving the cursor to the top (or tapping the top on mobile) brings it back.
+  const [controlsVisible, setControlsVisible] = useState(false);
+  const controlsTimer = useRef<number | null>(null);
+
+  const showControls = useCallback(() => {
+    if (controlsTimer.current) {
+      window.clearTimeout(controlsTimer.current);
+      controlsTimer.current = null;
+    }
+    setControlsVisible(true);
+  }, []);
+
+  const scheduleHideControls = useCallback(() => {
+    if (!fullscreen) {
+      setControlsVisible(false);
+      return;
+    }
+    if (controlsTimer.current) window.clearTimeout(controlsTimer.current);
+    controlsTimer.current = window.setTimeout(() => setControlsVisible(false), 3500);
+  }, [fullscreen]);
+
+  useEffect(() => {
+    if (fullscreen) {
+      // Briefly show controls on enter, then hide them for the cinematic view.
+      showControls();
+      scheduleHideControls();
+    } else {
+      setControlsVisible(false);
+      if (controlsTimer.current) window.clearTimeout(controlsTimer.current);
+    }
+  }, [fullscreen, showControls, scheduleHideControls]);
+
+  useEffect(() => {
+    return () => {
+      if (controlsTimer.current) window.clearTimeout(controlsTimer.current);
+    };
+  }, []);
+
   return (
     <div
       ref={shellRef}
