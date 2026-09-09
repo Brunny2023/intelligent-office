@@ -293,3 +293,26 @@
     max-width: 100%;
   }
 }
+
+/* ---- Fullscreen cinematic mode: hide all chrome until requested ---- */
+.meeting-shell.is-fullscreen .lk-control-bar,
+.meeting-shell.is-fullscreen .lk-video-conference__control-bar,
+.meeting-shell.is-fullscreen .lk-chat {
+  transition: opacity 0.25s ease;
+}
+
+.meeting-shell.is-fullscreen:not(.show-controls) .lk-control-bar,
+.meeting-shell.is-fullscreen:not(.show-controls) .lk-video-conference__control-bar,
+.meeting-shell.is-fullscreen:not(.show-controls) .lk-chat,
+.meeting-shell.is-fullscreen:not(.show-controls) .meeting-overlay {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.meeting-shell.is-fullscreen.show-controls .lk-control-bar,
+.meeting-shell.is-fullscreen.show-controls .lk-video-conference__control-bar,
+.meeting-shell.is-fullscreen.show-controls .lk-chat,
+.meeting-shell.is-fullscreen.show-controls .meeting-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
