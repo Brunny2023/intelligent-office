@@ -312,14 +312,16 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
     };
   }, []);
 
+  const shellClasses = [
+    "meeting-shell",
+    fullscreen ? "is-fullscreen fixed inset-0 z-[70] bg-background" : "relative h-[calc(100dvh-4rem)] min-h-[420px] w-full overflow-hidden",
+    controlsVisible ? "show-controls" : "",
+  ].join(" ");
+
   return (
     <div
       ref={shellRef}
-      className={
-        fullscreen
-          ? "fixed inset-0 z-[70] bg-background"
-          : "relative h-[calc(100dvh-4rem)] min-h-[420px] w-full overflow-hidden"
-      }
+      className={shellClasses}
     >
       <LiveKitRoom
         key={connectKey}
@@ -355,6 +357,9 @@ export default function MeetingRoomView({ token, serverUrl, recording, egressAct
           onToggleFiles={() => setFilesOn((v) => !v)}
           fullscreen={fullscreen}
           onToggleFullscreen={toggleFullscreen}
+          controlsVisible={controlsVisible}
+          onShowControls={showControls}
+          onScheduleHide={scheduleHideControls}
         />
 
         <Suspense fallback={null}>
