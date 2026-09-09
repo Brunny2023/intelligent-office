@@ -111,10 +111,15 @@ function Overlay({ recording, egressActive, onStart, onStop, onLeave, onCopyInvi
 
   return (
     <>
-      {/* Hover / touch zone at the very top reveals controls while fullscreen. */}
+      {/* Hover / touch zone at the very top reveals controls while fullscreen.
+          When controls are already visible it stops intercepting pointer events
+          so the buttons underneath remain fully clickable. */}
       {fullscreen && (
         <div
-          className="absolute top-0 left-0 right-0 h-14 z-[60] bg-transparent cursor-pointer"
+          className={
+            "absolute top-0 left-0 right-0 h-14 z-[60] bg-transparent cursor-pointer transition-opacity duration-300 " +
+            (hiddenInFullscreen ? "opacity-0 pointer-events-auto" : "opacity-0 pointer-events-none")
+          }
           onMouseEnter={onShowControls}
           onClick={onShowControls}
           aria-hidden="true"
