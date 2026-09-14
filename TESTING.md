@@ -2,41 +2,44 @@
 
 ## Strategy
 
-The repository uses Vitest with a JSDOM environment and Testing Library setup. Tests focus on pure utilities, feature-level business rules, and selected UI behavior rather than manufacturing coverage around every presentational component.
+The repository uses Vitest with a JSDOM environment and Testing Library setup. Tests focus on pure utilities, feature-level business rules, Edge Function behavior, and selected UI behavior rather than manufacturing coverage around every presentational component.
 
 ## Existing coverage
 
 - Tenant hostname parsing and safe fallback behavior in `src/lib/tenant.test.ts`.
 - Meeting room policy and participant rules in `src/components/meetings/meetingRoomPolicy.test.ts`.
 - Supabase LiveKit egress webhook behavior in `supabase/functions/livekit-egress-webhook/index.test.ts`.
-- Shared test setup and a small component smoke test under `src/test/` and landing components.
+- Landing footer rendering and public navigation in `src/components/landing/Footer.test.tsx`.
+- Shared test setup and a component smoke test under `src/test/`.
+
+## Verified commands
+
+The final refinement pass verified the npm scripts from a clean dependency installation:
+
+```bash
+npm ci
+npm run lint
+npm test -- --run
+npm run build
+```
+
+`npm run lint` completes with zero errors; inherited modules still emit explicit-`any` and React hook dependency warnings. The Vitest suite passes all committed test files. The Vite production build completes successfully, with existing bundle-size and dynamic-import warnings documented by the build tool.
 
 ## Critical workflow
 
-The most important manual workflow is:
+The most important application workflow is:
 
-1. Create or sign in to a user.
-2. Complete organization onboarding.
-3. Open the protected dashboard.
-4. Confirm organization-scoped metrics render with loading/empty states.
-5. Open AI Intelligence.
-6. Generate insights, observe the AI Edge Function request or local fallback, and confirm insights appear in the inbox.
-7. Filter, search, mark an insight read, and change its status.
+1. Open the [hosted demonstration](https://globaloffice.cloud/demo) or run the app locally.
+2. Navigate from workplace dashboard context to AI Insights.
+3. Inspect generated insight severity, source context, and recommended action.
+4. Filter/search the insight inbox and perform a human action such as read, acknowledge, resolve, or dismiss.
 
-A configured Supabase project is required for this end-to-end path. The public landing page and static build do not require a live project.
-
-## Commands
-
-```bash
-npm test        # Run Vitest once
-npm run lint    # Run ESLint
-npm run build   # Type-check through the Vite production build and bundle assets
-```
+The hosted demo was manually opened and verified to load its sample dashboard and AI Insights views. It demonstrates the product flow but is not claimed to be a deployment of this repository. A fully authenticated local end-to-end run requires a configured Supabase project, organization membership, migrations, and Edge Function secrets.
 
 ## Error and validation checks
 
-Tests should be extended when changing organization scoping, status transitions, AI response parsing, or Edge Function authorization. The AI workflow must be tested both with a valid structured response and with a missing/invalid response to preserve the deterministic fallback. Database policy changes should be validated against users in different organizations in a disposable Supabase project.
+The AI workflow should be tested with both a valid structured response and missing/invalid provider output. The Edge Function validates request fields and insight shape; the browser fallback preserves a usable workflow when the function fails. Database policy changes should be validated against users in different organizations in a disposable Supabase project.
 
 ## Known gap
 
-Browser-level automation is not currently committed. Playwright coverage for the authenticated task-to-insight workflow is a planned improvement, not a claim about the current test suite.
+Browser-level automation is not currently committed. Playwright coverage for the authenticated task-to-insight journey is a planned improvement, not a claim about the current test suite.
