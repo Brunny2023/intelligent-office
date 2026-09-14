@@ -14,7 +14,7 @@ import {
 } from "@/components/investors/InvestorSections";
 
 // ---------------------------------------------------------------------------
-// Global Office — Private Investor Brief
+// Intelligent Office — Private Investor Brief
 // Route: /investors  (unlisted, noindex, not linked from nav or footer)
 // Design intent: institutional editorial. Deep navy on bone, serif display,
 // footnoted citations. Every claim is either cited or labelled as an
@@ -168,7 +168,7 @@ const Investors = () => {
   const { track } = useInvestorAnalytics();
   useEffect(() => {
     const prev = { title: document.title };
-    document.title = "Global Office — Investor Brief (Confidential)";
+    document.title = "Intelligent Office — Investor Brief (Confidential)";
 
     const setMeta = (name: string, content: string, attr: "name" | "property" = "name") => {
       let el = document.querySelector(`meta[${attr}="${name}"]`) as HTMLMetaElement | null;
@@ -186,7 +186,7 @@ const Investors = () => {
     };
 
     const undoRobots = setMeta("robots", "noindex,nofollow,noarchive,nosnippet");
-    const undoDesc = setMeta("description", "Confidential investor brief for Global Office — the Intelligent Digital Office, built on the Organizational Intelligence Layer: an AI-native cognition platform with a virtual C-suite, expert consultants, and AI-run departments.");
+    const undoDesc = setMeta("description", "Confidential investor brief for Intelligent Office — the Intelligent Digital Office, built on the Organizational Intelligence Layer: an AI-native cognition platform with a virtual C-suite, expert consultants, and AI-run departments.");
 
     // Load editorial serif for this page only
     const link = document.createElement("link");
@@ -217,7 +217,7 @@ const Investors = () => {
         <div className="flex items-start justify-between gap-8 flex-wrap">
           <div>
             <p className="text-[11px] tracking-[0.3em] uppercase" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>
-              Global Office · Investor Brief · MMXXVI
+              Intelligent Office · Investor Brief · MMXXVI
             </p>
             <h1 className="mt-6 text-5xl md:text-7xl lg:text-8xl leading-[0.95] max-w-5xl" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontWeight: 400, letterSpacing: "-0.02em" }}>
               The Intelligent Digital Office.
@@ -226,7 +226,7 @@ const Investors = () => {
               Customers buy an <strong style={{ color: NAVY }}>Intelligent Digital Office</strong> — the place their whole company operates, without the bricks. What they are actually adopting is the <strong style={{ color: NAVY }}>Organizational Intelligence Layer</strong>: the graph and cognition substrate underneath. The office is the wedge; the intelligence layer is the moat.
             </p>
             <p className="mt-6 max-w-2xl text-lg md:text-xl leading-[1.6]" style={{ color: `${NAVY}CC` }}>
-              Microsoft owns documents. Google owns communication. Salesforce owns customers. SAP owns resources. Notion owns knowledge. <strong style={{ color: NAVY }}>Global Office owns organizational intelligence</strong> — the cognition platform underneath, with a virtual C-suite, expert AI consultants, and AI-run departments that reason, decide, and remember on your organization's own data.
+              Microsoft owns documents. Google owns communication. Salesforce owns customers. SAP owns resources. Notion owns knowledge. <strong style={{ color: NAVY }}>Intelligent Office owns organizational intelligence</strong> — the cognition platform underneath, with a virtual C-suite, expert AI consultants, and AI-run departments that reason, decide, and remember on your organization's own data.
             </p>
           </div>
           <div className="flex flex-col gap-2 print:hidden">
@@ -286,18 +286,18 @@ const Investors = () => {
           </div>
         </Section>
 
-        <Section id="thesis" eyebrow="02 — Investment Thesis" title="Organizations have data. They do not have intelligence. Global Office builds the layer that turns one into the other.">
+        <Section id="thesis" eyebrow="02 — Investment Thesis" title="Organizations have data. They do not have intelligence. Intelligent Office builds the layer that turns one into the other.">
           <p>
             Modern businesses run on ten to thirty disconnected tools — email, chat, spreadsheets, project trackers, HR platforms, finance systems, CRMs, storage drives, video meetings, and ad-hoc AI assistants. The result is not productivity. It is coordination overhead. Work fragments across surfaces. Context is lost. Decisions are made without evidence. AI, in this environment, is an add-on to chaos rather than an amplifier of order.
           </p>
           <p>
-            Global Office collapses this fragmentation into the <strong>Organizational Intelligence Layer</strong> — a persistent, graph-modeled substrate (entities, edges, and events materialized on Postgres) with an enterprise cognition platform on top: an AI C-suite that deliberates on decisions, expert consultants that recommend, and AI-run departments that execute. Every action, artifact, and decision is a first-class citizen and a permanent memory the organization reasons on next time.
+            Intelligent Office collapses this fragmentation into the <strong>Organizational Intelligence Layer</strong> — a persistent, graph-modeled substrate (entities, edges, and events materialized on Postgres) with an enterprise cognition platform on top: an AI C-suite that deliberates on decisions, expert consultants that recommend, and AI-run departments that execute. Every action, artifact, and decision is a first-class citizen and a permanent memory the organization reasons on next time.
           </p>
           <p>
-            The ICP is global-first — SMEs and mid-market organizations across the United States, United Kingdom, European Union, and other developed economies where AI-native operating layers command the strongest willingness to pay, followed by an emerging-markets expansion motion. Traditional software manages functions. Global Office manages organizational intelligence.
+            The ICP is global-first — SMEs and mid-market organizations across the United States, United Kingdom, European Union, and other developed economies where AI-native operating layers command the strongest willingness to pay, followed by an emerging-markets expansion motion. Traditional software manages functions. Intelligent Office manages organizational intelligence.
           </p>
           <p>
-            <strong style={{ color: NAVY }}>This is not a SaaS application; it is an AI-native platform company.</strong> A SaaS application digitizes a function and waits for a human to operate it. Global Office runs an intelligence layer that orchestrates operations across functions — it holds the organization's memory in a graph, deliberates over decisions with an AI executive council, dispatches work through an automation engine, and learns from the outcome. The software surface is the interface to that layer, not the product itself. That distinction determines everything an investor cares about: the moat is data and learned organizational context rather than features, expansion is driven by intelligence consumption rather than seat count alone, and the defensible asset compounds with usage instead of depreciating with the next competitor release.
+            <strong style={{ color: NAVY }}>This is not a SaaS application; it is an AI-native platform company.</strong> A SaaS application digitizes a function and waits for a human to operate it. Intelligent Office runs an intelligence layer that orchestrates operations across functions — it holds the organization's memory in a graph, deliberates over decisions with an AI executive council, dispatches work through an automation engine, and learns from the outcome. The software surface is the interface to that layer, not the product itself. That distinction determines everything an investor cares about: the moat is data and learned organizational context rather than features, expansion is driven by intelligence consumption rather than seat count alone, and the defensible asset compounds with usage instead of depreciating with the next competitor release.
           </p>
           <p>
             The invitation in this brief is therefore to evaluate a category creator rather than another entrant in an existing category. The evidence is deliberately concrete: a production platform you can walk through, live operational metrics read from the running system, an architecture document that shows the graph and cognition substrate, and the unit economics that convert that architecture into margin.
@@ -315,7 +315,7 @@ const Investors = () => {
           <ol className="space-y-6 list-none pl-0">
             <li>
               <span className="block text-sm tracking-[0.2em] uppercase mb-1" style={{ color: GOLD }}>i. Generative AI has crossed the utility threshold</span>
-              Frontier models are now capable, cheap, and fast enough to embed reasoning inside every business workflow. McKinsey estimates generative AI could add $2.6–4.4 trillion in annual productivity value<Cite ns={[4]}/>, with the largest gains in operations, sales, software engineering, and customer support — the exact surfaces Global Office unifies.
+              Frontier models are now capable, cheap, and fast enough to embed reasoning inside every business workflow. McKinsey estimates generative AI could add $2.6–4.4 trillion in annual productivity value<Cite ns={[4]}/>, with the largest gains in operations, sales, software engineering, and customer support — the exact surfaces Intelligent Office unifies.
             </li>
             <li>
               <span className="block text-sm tracking-[0.2em] uppercase mb-1" style={{ color: GOLD }}>ii. SaaS unbundling has run its course</span>
@@ -336,13 +336,13 @@ const Investors = () => {
             The productivity cost is measurable — and the AI opportunity cost is larger. Any AI feature bolted onto a fragmented stack inherits its fragmentation. Real organizational intelligence requires a real organizational substrate.
           </p>
           <p>
-            The problem is universal. Whether an organization operates from New York, London, Singapore, São Paulo, or Lagos, the fragmentation is the same — different tools, different silos, different truths. Global Office is built for that reality from day one: multi-tenant, multi-currency, multi-language, and multi-jurisdiction as first-class properties, not localization afterthoughts.
+            The problem is universal. Whether an organization operates from New York, London, Singapore, São Paulo, or Lagos, the fragmentation is the same — different tools, different silos, different truths. Intelligent Office is built for that reality from day one: multi-tenant, multi-currency, multi-language, and multi-jurisdiction as first-class properties, not localization afterthoughts.
           </p>
         </Section>
 
         <Section id="solution" eyebrow="08 — The Solution" title="One graph. One intelligence layer. One system.">
           <p>
-            Global Office replaces the disconnected stack with a single, AI-native operating system organized around how work actually happens: people, tasks, conversations, documents, decisions, and outcomes — all bound into one knowledge graph, all observed by one intelligence layer, all extensible through one workflow engine.
+            Intelligent Office replaces the disconnected stack with a single, AI-native operating system organized around how work actually happens: people, tasks, conversations, documents, decisions, and outcomes — all bound into one knowledge graph, all observed by one intelligence layer, all extensible through one workflow engine.
           </p>
           <div className="not-prose grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-8 mt-10">
             {[
@@ -369,7 +369,7 @@ const Investors = () => {
             Two words matter here, and they are not interchangeable. <strong>Intelligent Digital Office</strong> is what a buyer signs for: a single place where their company operates end to end — presence, execution, meetings, documents, HR, finance, governance — without a physical office. <strong>Organizational Intelligence Layer</strong> is what we are building underneath it: the knowledge graph and cognition substrate that makes that office reason, decide, and remember. Buyers adopt the office; the layer is what makes them unable to leave.
           </p>
           <p>
-            Every prior category — ERP, CRM, collaboration, project management, HRIS, BI — was a surface for a function. Global Office is a substrate for the organization itself. The distinction is architectural, not marketing.
+            Every prior category — ERP, CRM, collaboration, project management, HRIS, BI — was a surface for a function. Intelligent Office is a substrate for the organization itself. The distinction is architectural, not marketing.
           </p>
           <p>
             Microsoft and Google occupy the productivity layer. Salesforce and HubSpot occupy the customer layer. SAP, Oracle, and NetSuite occupy the resource layer. Notion, Monday, ClickUp, and Asana occupy the coordination layer. None of them are the operating system beneath.
@@ -441,7 +441,7 @@ const Investors = () => {
             </div>
           </div>
           <p>
-            SMEs and mid-market enterprises represent approximately 90% of businesses and more than 50% of employment worldwide<Cite ns={[5]}/>. Across every major region — North America, EMEA, LATAM, APAC, and the emerging world — these organizations are actively consolidating fragmented stacks and re-underwriting their software estate for the AI era. Global Office is positioned to be the platform they consolidate onto.
+            SMEs and mid-market enterprises represent approximately 90% of businesses and more than 50% of employment worldwide<Cite ns={[5]}/>. Across every major region — North America, EMEA, LATAM, APAC, and the emerging world — these organizations are actively consolidating fragmented stacks and re-underwriting their software estate for the AI era. Intelligent Office is positioned to be the platform they consolidate onto.
           </p>
         </Section>
 
@@ -668,10 +668,10 @@ const Investors = () => {
             Professional headshots and public LinkedIn profiles are released with the team pack in the data room; advisors and board members are disclosed under NDA.
           </p>
           <p>
-            <strong style={{ color: NAVY }}>Wisdom Jonathans — Founder &amp; CEO.</strong> Entrepreneur and AI systems strategist. Founder and CEO of Soteria AI Technologies Inc. (Delaware C-Corporation), developing AI-powered products for business operations, decision-making, capital access, education, and public safety. Publisher of <em>The Strategic Signal</em> — a weekly thought-leadership newsletter read by operators, founders, and investors on strategy, AI, and the future of organizations.
+            <strong style={{ color: NAVY }}>Wisdom Jonathans — Founder &amp; CEO.</strong> Entrepreneur and AI systems strategist. Founder and CEO of the Intelligent Office showcase project (Delaware C-Corporation), developing AI-powered products for business operations, decision-making, capital access, education, and public safety. Publisher of <em>The Strategic Signal</em> — a weekly thought-leadership newsletter read by operators, founders, and investors on strategy, AI, and the future of organizations.
           </p>
           <p>
-            Prior to Global Office, Wisdom founded and led Elevate AI, working directly with businesses to apply AI and workflow automation to real operational problems — the experience that surfaced the coherence problem this company was built to solve. He has served in governance and executive leadership across technology ventures, education (Vice Chairman, Exceeding Grace International Aviation College), nonprofit organizations, and faith-based institutions.
+            Prior to Intelligent Office, Wisdom founded and led Elevate AI, working directly with businesses to apply AI and workflow automation to real operational problems — the experience that surfaced the coherence problem this company was built to solve. He has served in governance and executive leadership across technology ventures, education (Vice Chairman, Exceeding Grace International Aviation College), nonprofit organizations, and faith-based institutions.
           </p>
           <p>
             <strong style={{ color: NAVY }}>Oyewole Olufemi Emmanuel — Co-Founder &amp; COO.</strong> Operations executive with fifteen years scaling multi-country service businesses across multiple regions. Previously Chief Operating Officer at a high-growth fintech where he built the operational playbook that grew the company from 40 to 380 staff across 6 countries and led it through ISO 27001, PCI-DSS, and SOC 2 Type II certification. Earlier, VP of Operations at an enterprise-software firm serving banks and telcos, where he owned partner distribution across multiple international markets. He owns commercial launch, channel partners, customer success, finance operations, and regulatory readiness — the exact surfaces that convert a $1.5M pre-seed into repeatable revenue.
@@ -686,12 +686,12 @@ const Investors = () => {
 
         <Section id="corporate" eyebrow="23b — Corporate Structure" title="One company. Delaware-domiciled. Global engineering.">
           <p>
-            Global Office is the flagship platform of <strong style={{ color: NAVY }}>Soteria AI Technologies Inc.</strong>, a Delaware C-Corporation. The Delaware entity is the single investment, contracting, and intellectual-property holding company; engineering and delivery run from a wholly-controlled Africa engineering center.
+            Intelligent Office is the flagship platform of <strong style={{ color: NAVY }}>the Intelligent Office showcase project</strong>, a Delaware C-Corporation. The Delaware entity is the single investment, contracting, and intellectual-property holding company; engineering and delivery run from a wholly-controlled Africa engineering center.
           </p>
           <div className="not-prose grid md:grid-cols-2 gap-6 mt-6">
             <div className="border-t pt-4" style={{ borderColor: NAVY }}>
               <div className="text-xs tracking-[0.22em] uppercase mb-2" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Investment &amp; IP entity</div>
-              <div className="text-sm mb-2" style={{ color: NAVY, fontFamily: "'Space Grotesk', sans-serif" }}>Soteria AI Technologies Inc.</div>
+              <div className="text-sm mb-2" style={{ color: NAVY, fontFamily: "'Space Grotesk', sans-serif" }}>the Intelligent Office showcase project</div>
               <p className="text-sm leading-[1.7]" style={{ color: `${NAVY}CC` }}>
                 Delaware C-Corporation (USA). Holds all intellectual property, customer contracts, and equity. Responsible for corporate governance, capital formation, strategic partnerships, institutional readiness, and long-term global expansion. All investment in this round is made into this entity.
               </p>
@@ -700,12 +700,12 @@ const Investors = () => {
               <div className="text-xs tracking-[0.22em] uppercase mb-2" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Engineering &amp; delivery center</div>
               <div className="text-sm mb-2" style={{ color: NAVY, fontFamily: "'Space Grotesk', sans-serif" }}>Africa engineering center (Lagos, Nigeria)</div>
               <p className="text-sm leading-[1.7]" style={{ color: `${NAVY}CC` }}>
-                A controlled local operating vehicle of Soteria AI Technologies Inc. Delivers AI research, software engineering, product development, and operational execution under an intercompany services agreement, with all work product assigned to the Delaware parent.
+                A controlled local operating vehicle of the Intelligent Office showcase project Delivers AI research, software engineering, product development, and operational execution under an intercompany services agreement, with all work product assigned to the Delaware parent.
               </p>
             </div>
           </div>
           <p className="mt-6">
-            The structure is deliberate: institutional-grade US governance and a clean, single-entity cap table on top, world-class distributed engineering economics underneath. Capital raised is directed at the commercialization, growth, and global expansion of Global Office, the company's flagship AI-native platform.
+            The structure is deliberate: institutional-grade US governance and a clean, single-entity cap table on top, world-class distributed engineering economics underneath. Capital raised is directed at the commercialization, growth, and global expansion of Intelligent Office, the company's flagship AI-native platform.
           </p>
         </Section>
 
@@ -749,7 +749,7 @@ const Investors = () => {
               ["Concentration risk", "Early customer base skewing to any single geography or vertical. Mitigation: multi-region GTM from launch; enterprise motion layered in by Year 3."],
               ["Talent risk", "Senior engineering and GTM hiring in a competitive global market. Mitigation: distributed operating model across the US and engineering affiliate; remote-first hiring; equity-heavy comp."],
               ["Capital risk", "Correction in venture funding. Mitigation: capital-efficient milestones; DFI and strategic-investor optionality."],
-              ["Platform-dependency risk", "Customers run their entire company on Global Office, so an outage, breach, or corporate failure would be existential for them — and a litigation exposure for us. Mitigation: multi-AZ managed infrastructure with continuous point-in-time recovery (RPO < 15 min, RTO < 1 hr), AES-256 at rest and TLS 1.3 in transit, database-level tenant isolation, append-only audit and signature ledgers, quarterly restore drills, penetration testing ahead of enterprise GA, cyber and tech E&O insurance, contractual data-portability and wind-down notice rights, and a source-code and data escrow arrangement for enterprise contracts."],
+              ["Platform-dependency risk", "Customers run their entire company on Intelligent Office, so an outage, breach, or corporate failure would be existential for them — and a litigation exposure for us. Mitigation: multi-AZ managed infrastructure with continuous point-in-time recovery (RPO < 15 min, RTO < 1 hr), AES-256 at rest and TLS 1.3 in transit, database-level tenant isolation, append-only audit and signature ledgers, quarterly restore drills, penetration testing ahead of enterprise GA, cyber and tech E&O insurance, contractual data-portability and wind-down notice rights, and a source-code and data escrow arrangement for enterprise contracts."],
               ["Access-control risk", "Uninvited members reaching a tenant. Mitigation: members join only via emailed invitation or a single-use access token generated by that organization's Admin/HR on its own subdomain; tokens are role-scoped, expiry-bounded, and burned on first use; owner role can never be granted by token."],
             ].map(([t, d]) => (
               <div key={t} className="border-t pt-4" style={{ borderColor: NAVY }}>
@@ -768,7 +768,7 @@ const Investors = () => {
               ["Privacy & compliance", "Privacy-by-design with NDPR and GDPR alignment: DPA templates, a published sub-processor register, configurable retention and deletion, data-residency options, and documented breach-notification runbooks. Compliance settings and retention windows are enforced in the product itself, not by policy alone."],
               ["Risk management approach", "A standing risk register (§25) reviewed at each board cycle, covering adoption, model-cost, competitive, execution, and regulatory exposure — each with a defined mitigation owner. Product-level predictive alerting surfaces operational risk inside the platform the same way it does for customers."],
               ["Business continuity", "Managed multi-AZ Postgres with automated backups and point-in-time recovery, zero-downtime deployments, and stateless edge compute. Enterprise agreements include wind-down notice, data-portability, and escrow terms so no customer is trapped by a single-vendor dependency."],
-              ["AI governance & oversight", "AI in Global Office is advisory by design: agents deliberate, cite the organizational record, and recommend — humans approve, revise, or reject, and every decision is captured with a mandatory reason. Policy guardrails can block deliberations, feedback tunes memory relevance, and the memory audit trail makes every AI-influenced decision reconstructable after the fact."],
+              ["AI governance & oversight", "AI in Intelligent Office is advisory by design: agents deliberate, cite the organizational record, and recommend — humans approve, revise, or reject, and every decision is captured with a mandatory reason. Policy guardrails can block deliberations, feedback tunes memory relevance, and the memory audit trail makes every AI-influenced decision reconstructable after the fact."],
             ].map(([t, d]) => (
               <div key={t} className="border-t pt-4" style={{ borderColor: NAVY }}>
                 <div className="text-sm tracking-[0.15em] uppercase mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif", color: NAVY }}>{t}</div>
@@ -795,8 +795,8 @@ const Investors = () => {
           </p>
           <div className="not-prose grid md:grid-cols-2 gap-6 mt-6">
             {[
-              ["Corporate & governance", "Soteria AI Technologies Inc. (Delaware C-Corporation) is the sole investment, contracting, and IP-holding entity, operating an Africa engineering center under an intercompany services agreement with full work-product assignment to the parent. Certificate of incorporation, bylaws, board consents, cap table, stock ledger, founder restricted-stock agreements with vesting and 83(b) elections, and an equity incentive pool are maintained as standing records."],
-              ["Intellectual property", "All platform source code, models, prompts, designs, and brand assets are owned by the Delaware parent. Every founder, employee, and contractor executes IP assignment and confidentiality agreements as a condition of engagement, including cross-border assignment from the engineering affiliate. Global Office trademark filings are in progress; no third-party IP claims, liens, or encumbrances exist."],
+              ["Corporate & governance", "the Intelligent Office showcase project (Delaware C-Corporation) is the sole investment, contracting, and IP-holding entity, operating an Africa engineering center under an intercompany services agreement with full work-product assignment to the parent. Certificate of incorporation, bylaws, board consents, cap table, stock ledger, founder restricted-stock agreements with vesting and 83(b) elections, and an equity incentive pool are maintained as standing records."],
+              ["Intellectual property", "All platform source code, models, prompts, designs, and brand assets are owned by the Delaware parent. Every founder, employee, and contractor executes IP assignment and confidentiality agreements as a condition of engagement, including cross-border assignment from the engineering affiliate. Intelligent Office trademark filings are in progress; no third-party IP claims, liens, or encumbrances exist."],
               ["Open source & third-party", "A dependency inventory with license classification is maintained; the stack uses permissive licences only (MIT, Apache-2.0, BSD) with no copyleft obligations in distributed code. Automated dependency and vulnerability scanning runs continuously, and material vendor and infrastructure agreements are catalogued in the data room."],
               ["Data protection & compliance", "Privacy-by-design architecture with database-level tenant isolation, AES-256 at rest, TLS 1.3 in transit, role-scoped access control, and append-only audit and signature ledgers. NDPR and GDPR alignment includes DPA templates, a sub-processor register, retention and deletion policies, breach-notification runbooks, and data-residency options. SOC 2 Type I readiness is scoped in the use of funds."],
               ["Employment & contracts", "Standard offer letters, contractor agreements, and confidentiality terms across both entities; no outstanding employment disputes. Customer-facing agreements — MSA, DPA, and enterprise addenda covering data portability, wind-down notice, and escrow — are templated and legally reviewed."],
@@ -901,15 +901,15 @@ const Investors = () => {
         <footer className="py-16 border-t" style={{ borderColor: NAVY }}>
           <div className="flex flex-wrap gap-8 justify-between items-end">
             <div>
-              <div className="text-xs tracking-[0.22em] uppercase" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Global Office</div>
-              <div className="mt-2 text-sm" style={{ color: `${NAVY}99` }}>A product of Soteria AI Technologies Inc. — a Delaware C-Corporation (USA)</div>
+              <div className="text-xs tracking-[0.22em] uppercase" style={{ color: GOLD, fontFamily: "'Space Grotesk', sans-serif" }}>Intelligent Office</div>
+              <div className="mt-2 text-sm" style={{ color: `${NAVY}99` }}>A product of the Intelligent Office showcase project — a Delaware C-Corporation (USA)</div>
               <div className="mt-1 text-sm" style={{ color: `${NAVY}99` }}>Africa engineering center: Lagos, Nigeria</div>
               <div className="mt-1 text-sm" style={{ color: `${NAVY}99` }}>Founder: Wisdom Jonathans</div>
             </div>
             <div className="text-xs text-right" style={{ color: `${NAVY}77` }}>
               Confidential — Prepared for prospective investors<br/>
               This document does not constitute an offer to sell securities.<br/>
-              <Link to="/" className="underline mt-2 inline-block">Return to globaloffice.cloud</Link>
+              <Link to="/" className="underline mt-2 inline-block">Return to intelligent-office.example</Link>
             </div>
           </div>
         </footer>

@@ -44,8 +44,8 @@ const DataRoomUploader = ({ onChanged }: { onChanged?: () => void }) => {
       });
       if (insErr) throw insErr;
       setTitle(""); setFile(null); setAdminOnly(false);
-      (document.getElementById("dr-file") as HTMLInputElement | null)?.value &&
-        ((document.getElementById("dr-file") as HTMLInputElement).value = "");
+      const fileInput = document.getElementById("dr-file") as HTMLInputElement | null;
+      if (fileInput) fileInput.value = "";
       await load();
       onChanged?.();
     } catch (err) {

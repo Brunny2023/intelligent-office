@@ -168,7 +168,7 @@ const MessageThread = ({ channelId, channelName }: MessageThreadProps) => {
       } else {
         for (let i = 0; i < selectedFiles.length; i++) {
           const file = selectedFiles[i];
-          const safeName = file.name.replace(/[^\w.\-]+/g, "_");
+          const safeName = file.name.replace(/[^\w.-]+/g, "_");
           const filePath = `chat/${channelId}/${Date.now()}-${i}-${safeName}`;
           const { error: upErr } = await supabase.storage
             .from("documents")

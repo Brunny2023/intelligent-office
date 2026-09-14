@@ -62,7 +62,7 @@ const Demo = () => {
       <div className="bg-svo-gold text-svo-navy px-4 py-2 flex items-center justify-between text-sm flex-wrap gap-2 z-30 relative">
         <div className="flex items-center gap-2 font-medium">
           <Sparkles className="w-4 h-4" />
-          Live animated tour of Global Office · sample org "Aurora Labs"
+          Live animated tour of Intelligent Office · sample org "Aurora Labs"
         </div>
         <div className="flex items-center gap-2">
           <Button size="sm" variant="ghost" onClick={() => setAutoplay((a) => !a)} className="h-8 text-svo-navy hover:bg-svo-navy/10">

@@ -8,9 +8,9 @@ const corsHeaders = {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
+const AI_GATEWAY_API_KEY = Deno.env.get("AI_GATEWAY_API_KEY")!;
 
-const SYSTEM_PROMPT = `You are the Enterprise Cognition engine of Global Office. You do NOT respond as a single assistant. You run an organization's virtual leadership through a deliberate reasoning lifecycle grounded ONLY in the organization's own context provided below.
+const SYSTEM_PROMPT = `You are the Enterprise Cognition engine of Intelligent Office. You do NOT respond as a single assistant. You run an organization's virtual leadership through a deliberate reasoning lifecycle grounded ONLY in the organization's own context provided below.
 
 You must respect the organization's governance_policies at all times. If a request violates a "blocking" policy, refuse and explain. If it triggers an "advisory" policy, proceed but surface the caution in risk/compliance.
 
@@ -110,9 +110,9 @@ Deno.serve(async (req) => {
       step_order: 1,
     });
 
-    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const resp = await fetch("https://your-ai-gateway.example/v1/chat/completions", {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}` },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${AI_GATEWAY_API_KEY}` },
       body: JSON.stringify({
         model: "openai/gpt-5.6-sol",
         reasoning_effort: "none",

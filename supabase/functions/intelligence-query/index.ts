@@ -8,7 +8,7 @@ const corsHeaders = {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
+const AI_GATEWAY_API_KEY = Deno.env.get("AI_GATEWAY_API_KEY")!;
 
 type Question =
   | "overloaded_people"
@@ -48,7 +48,7 @@ Deno.serve(async (req) => {
       {
         role: "system",
         content:
-          "You are the Global Office Organizational Intelligence advisor. Answer ONLY using the JSON facts provided. Cite entities by their label and id. If the facts do not support an answer, say so clearly. Return 3-6 short bullet points, each concrete and actionable. Never invent numbers.",
+          "You are the Intelligent Office Organizational Intelligence advisor. Answer ONLY using the JSON facts provided. Cite entities by their label and id. If the facts do not support an answer, say so clearly. Return 3-6 short bullet points, each concrete and actionable. Never invent numbers.",
       },
       {
         role: "user",
@@ -56,11 +56,11 @@ Deno.serve(async (req) => {
       },
     ];
 
-    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const resp = await fetch("https://your-ai-gateway.example/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Lovable-API-Key": LOVABLE_API_KEY,
+        "Configured Provider-API-Key": AI_GATEWAY_API_KEY,
       },
       body: JSON.stringify({
         model: "openai/gpt-5.6-sol",

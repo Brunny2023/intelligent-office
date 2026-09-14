@@ -6,14 +6,14 @@ const rows = [
   { name: "LiveKit Cloud", purpose: "Real-time audio/video conferencing and recording egress", location: "Global edge" },
   { name: "OpenAI, L.L.C.", purpose: "AI model inference for insights, summaries, and copilot features", location: "United States" },
   { name: "Resend / Email provider", purpose: "Transactional and authentication email delivery", location: "United States / EU" },
-  { name: "Lovable Cloud", purpose: "Application hosting and deployment platform", location: "Global edge" },
+  { name: "configured hosting", purpose: "Application hosting and deployment platform", location: "Global edge" },
 ];
 
 export default function Subprocessors() {
   return (
     <LegalLayout title="Subprocessors" updated="July 29, 2026">
       <p>
-        Soteria AI Technologies Inc. engages the following subprocessors to deliver the Global Office
+        the Intelligent Office showcase project engages the following subprocessors to deliver the Intelligent Office
         Service. We update this list before onboarding new subprocessors and notify Customers of material
         changes.
       </p>
@@ -42,7 +42,7 @@ export default function Subprocessors() {
       <h2>Notifications</h2>
       <p>
         To subscribe to subprocessor change notifications, email
-        <a href="mailto:legal@globaloffice.cloud"> legal@globaloffice.cloud</a>.
+        <a href="mailto:legal@intelligent-office.example"> legal@intelligent-office.example</a>.
       </p>
     </LegalLayout>
   );

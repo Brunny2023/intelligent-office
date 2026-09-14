@@ -8,7 +8,7 @@ const corsHeaders = {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
+const AI_GATEWAY_API_KEY = Deno.env.get("AI_GATEWAY_API_KEY")!;
 
 /**
  * Workflow executor. Callable modes:
@@ -81,9 +81,9 @@ Deno.serve(async (req) => {
       ]);
       const signals = { workload: (workload ?? []).slice(0, 10), stale_tasks: stale ?? [], overdue_tasks: overdue ?? [] };
       const prompt = `You are an operations analyst. Given the following organizational signals, propose 3 concrete workflow automations that would resolve visible bottlenecks. Return strict JSON: {"suggestions":[{"name":string,"why":string,"trigger":"task_created|task_completed|leave_requested|expense_submitted|document_uploaded|manual","steps":[{"action_type":"notification|assign_task|approval|escalation","reason":string}]}]}\n\nSIGNALS:\n${JSON.stringify(signals).slice(0, 6000)}`;
-      const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const aiRes = await fetch("https://your-ai-gateway.example/v1/chat/completions", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}` },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${AI_GATEWAY_API_KEY}` },
         body: JSON.stringify({
           model: "openai/gpt-5.6-sol",
           reasoning_effort: "none",

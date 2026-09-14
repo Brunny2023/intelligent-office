@@ -13,7 +13,7 @@ type Step = {
 };
 
 const script: Step[] = [
-  { cursor: { x: 50, y: 50 }, view: "dashboard", caption: "Welcome to your Global Office dashboard", duration: 1400 },
+  { cursor: { x: 50, y: 50 }, view: "dashboard", caption: "Welcome to your Intelligent Office dashboard", duration: 1400 },
   { cursor: { x: 12, y: 28 }, view: "dashboard", caption: "Navigate to any module instantly", duration: 1200 },
   { cursor: { x: 12, y: 38 }, view: "dashboard", caption: "Let's check Attendance", duration: 700 },
   { cursor: { x: 12, y: 38 }, click: true, view: "dashboard", caption: "Let's check Attendance", duration: 400 },
@@ -52,9 +52,9 @@ const DemoModal = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: bo
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-5xl p-0 overflow-hidden bg-svo-navy border-svo-gold/20">
-        <DialogTitle className="sr-only">Global Office product demo</DialogTitle>
+        <DialogTitle className="sr-only">Intelligent Office product demo</DialogTitle>
         <DialogDescription className="sr-only">
-          Animated walkthrough of the Global Office platform showing attendance, tasks and messaging modules.
+          Animated walkthrough of the Intelligent Office platform showing attendance, tasks and messaging modules.
         </DialogDescription>
         <div className="relative aspect-video w-full bg-gradient-to-br from-svo-navy via-svo-navy to-[#0a1428] overflow-hidden">
           {/* Mock browser chrome */}
@@ -65,7 +65,7 @@ const DemoModal = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: bo
               <div className="w-3 h-3 rounded-full bg-green-400/70" />
             </div>
             <div className="flex-1 mx-4 h-5 rounded bg-white/5 border border-white/5 flex items-center px-2 text-[10px] text-white/40">
-              acme.globaloffice.cloud/{current.view}
+              acme.intelligent-office.example/{current.view}
             </div>
           </div>
 
@@ -74,8 +74,8 @@ const DemoModal = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: bo
             {/* Sidebar */}
             <div className="w-[18%] border-r border-white/5 bg-black/20 p-2 flex flex-col gap-1">
               <div className="flex items-center gap-2 px-2 py-2 mb-2">
-                <img src="/globaloffice-logo.png" alt="" className="w-5 h-5" />
-                <span className="text-white text-[10px] font-bold">Global Office</span>
+                <img src="/favicon.png" alt="" className="w-5 h-5" />
+                <span className="text-white text-[10px] font-bold">Intelligent Office</span>
               </div>
               {[
                 { icon: BarChart3, label: "Dashboard", v: "dashboard" },

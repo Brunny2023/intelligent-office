@@ -4,7 +4,7 @@
  * Captures microphone audio with the Web Audio API, splits it into complete
  * utterances using a simple energy-based voice activity detector, encodes each
  * utterance as a 16 kHz mono WAV file and sends it to the `transcribe-audio`
- * backend function (Lovable AI speech-to-text). Far more accurate than the
+ * backend function (configured AI speech-to-text). Far more accurate than the
  * browser's built-in speech recognition, and works in browsers that have none.
  */
 

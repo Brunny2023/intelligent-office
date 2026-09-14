@@ -3,25 +3,25 @@ import { getTenantSlug, buildTenantUrl, TENANT_ROOT_DOMAIN } from "./tenant";
 
 describe("getTenantSlug", () => {
   it("returns null for apex and www", () => {
-    expect(getTenantSlug("globaloffice.cloud")).toBeNull();
-    expect(getTenantSlug("www.globaloffice.cloud")).toBeNull();
+    expect(getTenantSlug("intelligent-office.example")).toBeNull();
+    expect(getTenantSlug("www.intelligent-office.example")).toBeNull();
   });
 
   it("returns null for local/preview hosts", () => {
     expect(getTenantSlug("localhost")).toBeNull();
     expect(getTenantSlug("app.localhost")).toBeNull();
-    expect(getTenantSlug("id-preview--abc.lovable.app")).toBeNull();
-    expect(getTenantSlug("something.lovableproject.com")).toBeNull();
+    expect(getTenantSlug("preview.example.test")).toBeNull();
+    expect(getTenantSlug("something.preview.example.test")).toBeNull();
     expect(getTenantSlug("127.0.0.1")).toBeNull();
   });
 
   it("extracts leftmost label as tenant slug", () => {
-    expect(getTenantSlug("broadman.globaloffice.cloud")).toBe("broadman");
-    expect(getTenantSlug("Acme.GlobalOffice.Cloud")).toBe("acme");
+    expect(getTenantSlug("broadman.intelligent-office.example")).toBe("broadman");
+    expect(getTenantSlug("Acme.intelligent-office.example")).toBe("acme");
   });
 
   it("uses only the leftmost label for nested subs", () => {
-    expect(getTenantSlug("app.broadman.globaloffice.cloud")).toBe("app");
+    expect(getTenantSlug("app.broadman.intelligent-office.example")).toBe("app");
   });
 
   it("returns null for unrelated domains and empty input", () => {

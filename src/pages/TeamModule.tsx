@@ -47,7 +47,7 @@ const TeamModule = () => {
     // On a tenant subdomain (or local/preview), stay on the current origin.
     if (getTenantSlug() || !org?.slug) return window.location.origin;
     const host = window.location.hostname;
-    if (host === "localhost" || host.endsWith(".lovable.app") || host.endsWith(".lovableproject.com")) {
+    if (host === "localhost" || host.endsWith(".preview.example.test") || host.endsWith(".preview.example.test")) {
       return window.location.origin;
     }
     return buildTenantUrl(org.slug);

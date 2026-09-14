@@ -39,7 +39,7 @@ const pillars = [
   },
   {
     icon: Server, title: "Platform & hosting",
-    body: "Global Office runs on managed cloud infrastructure with encryption in transit (TLS 1.2+) and at rest. Object storage uses signed, time-limited URLs; private buckets never expose direct file listings.",
+    body: "Intelligent Office runs on managed cloud infrastructure with encryption in transit (TLS 1.2+) and at rest. Object storage uses signed, time-limited URLs; private buckets never expose direct file listings.",
     chips: ["TLS 1.2+", "At-rest encryption", "Signed URLs"],
   },
   {
@@ -54,7 +54,7 @@ const pillars = [
   },
   {
     icon: LifeBuoy, title: "Continuity & exit rights",
-    body: "Customers can export documents, tasks, KPIs, memos, and audit logs in open formats at any time. Global Office commits contractually to data portability and a wind-down notice period, so no organization is ever locked in or left stranded if commercial circumstances change.",
+    body: "Customers can export documents, tasks, KPIs, memos, and audit logs in open formats at any time. Intelligent Office commits contractually to data portability and a wind-down notice period, so no organization is ever locked in or left stranded if commercial circumstances change.",
     chips: ["Open-format export", "Portability commitment", "Wind-down notice"],
   },
 ];
@@ -74,10 +74,10 @@ export default function TrustCenter() {
               <Shield className="w-3.5 h-3.5" /> Trust Center
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
-              Security, privacy & compliance at Global Office
+              Security, privacy & compliance at Intelligent Office
             </h1>
             <p className="mt-4 text-lg text-muted-foreground">
-              This page is maintained by Global Office to answer the questions security, privacy, and procurement teams
+              This page is maintained by Intelligent Office to answer the questions security, privacy, and procurement teams
               ask before adopting our organizational intelligence layer. It describes the controls that are
               <span className="text-foreground font-medium"> actually implemented in the product today</span> -
               not aspirations. It is not an independent certification.
@@ -116,7 +116,7 @@ export default function TrustCenter() {
               <div>
                 <h3 className="text-base font-semibold text-foreground">Shared responsibility</h3>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Global Office provides the platform controls described above. Each customer organization is
+                  Intelligent Office provides the platform controls described above. Each customer organization is
                   responsible for configuring retention, MFA enforcement, role assignments, sharing consents,
                   and any regulatory workflows specific to their industry - including who receives single-use access
                   tokens for joining the organization. Owners can generate an on-demand Compliance Report from the
@@ -136,9 +136,9 @@ export default function TrustCenter() {
           </section>
 
           <div className="mt-8 flex flex-wrap gap-3 text-xs text-muted-foreground">
-            <span>Security contact: security@globaloffice.cloud</span>
+            <span>Security contact: security@intelligent-office.example</span>
             <span>-</span>
-            <span>Vulnerability disclosure: security@globaloffice.cloud</span>
+            <span>Vulnerability disclosure: security@intelligent-office.example</span>
             <span>-</span>
             <Link to="/investors" className="text-accent hover:underline">Enterprise &amp; investors</Link>
           </div>

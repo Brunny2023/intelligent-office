@@ -11,21 +11,21 @@ describe("Footer", () => {
       </MemoryRouter>
     );
 
-  it("shows Global Office branding and Soteria copyright", () => {
+  it("shows Intelligent Office branding and showcase provenance", () => {
     renderFooter();
-    expect(screen.getByAltText("Global Office")).toBeInTheDocument();
+    expect(screen.getByAltText("Intelligent Office")).toBeInTheDocument();
     expect(
-      screen.getByText(/© 2026 Soteria AI Technologies\. All rights reserved\./i)
+      screen.getByText(/© 2026 the Intelligent Office showcase project\. All rights reserved\./i)
     ).toBeInTheDocument();
   });
 
-  it("links to all legal and trust pages", () => {
+  it("links to the focused public pages and source repository", () => {
     renderFooter();
-    const hrefs = ["/legal/privacy", "/legal/terms", "/legal/dpa", "/legal/subprocessors", "/trust"];
-    for (const href of hrefs) {
-      expect(
-        screen.getByRole("link", { name: new RegExp(href.split("/").pop()!, "i") })
-      ).toHaveAttribute("href", href);
-    }
+    expect(screen.getByRole("link", { name: /features/i })).toHaveAttribute("href", "/features");
+    expect(screen.getByRole("link", { name: /demo/i })).toHaveAttribute("href", "/demo");
+    expect(screen.getByRole("link", { name: /source/i })).toHaveAttribute(
+      "href",
+      "https://github.com/Brunny2023/intelligent-office"
+    );
   });
 });

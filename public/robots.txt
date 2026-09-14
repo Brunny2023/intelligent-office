@@ -29,4 +29,4 @@ Disallow: /security
 Disallow: /onboarding
 Disallow: /investors
 
-Sitemap: https://globaloffice.cloud/sitemap.xml
+Sitemap: https://intelligent-office.example/sitemap.xml

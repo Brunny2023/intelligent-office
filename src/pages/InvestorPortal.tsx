@@ -84,7 +84,7 @@ const AuthPanel = ({ onRequest }: { onRequest: () => void }) => {
     <Shell>
       <Title eyebrow="Secure Access">Investor Portal</Title>
       <p className="max-w-2xl mb-10 leading-relaxed" style={{ color: `${NAVY}CC` }}>
-        This portal holds the Global Office data room, your due-diligence tracker, and a secure channel to the
+        This portal holds the Intelligent Office data room, your due-diligence tracker, and a secure channel to the
         founding team. Access is granted to qualified investors under NDA and every document view is logged.
       </p>
       <div className="grid md:grid-cols-2 gap-10">
@@ -408,7 +408,7 @@ const InvestorPortal = () => {
             {msgs.map((m) => (
               <div key={m.id} className="border p-3 text-sm" style={{ borderColor: m.from_company ? GOLD : `${NAVY}33`, background: m.from_company ? `${GOLD}0D` : "transparent" }}>
                 <div className="text-[10px] tracking-[0.18em] uppercase mb-1" style={{ color: m.from_company ? GOLD : `${NAVY}77`, fontFamily: "'Space Grotesk', sans-serif" }}>
-                  {m.from_company ? "Global Office" : "You"} · {m.kind.replace("_", " ")} · {new Date(m.created_at).toLocaleString()}
+                  {m.from_company ? "Intelligent Office" : "You"} · {m.kind.replace("_", " ")} · {new Date(m.created_at).toLocaleString()}
                 </div>
                 <p style={{ color: `${NAVY}DD` }}>{m.body}</p>
               </div>
@@ -432,7 +432,7 @@ const InvestorPortal = () => {
 
         <TabsContent value="meet" className="mt-8">
           <p className="text-sm mb-6 max-w-2xl" style={{ color: `${NAVY}CC` }}>
-            Book time with the founding team or join a live product demo. Sessions run inside Global Office's own
+            Book time with the founding team or join a live product demo. Sessions run inside Intelligent Office's own
             executive meeting room — the fundraising process itself runs on the product.
           </p>
           <div className="flex flex-wrap gap-3">

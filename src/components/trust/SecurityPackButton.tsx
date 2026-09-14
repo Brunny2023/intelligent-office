@@ -11,8 +11,8 @@ const SECTIONS: Section[] = [
   {
     heading: "1. Scope & purpose",
     lines: [
-      "This Security & Continuity Pack summarises the controls Global Office operates for its Intelligent",
-      "Digital Office platform. It is maintained by Global Office (Soteria AI Technologies) for enterprise",
+      "This Security & Continuity Pack summarises the controls Intelligent Office operates for its Intelligent",
+      "Digital Office platform. It is maintained by Intelligent Office (the Intelligent Office showcase project) for enterprise",
       "buyers, procurement and investors. It is a statement of implemented controls and operating targets -",
       "it is not an independent audit report or certification.",
     ],
@@ -69,7 +69,7 @@ const SECTIONS: Section[] = [
       "A public status page reports live service health, incident history and monthly reliability statistics.",
       "Security and availability incidents are triaged on detection; affected customers are notified with an",
       "initial assessment and a written post-incident summary once resolved.",
-      "Security contact and vulnerability disclosure: security@globaloffice.cloud.",
+      "Security contact and vulnerability disclosure: security@intelligent-office.example.",
     ],
   },
   {
@@ -79,13 +79,13 @@ const SECTIONS: Section[] = [
       "and messages older than the window.",
       "GDPR/NDPR workflows, deletion requests and MFA enforcement are configurable per organization.",
       "Customers can export documents, tasks, KPIs, memos and audit logs in open formats at any time.",
-      "Global Office commits contractually to data portability and a wind-down notice period.",
+      "Intelligent Office commits contractually to data portability and a wind-down notice period.",
     ],
   },
   {
     heading: "8. Insurance & corporate resilience",
     lines: [
-      "Global Office maintains, or is in the process of binding as part of its enterprise readiness programme:",
+      "Intelligent Office maintains, or is in the process of binding as part of its enterprise readiness programme:",
       "  - Cyber liability and data-breach response cover.",
       "  - Technology errors & omissions (professional indemnity) cover.",
       "  - General commercial liability cover.",
@@ -97,7 +97,7 @@ const SECTIONS: Section[] = [
   {
     heading: "9. Shared responsibility",
     lines: [
-      "Global Office provides the platform controls above. Each customer organization is responsible for",
+      "Intelligent Office provides the platform controls above. Each customer organization is responsible for",
       "configuring retention, MFA enforcement, role assignments, sharing consents, who receives access tokens,",
       "and any regulatory workflows specific to its industry.",
     ],
@@ -110,13 +110,13 @@ export const generateSecurityPack = () => {
   const width = 500;
   let y = 70;
 
-  doc.setFontSize(20).text("Global Office", left, y);
+  doc.setFontSize(20).text("Intelligent Office", left, y);
   y += 24;
   doc.setFontSize(15).text("Security & Continuity Pack", left, y);
   y += 20;
   doc.setFontSize(9).text(`Version ${format(new Date(), "yyyy.MM")} · Issued ${format(new Date(), "d MMMM yyyy")}`, left, y);
   y += 14;
-  doc.text("Soteria AI Technologies · security@globaloffice.cloud · globaloffice.cloud/trust", left, y);
+  doc.text("the Intelligent Office showcase project · security@intelligent-office.example · intelligent-office.example/trust", left, y);
   y += 26;
 
   SECTIONS.forEach((s) => {
@@ -139,7 +139,7 @@ export const generateSecurityPack = () => {
   doc.setFontSize(8);
   doc.text(
     doc.splitTextToSize(
-      "Disclaimer: this document describes controls implemented and operated by Global Office at the date of issue. It is app-owner maintained content, not an independent certification or audit opinion. Enterprise buyers may request supporting evidence under NDA.",
+      "Disclaimer: this document describes controls implemented and operated by Intelligent Office at the date of issue. It is app-owner maintained content, not an independent certification or audit opinion. Enterprise buyers may request supporting evidence under NDA.",
       width
     ) as string[],
     left,

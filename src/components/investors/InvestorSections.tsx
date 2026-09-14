@@ -79,7 +79,7 @@ export const IntelligenceStack = () => (
       The Missing Layer in Enterprise Software.
     </h2>
     <p className="max-w-3xl text-[15px] md:text-base leading-[1.75] mb-12" style={{ color: `${NAVY}CC` }}>
-      Traditional software manages functions. Global Office manages organizational intelligence. Operational surfaces stream data upward into a persistent knowledge graph; intelligence streams recommendations and automation back down.
+      Traditional software manages functions. Intelligent Office manages organizational intelligence. Operational surfaces stream data upward into a persistent knowledge graph; intelligence streams recommendations and automation back down.
     </p>
 
     <div className="relative max-w-3xl mx-auto">
@@ -198,7 +198,7 @@ const incumbents = [
   { name: "Salesforce", owns: "Customers", limit: "CRM-centric; org intelligence stops at the pipeline edge." },
   { name: "SAP / Oracle", owns: "Resources", limit: "ERP-centric; brittle, expensive, months to deploy — inaccessible to modern SMEs." },
   { name: "Notion", owns: "Knowledge", limit: "Knowledge-centric; no execution, HR, finance, or intelligence layer." },
-  { name: "Global Office", owns: "Organizational Intelligence", limit: "Graph-centric — every entity, action, and decision is a first-class citizen in one intelligence surface.", highlight: true },
+  { name: "Intelligent Office", owns: "Organizational Intelligence", limit: "Graph-centric — every entity, action, and decision is a first-class citizen in one intelligence surface.", highlight: true },
 ];
 
 export const IncumbentGrid = () => (
@@ -314,7 +314,7 @@ const matrix = [
   { name: "Notion", x: 0.35, y: 0.2 },
   { name: "Monday", x: 0.25, y: 0.15 },
   { name: "Zoho", x: 0.3, y: 0.5 },
-  { name: "Global Office", x: 0.85, y: 0.9, highlight: true },
+  { name: "Intelligent Office", x: 0.85, y: 0.9, highlight: true },
 ];
 
 export const PositioningMatrix = () => (
@@ -377,7 +377,7 @@ const validationItems = [
   { label: "Architecture Review", value: "A-Grade", note: "Independent senior-engineer review, no critical findings" },
   { label: "Security Posture", value: "RLS + Audit", note: "Row-level isolation, immutable audit ledger, signed memos" },
   { label: "Customer Interviews", value: "40+", note: "SME operators across US, UK, EU, and SSA" },
-  { label: "Waitlist", value: "Open", note: "Accepting registrations at globaloffice.cloud" },
+  { label: "Waitlist", value: "Open", note: "Accepting registrations at intelligent-office.example" },
   { label: "Design Partners", value: "In Discussion", note: "First cohort under NDA — activating at close of round" },
   { label: "Strategic Signal", value: "Weekly", note: "Founder-led thought-leadership newsletter" },
   { label: "Advisor Bench", value: "Assembled", note: "AI infra, SaaS GTM, and international expansion" },
@@ -503,7 +503,7 @@ export const ClosingStatement = () => (
         It will be defined by systems that understand organizations.
       </span>
       <span className="block mt-6" style={{ color: GOLD }}>
-        Global Office is building that system.
+        Intelligent Office is building that system.
       </span>
     </motion.blockquote>
   </section>

@@ -4,7 +4,7 @@ import { Star } from "lucide-react";
 
 const testimonials = [
   {
-    quote: "Global Office replaced 6 different tools for us. Our team finally operates as one unit, even across 3 continents.",
+    quote: "Intelligent Office replaced 6 different tools for us. Our team finally operates as one unit, even across 3 continents.",
     name: "Amara Okafor",
     role: "COO, TechBridge Africa",
     stars: 5,

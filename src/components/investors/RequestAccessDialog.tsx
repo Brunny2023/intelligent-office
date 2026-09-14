@@ -112,8 +112,8 @@ export default function RequestAccessDialog({
             <div><Label htmlFor="ir-msg">Why you're interested</Label><Textarea id="ir-msg" value={form.message} onChange={set("message")} maxLength={1500} rows={3} /></div>
 
             <div className="rounded-md border p-3 text-xs text-muted-foreground max-h-32 overflow-y-auto leading-relaxed">
-              <strong className="text-foreground">Mutual Non-Disclosure — summary.</strong> Materials in the Global Office
-              investor data room are confidential information of Soteria AI Technologies Inc. By requesting access you agree
+              <strong className="text-foreground">Mutual Non-Disclosure — summary.</strong> Materials in the Intelligent Office
+              investor data room are confidential information of the Intelligent Office showcase project By requesting access you agree
               to (a) use the materials solely to evaluate a potential investment, (b) not disclose them to any third party
               other than your professional advisers bound by equivalent confidentiality, (c) not reproduce or distribute them,
               and (d) return or destroy them on request. Your access is logged per document. This summary supplements, and does

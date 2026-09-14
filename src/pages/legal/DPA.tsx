@@ -4,8 +4,8 @@ export default function DPA() {
   return (
     <LegalLayout title="Data Processing Addendum" updated="July 29, 2026">
       <p>
-        This Data Processing Addendum ("DPA") forms part of the Terms of Service between Soteria AI
-        Technologies Inc. ("Processor") and the Customer ("Controller") for use of the Global Office
+        This Data Processing Addendum ("DPA") forms part of the Terms of Service between the original product team AI
+        Technologies Inc. ("Processor") and the Customer ("Controller") for use of the Intelligent Office
         platform ("Service"). It applies where Processor processes Personal Data on behalf of Controller
         under the GDPR, UK GDPR, NDPR, and comparable data-protection laws.
       </p>
@@ -38,7 +38,7 @@ export default function DPA() {
       <h2>4. Subprocessors</h2>
       <p>
         Controller authorizes Processor to engage the subprocessors listed at
-        <a href="/legal/subprocessors"> globaloffice.cloud/legal/subprocessors</a>. Processor will notify
+        <a href="/legal/subprocessors"> intelligent-office.example/legal/subprocessors</a>. Processor will notify
         Controller of intended changes and Controller may object on reasonable grounds.
       </p>
 
@@ -80,7 +80,7 @@ export default function DPA() {
       </ul>
 
       <p>
-        To sign this DPA, contact <a href="mailto:legal@globaloffice.cloud">legal@globaloffice.cloud</a>.
+        To sign this DPA, contact <a href="mailto:legal@intelligent-office.example">legal@intelligent-office.example</a>.
       </p>
     </LegalLayout>
   );

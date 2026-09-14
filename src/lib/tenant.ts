@@ -1,9 +1,9 @@
-const ROOT_DOMAIN = "globaloffice.cloud";
+const ROOT_DOMAIN = "intelligent-office.example";
 
 /**
  * Extract the tenant subdomain from the current hostname.
  * Returns null when running on the apex domain, www, localhost,
- * Lovable preview/staging hosts, or any non-tenant host.
+ * preview/staging hosts, or any non-tenant host.
  */
 export function getTenantSlug(hostname: string = window.location.hostname): string | null {
   if (!hostname) return null;
@@ -13,8 +13,6 @@ export function getTenantSlug(hostname: string = window.location.hostname): stri
   if (
     host === "localhost" ||
     host.endsWith(".localhost") ||
-    host.endsWith(".lovable.app") ||
-    host.endsWith(".lovableproject.com") ||
     /^\d{1,3}(\.\d{1,3}){3}$/.test(host)
   ) {
     return null;

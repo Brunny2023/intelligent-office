@@ -13,7 +13,7 @@ const ROLE_TITLE: Record<string, string> = {
   owner: "Set up your organization",
   executive: "Set up your executive view",
   manager: "Set up your team's workspace",
-  staff: "Get started in Global Office",
+  staff: "Get started in Intelligent Office",
   contractor: "Get started on your engagement",
   auditor: "Set up your audit workspace",
 };

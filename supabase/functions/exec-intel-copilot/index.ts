@@ -5,7 +5,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
+const AI_GATEWAY_API_KEY = Deno.env.get("AI_GATEWAY_API_KEY")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
@@ -14,10 +14,10 @@ const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 // this whole blob as retrieval context.
 const INVESTOR_KB = {
   company: {
-    name: "Global Office",
+    name: "Intelligent Office",
     tagline: "The Organizational Intelligence Layer for the Enterprise",
     stage: "Pre-seed, pre-launch commercial",
-    incorporation: "Soteria AI Technologies Inc. — a Delaware C-Corporation",
+    incorporation: "the Intelligent Office showcase project — a Delaware C-Corporation",
     hq: "Global (remote-first, Africa origin, global roadmap)",
   },
   raise: {
@@ -74,7 +74,7 @@ const INVESTOR_KB = {
     vs_odoo_zoho: "Emerging-market-native pricing and posture, AI-first, not ERP-first.",
   },
   team: {
-    founder: "Emmanuel (Manny), Founder & CEO — Soteria AI Technologies",
+    founder: "Emmanuel (Manny), Founder & CEO — the Intelligent Office showcase project",
     hiring_priorities: ["Head of AI/ML", "Head of GTM (Enterprise)", "Head of Compliance", "2 Senior Engineers"],
   },
   roadmap: {
@@ -85,7 +85,7 @@ const INVESTOR_KB = {
   risks_mitigations: [
     "Category risk — mitigated by pilot-led narrative and cited moat",
     "Enterprise sales cycle — mitigated by consultancy-led pilots and DFI partnerships",
-    "AI cost — mitigated by grounded retrieval + Lovable AI Gateway pooling",
+    "AI cost — mitigated by grounded retrieval + configured AI Gateway pooling",
     "Talent — mitigated by remote-first stack and equity generosity",
   ],
   sources: {
@@ -153,9 +153,9 @@ Deno.serve(async (req) => {
       { role: "user", content: `Investor just said: "${utterance}"\n\nReturn the JSON per contract.` },
     ];
 
-    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const resp = await fetch("https://your-ai-gateway.example/v1/chat/completions", {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}` },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${AI_GATEWAY_API_KEY}` },
       body: JSON.stringify({
         model: "openai/gpt-5.6-sol",
         reasoning_effort: "none",

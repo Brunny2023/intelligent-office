@@ -36,7 +36,7 @@ const pillars = [
 
 const proof = [
   {
-    quote: "We moved payroll approvals, board memos, and daily execution into Global Office. The signed ledger alone shortened our audit cycle from three weeks to four days.",
+    quote: "We moved payroll approvals, board memos, and daily execution into Intelligent Office. The signed ledger alone shortened our audit cycle from three weeks to four days.",
     name: "Adaeze Nwosu",
     role: "CFO, Meridian Logistics Group",
     metric: "82% faster audit close",
@@ -73,7 +73,7 @@ const ResilienceSection = () => {
             If your whole company lives here, it has to be unbreakable.
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Global Office is engineered to the standards of the systems banks and hospitals depend on: encrypted at every
+            Intelligent Office is engineered to the standards of the systems banks and hospitals depend on: encrypted at every
             layer, backed up continuously, exportable on demand, and auditable line by line.
           </p>
         </motion.div>
@@ -122,7 +122,7 @@ const ResilienceSection = () => {
             <ShieldCheck className="w-5 h-5 text-svo-gold mt-0.5 shrink-0" />
             <p className="text-sm text-muted-foreground">
               GDPR &amp; NDPR-aligned controls, configurable retention, MFA enforcement, and an append-only audit ledger.
-              These are product controls maintained by Global Office, not an independent certification.
+              These are product controls maintained by Intelligent Office, not an independent certification.
             </p>
           </div>
           <div className="shrink-0 flex flex-wrap items-center gap-4">

@@ -4,8 +4,8 @@ export default function Privacy() {
   return (
     <LegalLayout title="Privacy Policy" updated="July 29, 2026">
       <p>
-        This Privacy Policy explains how Soteria AI Technologies Inc. ("Soteria", "we") collects, uses,
-        and protects personal information when you use the Global Office platform ("Service").
+        This Privacy Policy explains how the Intelligent Office showcase project ("the original product team", "we") collects, uses,
+        and protects personal information when you use the Intelligent Office platform ("Service").
       </p>
 
       <h2>1. Information We Collect</h2>
@@ -52,7 +52,7 @@ export default function Privacy() {
       <h2>6. Your Rights</h2>
       <p>
         Subject to applicable law you may access, correct, export, restrict, or delete your personal
-        data, and withdraw consent. Contact <a href="mailto:privacy@globaloffice.cloud">privacy@globaloffice.cloud</a>.
+        data, and withdraw consent. Contact <a href="mailto:privacy@intelligent-office.example">privacy@intelligent-office.example</a>.
       </p>
 
       <h2>7. Security</h2>
@@ -75,7 +75,7 @@ export default function Privacy() {
 
       <h2>11. Contact</h2>
       <p>
-        Data Protection Officer: <a href="mailto:privacy@globaloffice.cloud">privacy@globaloffice.cloud</a>.
+        Data Protection Officer: <a href="mailto:privacy@intelligent-office.example">privacy@intelligent-office.example</a>.
       </p>
     </LegalLayout>
   );

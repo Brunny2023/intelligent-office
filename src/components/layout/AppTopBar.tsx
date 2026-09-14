@@ -31,7 +31,7 @@ const AppTopBar = ({ title }: { title?: string }) => {
           </div>
         )}
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-foreground truncate">{org?.name || "Global Office"}</p>
+          <p className="text-sm font-semibold text-foreground truncate">{org?.name || "Intelligent Office"}</p>
           {title && <p className="text-[11px] text-muted-foreground truncate">{title}</p>}
         </div>
       </div>

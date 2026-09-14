@@ -72,8 +72,8 @@ const VerifiedMetrics = () => {
         ]} />
 
         <Band title="Company Metrics" rows={[
-          { label: "Incorporation", value: "Delaware C-Corp", note: "Soteria AI Technologies Inc.", source: "internal" },
-          { label: "Engineering center", value: "Lagos, NG", note: "Soteria AI Technologies Inc. — Africa engineering center", source: "internal" },
+          { label: "Incorporation", value: "Delaware C-Corp", note: "the Intelligent Office showcase project", source: "internal" },
+          { label: "Engineering center", value: "Lagos, NG", note: "the Intelligent Office showcase project — Africa engineering center", source: "internal" },
           { label: "Headquarters", value: "Delaware, USA", note: "Engineering hub: Lagos, Nigeria", source: "internal" },
           { label: "Team", value: "3 founders", note: "Plus contract engineering and design", source: "internal" },
           { label: "Countries served", value: fmt(m?.countries_served), note: "Launch markets: NG · KE · ZA · GH", source: "internal" },

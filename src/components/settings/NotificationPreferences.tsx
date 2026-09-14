@@ -60,7 +60,7 @@ export default function NotificationPreferences() {
       try {
         await fetch(prefs.slack_webhook_url, {
           method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: "Global Office test alert - Slack delivery is wired up." }),
+          body: JSON.stringify({ text: "Intelligent Office test alert - Slack delivery is wired up." }),
         });
       } catch { /* CORS on some webhooks */ }
     }

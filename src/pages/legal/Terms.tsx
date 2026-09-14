@@ -4,14 +4,14 @@ export default function Terms() {
   return (
     <LegalLayout title="Terms of Service" updated="July 29, 2026">
       <p>
-        These Terms of Service ("Terms") govern your access to and use of the Global Office platform
-        ("Service") provided by Soteria AI Technologies Inc., a Delaware corporation ("Soteria", "we",
+        These Terms of Service ("Terms") govern your access to and use of the Intelligent Office platform
+        ("Service") provided by the Intelligent Office showcase project, a Delaware corporation ("the original product team", "we",
         "our"). By creating an account, accessing, or using the Service you agree to these Terms.
       </p>
 
       <h2>1. The Service</h2>
       <p>
-        Global Office is a multi-tenant organizational intelligence platform. Access is provided on a
+        Intelligent Office is a multi-tenant organizational intelligence platform. Access is provided on a
         subscription basis to the organization that registers the workspace ("Customer"). Individual
         users are authorized under the Customer's account.
       </p>
@@ -25,7 +25,7 @@ export default function Terms() {
 
       <h2>3. Customer Data</h2>
       <p>
-        Customer retains all rights to data submitted to the Service ("Customer Data"). Soteria processes
+        Customer retains all rights to data submitted to the Service ("Customer Data"). the original product team processes
         Customer Data solely to provide, secure, and improve the Service, as described in our Privacy
         Policy and Data Processing Addendum.
       </p>
@@ -43,12 +43,12 @@ export default function Terms() {
       <p>
         The Service includes AI-assisted features (insights, summaries, predictive alerts, copilots).
         AI output is advisory and may contain errors. Customer is responsible for reviewing AI output
-        before acting on it. Soteria does not use Customer Data to train foundation models.
+        before acting on it. the original product team does not use Customer Data to train foundation models.
       </p>
 
       <h2>6. Fees</h2>
       <p>
-        Paid plans are billed in advance. Fees are non-refundable except as required by law. Soteria may
+        Paid plans are billed in advance. Fees are non-refundable except as required by law. the original product team may
         change pricing with 30 days' notice for the next renewal term.
       </p>
 
@@ -60,14 +60,14 @@ export default function Terms() {
 
       <h2>8. Warranties and Disclaimers</h2>
       <p>
-        The Service is provided "as is". Soteria disclaims all implied warranties to the maximum extent
+        The Service is provided "as is". the original product team disclaims all implied warranties to the maximum extent
         permitted by law, including merchantability, fitness for a particular purpose, and non-infringement.
       </p>
 
       <h2>9. Limitation of Liability</h2>
       <p>
         To the maximum extent permitted by law, neither party will be liable for indirect, incidental,
-        special, or consequential damages. Soteria's aggregate liability under these Terms will not exceed
+        special, or consequential damages. the original product team's aggregate liability under these Terms will not exceed
         the fees paid by Customer in the twelve months preceding the claim.
       </p>
 
@@ -86,7 +86,7 @@ export default function Terms() {
 
       <h2>12. Contact</h2>
       <p>
-        Questions about these Terms: <a href="mailto:legal@globaloffice.cloud">legal@globaloffice.cloud</a>.
+        Questions about these Terms: <a href="mailto:legal@intelligent-office.example">legal@intelligent-office.example</a>.
       </p>
     </LegalLayout>
   );

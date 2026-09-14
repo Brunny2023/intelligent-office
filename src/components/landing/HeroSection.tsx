@@ -48,7 +48,7 @@ const HeroSection = () => {
           >
             <div className="w-1.5 h-1.5 rounded-full bg-svo-gold animate-pulse" />
             <span className="text-xs font-medium text-svo-gold-light tracking-wide uppercase">
-              The Intelligent Digital Office
+              AI-assisted workplace orchestration
             </span>
           </motion.div>
 
@@ -58,8 +58,8 @@ const HeroSection = () => {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight text-primary-foreground leading-[1.1] text-balance"
           >
-            Run your whole company{" "}
-            <span className="gradient-text">without the bricks</span>
+            Turn workplace signals into{" "}
+            <span className="gradient-text">coordinated action</span>
           </motion.h1>
 
           <motion.p
@@ -68,10 +68,9 @@ const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.25 }}
             className="mt-6 text-lg md:text-xl text-primary-foreground/60 max-w-2xl mx-auto text-balance leading-relaxed"
           >
-            Global Office is the intelligent digital office where your business actually
-            operates — people, execution, meetings, HR and finance in one place, run on an
-            AI cognition layer with a virtual C-suite, expert consultants, and AI-run
-            departments that reason, decide, and remember on your own data.
+            Intelligent Office is a portfolio implementation of a modern digital workplace.
+            Teams organize work, communicate, and use AI-assisted analysis to turn operational
+            data into practical next steps from one responsive workspace.
           </motion.p>
 
           <motion.div
@@ -86,7 +85,7 @@ const HeroSection = () => {
                 className="bg-svo-gold text-svo-navy hover:bg-svo-gold/90 font-semibold text-base px-8 h-12 rounded-xl shadow-lg"
                 style={{ boxShadow: "0 8px 32px -8px hsl(38 80% 55% / 0.4)" }}
               >
-                Start Free Trial
+                Explore the showcase
                 <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             </Link>
@@ -108,11 +107,11 @@ const HeroSection = () => {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="mt-16 flex items-center justify-center gap-8 text-primary-foreground/40 text-xs"
           >
-            <span>No credit card required</span>
+            <span>Open implementation</span>
             <span className="w-1 h-1 rounded-full bg-primary-foreground/20" />
-            <span>14-day free trial</span>
+            <span>Supabase-backed workflows</span>
             <span className="w-1 h-1 rounded-full bg-primary-foreground/20 hidden sm:block" />
-            <span className="hidden sm:block">Enterprise ready</span>
+            <span className="hidden sm:block">AI-assisted analysis</span>
           </motion.div>
         </div>
 

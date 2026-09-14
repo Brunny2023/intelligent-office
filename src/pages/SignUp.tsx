@@ -59,7 +59,7 @@ const SignUp = () => {
               <Shield className="w-5 h-5 text-svo-navy" />
             </div>
             <span className="text-xl font-bold font-['Space_Grotesk'] text-primary-foreground">
-              Global Office<span className="text-svo-gold">.</span>
+              Intelligent Office<span className="text-svo-gold">.</span>
             </span>
           </Link>
           <h1 className="text-2xl font-bold text-primary-foreground">

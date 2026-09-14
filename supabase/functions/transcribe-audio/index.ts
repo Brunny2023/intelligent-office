@@ -1,4 +1,4 @@
-// Live meeting captions: high-accuracy speech-to-text via Lovable AI.
+// Live meeting captions: high-accuracy speech-to-text via configured AI.
 // Receives a complete WAV segment and streams back the transcript.
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,7 +11,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    const apiKey = Deno.env.get("AI_GATEWAY_API_KEY");
     if (!apiKey) {
       return new Response(JSON.stringify({ error: "Transcription is not configured." }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -40,7 +40,7 @@ Deno.serve(async (req) => {
     const prompt = form.get("prompt");
     if (typeof prompt === "string" && prompt.trim()) upstream.append("prompt", prompt.slice(0, 900));
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/audio/transcriptions", {
+    const res = await fetch("https://your-ai-gateway.example/v1/audio/transcriptions", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}` },
       body: upstream,

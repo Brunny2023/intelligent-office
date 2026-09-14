@@ -26,7 +26,7 @@ const LiveDemoSection = () => {
             transition={{ delay: 0.05 }}
             className="text-3xl md:text-5xl font-bold tracking-tight text-primary-foreground mb-4"
           >
-            See Global Office in motion.
+            See Intelligent Office in motion.
           </motion.h2>
           <p className="text-primary-foreground/60 text-base md:text-lg">
             A continuously looping tour of every module — sample org "Aurora Labs". Click any module in the sidebar to jump ahead, or expand to fullscreen.

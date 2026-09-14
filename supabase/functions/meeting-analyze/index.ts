@@ -8,11 +8,11 @@ const corsHeaders = {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
+const AI_GATEWAY_API_KEY = Deno.env.get("AI_GATEWAY_API_KEY")!;
 
 /**
  * Meeting analyzer. Modes:
- *   { mode: "transcribe", recording_id }  → download audio, transcribe via Lovable AI Gateway
+ *   { mode: "transcribe", recording_id }  → download audio, transcribe via configured AI Gateway
  *   { mode: "analyze",    recording_id }  → summarize transcript, extract action items
  *   { mode: "full",       recording_id }  → transcribe + analyze in one call
  *   { mode: "push_tasks", recording_id, indexes:[..] } → create tasks from action items
@@ -46,9 +46,9 @@ Deno.serve(async (req) => {
       form.append("file", fileData, rec.storage_path.split("/").pop() ?? "audio.webm");
       form.append("model", "openai/gpt-4o-transcribe");
       form.append("response_format", "json");
-      const tRes = await fetch("https://ai.gateway.lovable.dev/v1/audio/transcriptions", {
+      const tRes = await fetch("https://your-ai-gateway.example/v1/audio/transcriptions", {
         method: "POST",
-        headers: { Authorization: `Bearer ${LOVABLE_API_KEY}` },
+        headers: { Authorization: `Bearer ${AI_GATEWAY_API_KEY}` },
         body: form,
       });
       const tJson: any = await tRes.json().catch(() => ({}));
@@ -79,9 +79,9 @@ Deno.serve(async (req) => {
         for (let i = 0; i < fullText.length; i += CHUNK) chunks.push(fullText.slice(i, i + CHUNK));
         const partials: string[] = [];
         for (const c of chunks) {
-          const cRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          const cRes = await fetch("https://your-ai-gateway.example/v1/chat/completions", {
             method: "POST",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}` },
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${AI_GATEWAY_API_KEY}` },
             body: JSON.stringify({
               model: "openai/gpt-5.6-sol", reasoning_effort: "none",
               messages: [{ role: "user", content:
@@ -101,9 +101,9 @@ Deno.serve(async (req) => {
 
 TRANSCRIPT (${transcript.language ?? "auto"}):
 ${workingText}`;
-      const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const aiRes = await fetch("https://your-ai-gateway.example/v1/chat/completions", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}` },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${AI_GATEWAY_API_KEY}` },
         body: JSON.stringify({
           model: "openai/gpt-5.6-sol",
           reasoning_effort: "none",
@@ -163,9 +163,9 @@ ${workingText}`;
         .eq("recording_id", recordingId).order("created_at",{ascending:false}).limit(1).maybeSingle();
       if (!summary) return json({ error: "no_summary" }, 404);
       const prompt = `Translate the following meeting summary, key decisions and action items into ${target}. Return strict JSON {"summary":"...","key_decisions":[...],"action_items":[...]}.\n\nSOURCE:\n${JSON.stringify({summary:summary.summary,key_decisions:summary.key_decisions,action_items:summary.action_items}).slice(0,10000)}`;
-      const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const aiRes = await fetch("https://your-ai-gateway.example/v1/chat/completions", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}` },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${AI_GATEWAY_API_KEY}` },
         body: JSON.stringify({
           model: "openai/gpt-5.6-sol", reasoning_effort: "none",
           messages: [{ role: "user", content: prompt }],

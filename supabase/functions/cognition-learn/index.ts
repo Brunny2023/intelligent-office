@@ -8,7 +8,7 @@ const cors = {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
+const AI_GATEWAY_API_KEY = Deno.env.get("AI_GATEWAY_API_KEY")!;
 
 const SYSTEM = `You are the continuous learning engine of an Enterprise Cognition Platform. You will receive a JSON digest of the last 24 hours of an organization's activity: completed tasks, published memos, meeting summaries, KPI movements, and closed deliberations.
 
@@ -70,9 +70,9 @@ Deno.serve(async (req) => {
           (meetings.data?.length ?? 0) + (kpis.data?.length ?? 0) + (delibs.data?.length ?? 0) + (feedback.data?.length ?? 0);
         if (totalItems === 0) { results.push({ organization_id: org.id, lessons: 0 }); continue; }
 
-        const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        const resp = await fetch("https://your-ai-gateway.example/v1/chat/completions", {
           method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}` },
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${AI_GATEWAY_API_KEY}` },
           body: JSON.stringify({
             model: "openai/gpt-5.6-sol",
             reasoning_effort: "none",

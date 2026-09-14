@@ -149,7 +149,7 @@ export default function ExecMeetingRoom() {
           <div className="text-xs uppercase tracking-widest text-amber-400/80">
             {mode === "founder" ? "Founder Mode" : "Investor Session"}
           </div>
-          <div className="text-sm font-medium">Global Office · Executive Room</div>
+          <div className="text-sm font-medium">Intelligent Office · Executive Room</div>
         </div>
         <a href={mode === "founder" ? "/dashboard" : "/investors"} className="text-xs text-white/60 hover:text-white">Leave</a>
       </div>

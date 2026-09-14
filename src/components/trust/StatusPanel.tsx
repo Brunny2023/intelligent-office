@@ -171,7 +171,7 @@ export default function StatusPanel({ compact = false }: { compact?: boolean }) 
 
       {!compact && (
         <p className="text-xs text-muted-foreground">
-          Report an incident to <a href="mailto:security@globaloffice.cloud" className="underline">security@globaloffice.cloud</a>.
+          Report an incident to <a href="mailto:security@intelligent-office.example" className="underline">security@intelligent-office.example</a>.
         </p>
       )}
     </div>

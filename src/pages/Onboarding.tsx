@@ -74,7 +74,7 @@ const Onboarding = () => {
     // If we're already on a tenant subdomain (or local dev), just go to dashboard.
     // Otherwise redirect to the new org's subdomain so the URL reflects the tenant.
     const currentTenant = getTenantSlug();
-    if (currentTenant || window.location.hostname.endsWith(".lovable.app") || window.location.hostname === "localhost") {
+    if (currentTenant || window.location.hostname.endsWith(".preview.example.test") || window.location.hostname === "localhost") {
       navigate("/dashboard");
     } else {
       window.location.href = `${buildTenantUrl(form.slug)}/dashboard`;
